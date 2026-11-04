@@ -1,0 +1,50 @@
+/* 홈 화면: 향신료 사진 배경 + 뿌옇게 비치는 유리 카드 (디자인 규칙: design-rules.css) */
+#screen-home { position: relative; overflow: hidden; background: var(--c-dark); color: var(--c-on-dark); }
+
+/* 배경 사진: 해상도가 낮아서 아주 살짝 흐리게 하고, 글자가 읽히도록 어둡게 덮음 */
+.home-bg {
+  position: absolute; inset: -2%; z-index: 0;
+  background: url('../assets/ui/hero.jpg') center / cover no-repeat, var(--c-dark);
+  filter: blur(1.5px) saturate(1.05);
+}
+.home-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgba(27, 25, 23, .88) 0%, rgba(27, 25, 23, .62) 50%, rgba(27, 25, 23, .35) 100%);
+}
+
+.home-wrap {
+  position: relative; z-index: 1; flex: 1; min-height: 0;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4);
+  padding: var(--sp-4) calc(var(--sp-4) * 1.5);
+}
+
+/* 왼쪽: 이름과 소개 */
+.home-title { flex: 1.2; }
+.home-kicker { font-size: var(--fs-sub); color: var(--c-gold); letter-spacing: 2px; margin-bottom: var(--sp-1); }
+.home-title h1 {
+  margin: 0; font-size: clamp(64px, 11vmin, 120px); line-height: 1.08; font-weight: 900;
+  color: var(--c-cream); text-shadow: 0 .5vh 0 rgba(0, 0, 0, .45), 0 0 4vh rgba(232, 89, 12, .35);
+}
+.home-title h1 .g2 { color: var(--c-main); display: inline-block; transform: rotate(-4deg); }
+.home-title h1 .chef { color: var(--c-gold); }
+.home-tag { margin: var(--sp-2) 0 0; font-size: var(--fs-sub); color: rgba(251, 243, 228, .85); line-height: 1.5; }
+
+/* 오른쪽: 메뉴 (유리 카드) */
+.home-menu {
+  flex: 1; max-width: 470px; display: flex; flex-direction: column; gap: var(--sp-2); padding: var(--sp-3);
+  background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--r-card);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+}
+.home-btn {
+  min-height: calc(var(--btn-h) + var(--sp-4)); padding: var(--sp-2) var(--sp-3);
+  border-radius: 28px; border: 1px solid var(--glass-border); background: rgba(251, 243, 228, .08);
+  color: var(--c-on-dark); font-family: inherit; text-align: left; cursor: pointer;
+  display: flex; flex-direction: column; justify-content: center; gap: 4px;
+}
+.home-btn .t { font-size: var(--fs-sub); font-weight: 900; }
+.home-btn .d { font-size: var(--fs-small); color: rgba(251, 243, 228, .75); }
+.home-btn.primary { background: var(--c-main); border-color: var(--c-main); box-shadow: var(--shadow-btn); }
+.home-btn.primary .d { color: rgba(255, 255, 255, .9); }
+.home-btn.primary:active { transform: translateY(4px); box-shadow: var(--shadow-btn-pressed); }
+.home-btn:disabled { opacity: .55; cursor: not-allowed; }
+.home-btn .soon { color: var(--c-gold); }

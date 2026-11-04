@@ -1,0 +1,36 @@
+/* 6단계 다듬기: 화면 전환, 버튼 누름, 효과음 버튼, 후라이팬 재료 크기, 축하 효과 (디자인 규칙: design-rules.css) */
+
+/* 화면이 바뀔 때 부드럽게 나타남 */
+.screen.active:not(#screen-opening) { animation: pl-fade .28s ease-out both; }
+@keyframes pl-fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* 눌렀을 때 살짝 들어가는 느낌 (터치로 눌렀다는 것을 알 수 있게) */
+button { transition: transform .08s ease-out, background-color .15s; }
+button:active:not(:disabled) { transform: scale(.96); }
+.k-card:active, .d-card:active { transform: scale(.95); }
+
+/* 효과음 켜고 끄기 버튼 */
+.snd { min-height: 44px; padding: 0 var(--sp-2); border-radius: var(--r-btn); border: 1px solid var(--glass-border); background: transparent; color: var(--c-on-dark); font-size: var(--fs-small); white-space: nowrap; }
+.snd.on { border-color: var(--c-gold); color: var(--c-gold); font-weight: 900; }
+.snd-home { position: absolute; top: var(--sp-2); right: var(--sp-2); z-index: 5; }
+
+/* 후라이팬 속 재료: 양이 많을수록 커짐 */
+.k-pile .slot { transform: translate(-50%, -50%) scale(var(--s, 1)); transition: transform .25s ease-out, opacity .25s; transform-origin: center; }
+.k-pile .slot.zero { opacity: .35; }
+.k-panbox.bump { animation: pl-bump .35s ease-out; }
+@keyframes pl-bump { 0% { transform: rotate(-5deg) scale(1); } 40% { transform: rotate(-4deg) scale(1.03); } 100% { transform: rotate(-5deg) scale(1); } }
+
+/* 키보드가 올라와도 입력칸이 가려지지 않도록 아래 여백 */
+.k-list, .calc-left, .calc-right, .sub-card, .pl-card { scroll-padding-bottom: 40vh; }
+
+/* 높은 점수 축하 */
+.confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 30; }
+.confetti i { position: absolute; top: -20px; width: 12px; height: 18px; border-radius: 3px; opacity: .95; animation: pl-fall linear forwards; }
+@keyframes pl-fall { to { transform: translate3d(var(--dx), 112vh, 0) rotate(var(--rot)); opacity: .9; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .screen.active { animation: none !important; }
+  .confetti { display: none; }
+  .k-pile .slot { transition: none; }
+}
+#screen-result { position: relative; }

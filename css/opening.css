@@ -1,0 +1,84 @@
+/* 오프닝 화면 (검은 무대 + 프라이팬 + 떠 있는 재료) */
+#screen-opening {
+  --op-cream: var(--c-cream);
+  --op-gold: var(--c-gold);
+  --op-orange: var(--c-main);
+  --op-panw: min(52vw, 100vh);                     /* 프라이팬 가로 크기 */
+  position: relative; overflow: hidden;
+  background: radial-gradient(ellipse at 50% 78%, #33261b 0%, #120f0c 50%, #000 100%);
+  cursor: pointer;
+}
+.op-stage { position: absolute; inset: 0; }
+
+/* 프라이팬: 아래쪽 가운데, 살짝 기울임 */
+.op-pan {
+  position: absolute; left: 50%; bottom: 6vh; width: var(--op-panw); z-index: 1;
+  transform: translateX(-50%) rotate(-7deg);
+  animation: op-pan-in .8s cubic-bezier(.2, .8, .3, 1) both;
+  filter: drop-shadow(0 2.5vh 2vh rgba(0, 0, 0, .7));
+}
+.op-pan img { display: block; width: 100%; height: auto; pointer-events: none; }
+.op-pan .op-emoji { display: block; text-align: center; font-size: 26vmin; line-height: 1; }
+
+/* 재료: 프라이팬 안에서 위로 튀어 올라 자리를 잡음 */
+.op-fly {
+  position: absolute; z-index: 2; pointer-events: none;
+  left: calc(50% - var(--op-panw) * .05);
+  bottom: calc(6vh + var(--op-panw) * .2);
+  width: var(--size); margin-left: calc(var(--size) / -2);
+  animation: op-launch var(--rise) cubic-bezier(.18, .9, .3, 1.14) var(--delay) both;   /* 끝에서 살짝 넘쳤다가 자리 잡기 */
+}
+.op-bob { position: relative; animation: op-bob var(--bob) ease-in-out calc(var(--delay) + var(--rise)) infinite both; }
+.op-spin { animation: op-spin var(--spin) linear var(--delay) infinite var(--dir) both; }
+.op-spin img { display: block; width: 100%; height: auto; filter: drop-shadow(0 .6vh .8vh rgba(0, 0, 0, .35)); }
+.op-spin .op-emoji { display: block; text-align: center; font-size: calc(var(--size) * .85); line-height: 1.1; }
+
+/* 공중에 떠 있는 느낌을 주는 그림자 */
+.op-shadow {
+  position: absolute; left: 14%; width: 72%; top: calc(100% + 3vmin); height: 2.6vmin; border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, .75) 0%, rgba(0, 0, 0, 0) 70%);
+  filter: blur(.6vmin);
+  animation: op-shadow var(--bob) ease-in-out calc(var(--delay) + var(--rise)) infinite both;
+}
+
+/* 로고와 버튼: 재료가 다 떠오른 뒤에 나타남 */
+.op-logo {
+  position: absolute; top: 6vh; left: 0; right: 0; text-align: center; z-index: 3;
+  opacity: 0; animation: op-fade-up .9s ease-out 3.1s both;
+}
+.op-logo-top { font-size: 5vmin; letter-spacing: 1.2vmin; margin-bottom: .6vh; }
+.op-logo h1 {
+  margin: 0; font-size: clamp(56px, 12vmin, 130px); line-height: 1.05; font-weight: 900; letter-spacing: 1px;
+  color: var(--op-cream); text-shadow: 0 .6vh 0 rgba(0, 0, 0, .45), 0 0 4vh rgba(232, 89, 12, .45);
+}
+.op-logo h1 .g2 { color: var(--op-orange); display: inline-block; transform: rotate(-4deg); }
+.op-logo h1 .chef { color: var(--op-gold); }
+.op-sub { margin-top: 1vh; font-size: clamp(18px, 3vmin, 28px); color: rgba(251, 243, 228, .8); font-weight: 700; }
+
+.op-start {
+  position: absolute; top: 33vh; left: 50%; transform: translateX(-50%); z-index: 4;
+  min-width: 260px; min-height: 68px; padding: 0 40px; border-radius: 999px; border: none;
+  background: var(--op-orange); color: #fff; font-family: inherit; font-size: 28px; font-weight: 900;
+  box-shadow: 0 6px 0 #a83f06, 0 14px 30px rgba(232, 89, 12, .4);
+  opacity: 0; animation: op-pop .6s cubic-bezier(.2, .9, .3, 1.3) 3.8s both;
+}
+.op-start:active { transform: translateX(-50%) translateY(4px); box-shadow: 0 2px 0 #a83f06; }
+
+/* 톡 건드려서 건너뛰면 로고와 버튼을 바로 보여줌 */
+#screen-opening.revealed .op-logo,
+#screen-opening.revealed .op-start { animation-delay: 0s; }
+
+@keyframes op-pan-in   { from { opacity: 0; transform: translateX(-50%) translateY(14vh) rotate(-7deg); } to { opacity: 1; transform: translateX(-50%) rotate(-7deg); } }
+@keyframes op-launch   { 0% { opacity: 0; transform: translate(0, 0) scale(.25); } 12% { opacity: 1; } 100% { opacity: 1; transform: translate(var(--x), calc(var(--y) * -1)) scale(1); } }
+@keyframes op-bob      { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(calc(var(--amp) * -1)); } }
+@keyframes op-spin     { from { transform: rotate(var(--r0)); } to { transform: rotate(calc(var(--r0) + 360deg)); } }
+@keyframes op-shadow   { 0%, 100% { transform: scale(1); opacity: .9; } 50% { transform: scale(.78); opacity: .55; } }
+@keyframes op-fade-up  { from { opacity: 0; transform: translateY(2vh) scale(.94); } to { opacity: 1; transform: none; } }
+@keyframes op-pop      { from { opacity: 0; transform: translateX(-50%) scale(.7); } to { opacity: 1; transform: translateX(-50%) scale(1); } }
+
+/* 움직임을 줄이는 설정을 쓰는 기기: 바로 완성된 장면을 보여줌 */
+@media (prefers-reduced-motion: reduce) {
+  .op-fly { animation: none; opacity: 1; transform: translate(var(--x), calc(var(--y) * -1)); }
+  .op-bob, .op-spin, .op-shadow, .op-pan { animation: none; }
+  .op-logo, .op-start { animation: none; opacity: 1; }
+}

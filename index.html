@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>그램그램 셰프</title>
+<link rel="stylesheet" href="css/design-rules.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/home.css">
+<link rel="stylesheet" href="css/kitchen.css">
+<link rel="stylesheet" href="css/dishes.css">
+<link rel="stylesheet" href="css/player.css">
+<link rel="stylesheet" href="css/result.css">
+<link rel="stylesheet" href="css/calc.css">
+<link rel="stylesheet" href="css/polish.css">
+<link rel="stylesheet" href="css/opening.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ============ 오프닝 화면 (처음 열 때) ============ -->
+  <section id="screen-opening" class="screen active">
+    <div class="op-stage"></div>
+    <div class="op-logo" aria-label="그램그램 셰프">
+      <div class="op-logo-top">🍳 🥄 🔪</div>
+      <h1><span>그램</span><span class="g2">그램</span> <span class="chef">셰프</span></h1>
+      <div class="op-sub">재료의 양을 재고, 셰프에게 평가받자!</div>
+    </div>
+    <button class="op-start" id="btn-opening-start">시작하기</button>
+  </section>
+
+  <!-- ============ 홈 화면 ============ -->
+  <section id="screen-home" class="screen">
+    <div class="home-bg"></div>
+    <button class="snd snd-home" aria-label="효과음 켜고 끄기"></button>
+    <div class="home-wrap">
+      <div class="home-title">
+        <div class="home-kicker">요리 서바이벌</div>
+        <h1 aria-label="그램그램 셰프"><span>그램</span><span class="g2">그램</span> <span class="chef">셰프</span></h1>
+        <p class="home-tag">재료의 양을 재고,<br>셰프에게 평가받자!</p>
+      </div>
+      <div class="home-menu">
+        <button class="home-btn primary" id="btn-creative">
+          <span class="t">창작 요리 만들기</span>
+          <span class="d">재료를 마음대로 골라 나만의 요리를 만들어요</span>
+        </button>
+        <button class="home-btn" id="btn-real">
+          <span class="t">실제 요리 도전</span>
+          <span class="d">세계 여러 나라의 요리를 레시피대로 만들어 봐요</span>
+        </button>
+        <button class="home-btn" id="btn-rank">
+          <span class="t">랭킹</span>
+          <span class="d">개인전과 모둠전 점수를 비교해요</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 요리 화면 (재료 고르기 + 양 정하기) ============ -->
+  <section id="screen-kitchen" class="screen">
+    <header class="k-top">
+      <button class="k-back" id="btn-home">← 처음으로</button>
+      <div class="k-title" id="k-title">창작 요리</div>
+      <button class="k-who" id="btn-who" hidden aria-label="참가자 바꾸기"></button>
+      <button class="k-hint" id="btn-hint" hidden>레시피 힌트</button>
+      <button class="snd" aria-label="효과음 켜고 끄기"></button>
+      <div class="k-budget" id="budget-select"></div>
+    </header>
+
+    <div class="k-body">
+      <!-- 왼쪽: 재료 선반 -->
+      <div class="k-shelf">
+        <div class="k-tabs" id="tabs"></div>
+        <div class="k-grid" id="grid"></div>
+      </div>
+
+      <!-- 오른쪽: 후라이팬 + 합계, 내 재료 목록 -->
+      <div class="k-right">
+        <div class="k-stage" id="stage">
+          <div class="k-panbox" id="panbox">
+            <img class="k-pan" id="pan-img" src="assets/ui/pan.png" alt="">
+            <div class="k-pile" id="pile"></div>
+          </div>
+          <div class="k-sum">
+            <div class="k-cost-label">총 원가</div>
+            <div class="k-cost" id="sum-cost">0원</div>
+            <div class="k-sum-row"><span>총 무게</span><strong id="sum-weight">0g</strong></div>
+            <div class="k-sum-row"><span>재료</span><strong id="sum-count">0가지</strong></div>
+            <div class="k-meter" id="budget-meter" hidden>
+              <div class="k-bar"><div class="k-fill" id="budget-fill"></div></div>
+              <div class="k-meter-text" id="budget-text"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="k-listwrap">
+          <div class="k-listhead">
+            <h2>내 재료</h2>
+            <button class="k-small" id="btn-clear">모두 비우기</button>
+          </div>
+          <div class="k-list" id="pot-list"></div>
+          <div class="k-foot">
+            <span class="k-note">mL(부피)는 g으로 바꿔 무게를 합쳐요. 예) 간장 100mL ≈ 115g</span>
+            <button class="k-submit" id="btn-submit" disabled>요리 제출하기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal" id="hint-modal" hidden></div>
+  </section>
+
+  <!-- ============ 참가자 정하기 화면 (개인전 / 모둠전) ============ -->
+  <section id="screen-player" class="screen">
+    <div class="pl-card">
+      <h2>누가 도전하나요?</h2>
+      <div class="pl-types">
+        <button class="pl-type on" data-t="solo"><span class="n">개인전</span><span class="d">혼자 도전해요</span></button>
+        <button class="pl-type" data-t="team"><span class="n">모둠전</span><span class="d">한 기기를 모둠이 함께 써요</span></button>
+      </div>
+      <div id="pl-form"></div>
+      <div id="pl-recent"></div>
+      <div class="pl-msg" id="pl-msg"></div>
+      <div class="pl-btns">
+        <button class="pl-back" id="pl-back">← 돌아가기</button>
+        <button class="pl-go" id="pl-go">시작하기</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 랭킹 화면 ============ -->
+  <section id="screen-rank" class="screen">
+    <header class="k-top">
+      <button class="k-back" id="rank-back">← 처음으로</button>
+      <div class="k-title">랭킹</div>
+      <button class="k-back" id="rank-clear">기록 지우기</button>
+    </header>
+    <div class="d-filter" id="rank-kinds"></div>
+    <div class="d-filter" id="rank-modes"></div>
+    <div class="rk-note" id="rank-note"></div>
+    <div class="rk-list" id="rank-list"></div>
+  </section>
+
+  <!-- ============ 요리 고르기 화면 (실제 요리 도전) ============ -->
+  <section id="screen-dishes" class="screen">
+    <header class="k-top">
+      <button class="k-back" id="dishes-back">← 처음으로</button>
+      <div class="k-title">실제 요리 도전</div>
+      <button class="k-who" id="btn-who2" hidden aria-label="참가자 바꾸기"></button>
+    </header>
+    <div class="d-filter" id="d-filter"></div>
+    <div class="d-grid" id="d-grid"></div>
+    <div class="modal" id="d-modal" hidden></div>
+  </section>
+
+  <!-- ============ 제출 화면 (요리 종류와 이름 정하기) ============ -->
+  <section id="screen-submit" class="screen">
+    <div class="sub-card">
+      <h2>요리를 제출해요</h2>
+      <div class="sub-label">1. 어떤 요리인가요?</div>
+      <div class="sub-types" id="sub-types"></div>
+      <div class="sub-label">2. 요리 이름을 지어 주세요</div>
+      <input id="sub-name" class="sub-input" maxlength="20" placeholder="예) 엄마가 좋아하는 달콤 짭짤 볶음" autocomplete="off">
+      <div class="sub-msg" id="sub-msg"></div>
+      <div class="sub-summary" id="sub-summary"></div>
+      <div class="sub-btns">
+        <button class="sub-back" id="sub-cancel">← 돌아가서 고치기</button>
+        <button class="sub-go" id="sub-go">심사 받기</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 계산 확인 화면 (그램 셰프의 질문) ============ -->
+  <section id="screen-calc" class="screen">
+    <div class="calc-wrap">
+      <div class="calc-left">
+        <h2>내 재료 계산표</h2>
+        <div class="calc-table" id="calc-table"></div>
+      </div>
+      <div class="calc-right">
+        <div class="calc-chef">
+          <div class="chef-avatar" id="calc-avatar"></div>
+          <div class="bubble" id="calc-say"></div>
+        </div>
+        <div class="calc-field"><span>총 원가</span><input id="calc-cost" type="number" inputmode="numeric" min="0" placeholder="0"><span>원</span></div>
+        <div class="calc-field"><span>총 무게</span><input id="calc-weight" type="number" inputmode="decimal" min="0" step="any" placeholder="0">
+          <div class="unit-toggle" id="calc-units"><button data-u="g">g</button><button data-u="kg">kg</button></div></div>
+        <div class="calc-answer" id="calc-answer" hidden></div>
+        <div class="calc-msg" id="calc-msg"></div>
+        <div class="calc-btns">
+          <button class="k-small" id="calc-back">← 돌아가기</button>
+          <button class="k-small" id="calc-help">계산 도우미 (정답 보기)</button>
+          <button class="k-small" id="calc-skip">건너뛰기</button>
+          <button class="calc-go" id="calc-go">확인하고 제출</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 결과 화면 (셰프가 차례로 등장) ============ -->
+  <section id="screen-result" class="screen">
+    <div class="res-left" id="res-left"></div>
+    <div class="res-right" id="res-right"></div>
+  </section>
+
+</div>
+
+<div id="rotate-hint"><div>📱↻<br>태블릿을 <b>가로</b>로 돌려주세요</div></div>
+
+<script src="data/ingredients.js"></script>
+<script src="data/opening.js"></script>
+<script src="data/rules.js"></script>
+<script src="data/chefs.js"></script>
+<script src="data/recipes.js"></script>
+<script src="js/calc.js"></script>
+<script src="js/judge.js"></script>
+<script src="js/filter.js"></script>
+<script src="js/sound.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+<script src="js/real.js"></script>
+<script src="js/player.js"></script>
+<script src="js/rank.js"></script>
+<script src="js/result.js"></script>
+<script src="js/opening.js"></script>
+</body>
+</html>

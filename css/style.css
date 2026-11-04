@@ -1,0 +1,19 @@
+/* 공통 바탕 (색, 글자 크기 등은 design-rules.css 의 변수를 사용) */
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body {
+  margin: 0; height: 100%; background: var(--c-dark); color: var(--c-on-dark);
+  font-family: var(--font-main); overflow: hidden; touch-action: manipulation; user-select: none;
+}
+button { font-family: inherit; color: inherit; cursor: pointer; }
+input { font-family: inherit; }
+
+#app { height: 100%; }
+.screen { display: none; height: 100%; }
+.screen.active { display: flex; flex-direction: column; }
+
+/* 세로 화면 안내 */
+#rotate-hint {
+  display: none; position: fixed; inset: 0; background: var(--c-dark); color: var(--c-on-dark); z-index: 99;
+  align-items: center; justify-content: center; text-align: center; font-size: var(--fs-title); line-height: 1.5;
+}
+@media (orientation: portrait) and (max-width: 900px) { #rotate-hint { display: flex; } }

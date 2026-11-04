@@ -32,3 +32,4 @@
 - 참가자와 기록: 요리를 시작할 때 개인전(이름) 또는 모둠전(모둠 이름 + 모둠원)을 정함 (js/player.js, 이름 필터 적용). 점수는 심사가 끝나면 localStorage(js/storage.js, 키 gramgram_records_v1)에 저장하고, 랭킹(js/rank.js)은 참가자/모둠별 최고 점수를 100점 만점 합계로 비교한다. 이 기기 안에서만 저장·비교됨.
 - 셰프 4명(버럭·깐깐·그램·해피) 모두 ready: true. 새 심사 항목: price(가격·예산), accuracy(계산 확인: 제출 전 총 원가·총 무게를 직접 계산해 입력, 도우미 사용 시 최대 절반), creative·nameq·brave(해피). 계산 확인 화면은 css/calc.css. 대사의 {dish} 뒤 조사(가/이, 를/을 등)는 요리 이름 받침에 맞춰 자동 수정됨. 랭킹은 심사 셰프 수가 같은 기록끼리만 비교.
 - 6단계 다듬기: 후라이팬 속 재료 크기가 양에 따라 변함(app.js setSlotSize), 효과음은 파일 없이 WebAudio로 생성(js/sound.js, 기본 꺼짐, localStorage 키 gramgram_sound_v1), 화면 전환·버튼 누름·점수 75점 이상 색종이 효과는 css/polish.css, 입력칸이 키보드에 가려지지 않게 focusin 때 가운데로 스크롤.
+- QR 코드: js/qr.js(외부 라이브러리 없이 QR 생성, 검증 완료), js/share.js(버튼·팝업, 첫 화면과 홈에 버튼), data/share.js(GG_SHARE_URL 비우면 현재 주소 자동 사용).

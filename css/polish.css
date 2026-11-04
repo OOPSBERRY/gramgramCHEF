@@ -34,3 +34,16 @@ button:active:not(:disabled) { transform: scale(.96); }
   .k-pile .slot { transition: none; }
 }
 #screen-result { position: relative; }
+
+/* QR 코드 버튼과 팝업 */
+.qr-btn { min-height: 44px; padding: 0 var(--sp-2); border-radius: var(--r-btn); border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--c-on-dark); font-size: var(--fs-small); font-weight: 900; z-index: 6; -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); }
+.op-qr { position: absolute; right: var(--sp-2); bottom: var(--sp-2); }
+.home-qr { position: absolute; top: var(--sp-2); right: 168px; }
+.modal.fixed { position: fixed; z-index: 90; }
+.qr-card { width: min(520px, 100%); text-align: center; background: var(--c-cream); color: var(--c-ink); border-radius: var(--r-card); padding: var(--sp-3) var(--sp-4); }
+.qr-card h2 { margin: 0 0 var(--sp-1); font-size: var(--fs-sub); }
+.qr-card p { margin: var(--sp-1) 0; font-size: var(--fs-small); color: var(--c-ink-soft); line-height: 1.5; }
+.qr-img { display: inline-block; padding: var(--sp-1); background: #fff; border-radius: 12px; border: 1px solid var(--c-line); line-height: 0; }
+.qr-img svg { width: min(46vh, 320px); height: auto; }
+.qr-url { word-break: break-all; font-size: var(--fs-small); color: var(--c-ink); font-weight: 900; user-select: text; }
+.qr-warn { padding: var(--sp-2); border-radius: var(--r-card); background: #fff6d8; border: 1px solid var(--c-gold); color: var(--c-ink); font-size: var(--fs-small); line-height: 1.5; text-align: left; }

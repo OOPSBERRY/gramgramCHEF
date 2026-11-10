@@ -54,7 +54,7 @@ const GG_BANNED_WORDS = [
 ];
 
 /* 해피 셰프의 창의성 점수에서 "특별한 재료"로 세는 재료 (재료 id) */
-const GG_RARE_IDS = ['lemongrass', 'avocado', 'olive', 'coconut', 'turmeric', 'cumin', 'basil', 'fishsauce', 'doubanjiang', 'miso', 'lime', 'curry', 'peanut', 'shiitake'];
+const GG_RARE_IDS = ['lemongrass', 'avocado', 'olive', 'coconut', 'turmeric', 'cumin', 'basil', 'fishsauce', 'doubanjiang', 'miso', 'lime', 'curry', 'peanut', 'shiitake', 'snail', 'mala', 'bayleaf', 'asparagus', 'parsley'];
 
 /* 요리 이름에 들어 있으면 해피 셰프가 좋아하는 말 (계속 추가하세요) */
 const GG_NAME_WORDS = ['마법', '특제', '황금', '우리', '엄마', '아빠', '최강', '달콤', '매콤', '시원', '따끈', '든든', '꿀', '행복', '비밀', '슈퍼', '전설', '향긋', '고소', '새콤', '짭짤', '세계', '무지개', '보물'];

@@ -114,8 +114,6 @@
 .sim-parts { margin-top: 4px; font-size: var(--fs-small); color: var(--c-ink-soft); }
 .sim-miss { margin-top: 4px; font-size: var(--fs-small); color: var(--c-danger); font-weight: 900; }
 
-.final-rank { text-align: center; font-size: var(--fs-body); color: var(--c-ink-soft); }
-.final-rank b { color: var(--c-main); font-size: var(--fs-sub); }
 
 /* 5단계: 지금까지의 합계, 셰프 점수 카드 */
 .res-running { font-size: var(--fs-body); color: var(--c-ink-soft); }

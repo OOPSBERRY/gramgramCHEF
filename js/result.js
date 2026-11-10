@@ -4,7 +4,6 @@
   const A = window.GGApp;
   const BADGE = { good: ['알맞아요', 'good'], high: ['많아요', 'warn'], low: ['부족해요', 'warn'], bad: ['이상해요', 'bad'], nice: ['멋져요', 'good'] };
   let typeId = null;
-  let lastRec = null;                // 방금 저장한 기록 (순위를 보여줄 때 씀)
   let run = 0;                       // 화면을 다시 열면 이전 연출이 멈추도록 하는 번호
 
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -46,9 +45,8 @@
   let calcUnit = 'g';
   function askCalc(items, done) {
     const gram = GG_CHEFS.find((c) => c.id === 'gram');
-    const P = A.state.player;
     $('calc-avatar').innerHTML = gram ? chefSvg(gram) : '';
-    $('calc-say').textContent = (P ? P.name + (P.type === 'team' ? ' 모둠' : '님') + ', ' : '') + '제출하기 전에 숫자를 확인해 볼까요? 아래 표의 재료를 모두 더하면 총 원가와 총 무게는 얼마일까요?';
+    $('calc-say').textContent = '제출하기 전에 숫자를 확인해 볼까요? 아래 표의 재료를 모두 더하면 총 원가와 총 무게는 얼마일까요?';
     // 재료표: 원가와 무게(g). mL 재료는 g으로 바꿔서 보여줌
     let rows = '';
     items.forEach((it) => {
@@ -160,24 +158,10 @@
     vis.appendChild(img);
   }
 
-  /** 점수 기록을 이 기기(localStorage)에 저장 */
-  function saveRecord(result, name, items, typeObj) {
-    const R = A.state.mode === 'real' ? A.state.recipe : null;
-    const P = A.state.player || { type: 'solo', name: '이름 없음', members: [] };
-    const rc = result.analysis.recipe;
-    lastRec = GGStore.add({
-      pType: P.type, pName: P.name, members: P.members || [], mode: A.state.mode,
-      dish: name, dishId: R ? R.id : null, dtype: typeObj.id,
-      total: result.total, chefCount: result.chefCount, chefScores: result.chefs.map((c) => ({ id: c.chef.id, score: c.score })),
-      sim: rc ? rc.pct : null, cost: GGCalc.totalCost(items), budget: A.state.budget, items: items.map((it) => [it.ing.id, it.amount])
-    });
-  }
-
   async function startResult(result, name, items) {
     const my = ++run;
     const typeObj = result.analysis.type;
     buildLeft(name, items, typeObj);
-    saveRecord(result, name, items, typeObj);
     A.show('screen-result');
     const right = $('res-right');
 
@@ -217,13 +201,11 @@
 
   function finalButtons() {
     return '<div class="res-final-btns">' +
-      '<button class="res-btn ghost" id="btn-rank2">랭킹 보기</button>' +
       '<button class="res-btn ghost" id="btn-again">같은 재료로 다시 고치기</button>' +
       '<button class="res-btn" id="btn-new">' + (A.state.mode === 'real' ? '다른 요리 도전하기' : '새 요리 만들기') + '</button>' +
       '<button class="res-btn ghost" id="btn-home2">처음으로</button></div>';
   }
   function bindFinal() {
-    $('btn-rank2').onclick = () => A.showRank(lastRec ? lastRec.pType : 'solo');
     $('btn-again').onclick = () => A.showKitchen();
     $('btn-new').onclick = () => (A.state.mode === 'real' ? A.showDishes() : A.newDish());
     $('btn-home2').onclick = () => A.show('screen-home');
@@ -251,8 +233,6 @@
     const my = run;
     const all = Object.values(result.analysis.metrics);
     const names = result.chefs.map((c, i) => '<li style="--chef:' + c.chef.color + ';animation-delay:' + (i * 0.3) + 's"><span class="mini">' + chefSvg(c.chef) + '</span><span>' + esc(c.chef.name) + '</span><b>' + c.score + ' / 25</b></li>').join('');
-    const ri = lastRec ? GGStore.rankInfo(lastRec) : null, team = lastRec && lastRec.pType === 'team';
-    const rank = ri ? '<div class="final-rank">' + esc(lastRec.pName) + ' · ' + (team ? '모둠전' : '개인전') + ' 이번 점수는 <b>' + ri.rank + '위</b> (' + ri.of + (team ? '모둠' : '명') + ' 중)</div>' : '';
     const rc = result.analysis.recipe, R = A.state.mode === 'real' ? A.state.recipe : null;
     const sim = (rc && R)
       ? '<div class="final-sim"><div class="sim-big">실제 ' + esc(R.name) + josa(R.name) + ' <b>' + rc.pct + '%</b> 비슷해요</div>' +
@@ -266,7 +246,7 @@
       '<div class="res-step">최종 결과</div>' +
       '<div class="final-score"><span class="num" id="final-num">0</span><span class="unit">점</span></div>' +
       '<div class="final-grade">' + esc(result.grade.title) + '</div>' +
-      '<div class="final-msg">' + esc(result.grade.msg) + '</div>' + rank + sim +
+      '<div class="final-msg">' + esc(result.grade.msg) + '</div>' + sim +
       '<ul class="final-chefs">' + names + '</ul>' + note +
       '<details class="final-table"><summary>내 요리 분석표 보기 (숫자)</summary><ul class="checks">' + detailRows(all) + '</ul></details>' +
       finalButtons();

@@ -78,11 +78,17 @@ const GG_INGREDIENTS = [
   I('apple',      '사과',        '🍎', 'veg', 'g', 250, { sugar: 0 }),
   I('banana',     '바나나',      '🍌', 'veg', 'g', 200),
   I('strawberry', '딸기',        '🍓', 'veg', 'g', 800),
+  I('pineapple',  '파인애플',    '🍍', 'veg', 'g', 400),
+  I('parsley',    '파슬리',      '🌿', 'veg', 'g', 1500, { max: 50, step: 1, def: 5 }),
+  I('asparagus',  '아스파라거스','🌱', 'veg', 'g', 1500, { max: 300, def: 80 }),
 
   /* ---------- 고기 ---------- */
   I('beef',       '소고기',      '🥩', 'meat', 'g', 2500),
   I('pork',       '돼지고기',    '🐷', 'meat', 'g', 1000),
   I('chicken',    '닭고기',      '🍗', 'meat', 'g', 800),
+  I('mincedmeat', '다진 고기',   '🥩', 'meat', 'g', 1200),
+  I('bacon',      '베이컨',      '🥓', 'meat', 'g', 2000, { salt: 2.5, max: 300, def: 50 }),
+  I('spam',       '스팸',        '🥫', 'meat', 'g', 1500, { salt: 2.3, max: 300, def: 80 }),
 
   /* ---------- 해산물 ---------- */
   I('shrimp',     '새우',        '🦐', 'sea', 'g', 1500),
@@ -90,6 +96,8 @@ const GG_INGREDIENTS = [
   I('fishcake',   '어묵',        '🍢', 'sea', 'g', 400, { salt: 1.5 }),
   I('anchovy',    '멸치',        '🐠', 'sea', 'g', 1500, { salt: 8, max: 100, step: 5, def: 20 }),
   I('seaweed',    '미역(말린 것)','🌊', 'sea', 'g', 1500, { max: 50, step: 1, def: 5 }),
+  I('gim',        '김',          '⬛', 'sea', 'g', 3000, { max: 20, step: 1, def: 2 }),
+  I('snail',      '식용 달팽이', '🐌', 'sea', 'g', 4000, { max: 200, def: 50 }),
 
   /* ---------- 곡물·면·콩 ---------- (면·콩·당면은 '삶기 전' 무게) */
   I('rice',       '밥',          '🍚', 'grain', 'g', 150, { max: 600, def: 200 }),
@@ -106,9 +114,11 @@ const GG_INGREDIENTS = [
   I('peanut',     '땅콩',        '🥜', 'grain', 'g', 600, { max: 100, step: 5, def: 20 }),
   I('flour',      '밀가루',      '🌾', 'grain', 'g', 100, { max: 200, def: 30 }),
   I('baguette',   '바게트',      '🥖', 'grain', 'g', 350, { max: 200, def: 50 }),
+  I('frymix',     '튀김가루',    '🌾', 'grain', 'g', 150, { salt: 1, max: 200, def: 30 }),
 
   /* ---------- 유제품·달걀 ---------- */
   I('egg',        '달걀',        '🥚', 'dairy', 'g', 450, { max: 400 }),
+  I('yolk',       '달걀노른자',  '🟡', 'dairy', 'g', 900, { max: 100, step: 5, def: 20 }),
   I('milk',       '우유',        '🥛', 'dairy', 'mL', 200, { density: 1.03, max: 1000, step: 10, def: 200 }),
   I('butter',     '버터',        '🧈', 'dairy', 'g', 1500, { salt: 1, max: 100, step: 5, def: 20 }),
   I('cheddar',    '체다치즈',    '🧀', 'dairy', 'g', 1200, { salt: 1.8, def: 50 }),
@@ -117,12 +127,18 @@ const GG_INGREDIENTS = [
   /* ---------- 조미료 ---------- */
   I('salt',       '소금',        '🧂', 'season', 'g', 100, { salt: 100, max: 30, step: 1, def: 3 }),
   I('sugar',      '설탕',        '🍬', 'season', 'g', 100, { sugar: 100, max: 50, step: 1, def: 5 }),
-  I('soy',        '간장',        '🫙', 'season', 'mL', 200, { salt: 16, sugar: 2, density: 1.15, max: 100, step: 1, def: 15 }),
+  I('brownsugar', '흑설탕',      '🟤', 'season', 'g', 200, { sugar: 95, max: 50, step: 1, def: 5 }),
+  I('mulyeot',    '물엿',        '🍯', 'season', 'g', 300, { sugar: 75, max: 100, step: 1, def: 10 }),
+  I('soy',        '진간장',      '🫙', 'season', 'mL', 200, { salt: 16, sugar: 2, density: 1.15, max: 100, step: 1, def: 15 }),
+  I('gukganjang', '국간장',      '🫙', 'season', 'mL', 400, { salt: 22, density: 1.2, max: 100, step: 1, def: 10 }),
   I('doenjang',   '된장',        '🥣', 'season', 'g', 400, { salt: 12, max: 100, step: 1, def: 20 }),
   I('gochujang',  '고추장',      '🌶️', 'season', 'g', 500, { salt: 7, sugar: 15, max: 100, step: 1, def: 20 }),
   I('miso',       '미소(일본 된장)', '🥣', 'season', 'g', 700, { salt: 11, sugar: 5, max: 100, step: 1, def: 20 }),
   I('gochugaru',  '고춧가루',    '🌶️', 'season', 'g', 900, { max: 50, step: 1, def: 5 }),
   I('vinegar',    '식초',        '🍶', 'season', 'mL', 150, { density: 1.0, max: 100, step: 1, def: 10 }),
+  I('limejuice',  '라임즙',      '🍋', 'season', 'mL', 1000, { max: 100, step: 1, def: 10 }),
+  I('lemonjuice', '레몬즙',      '🍋', 'season', 'mL', 800, { max: 100, step: 1, def: 10 }),
+  I('chickenstock','치킨 스톡(가루)', '🐔', 'season', 'g', 2000, { salt: 45, max: 30, step: 1, def: 5 }),
 
   /* ---------- 향신료 ---------- */
   I('pepper',     '후추',        '⚫', 'spice', 'g', 2000, { max: 10, step: 1, def: 1 }),
@@ -130,11 +146,13 @@ const GG_INGREDIENTS = [
   I('turmeric',   '강황',        '🟠', 'spice', 'g', 3000, { max: 20, step: 1, def: 2 }),
   I('cumin',      '커민',        '🟤', 'spice', 'g', 3000, { max: 20, step: 1, def: 2 }),
   I('lemongrass', '레몬그라스',  '🌾', 'spice', 'g', 1000, { max: 50, step: 1, def: 10 }),
+  I('bayleaf',    '월계수 잎',   '🍃', 'spice', 'g', 5000, { max: 5, step: 1, def: 1 }),
 
   /* ---------- 기름 ---------- */
   I('oil',        '식용유',      '🫗', 'oil', 'mL', 300, { density: 0.92 }),
   I('sesameoil',  '참기름',      '🫗', 'oil', 'mL', 3000, { density: 0.92, max: 50, def: 5 }),
   I('oliveoil',   '올리브유',    '🫒', 'oil', 'mL', 1000, { density: 0.91 }),
+  I('chilioil',   '고추기름',    '🌶️', 'oil', 'mL', 1500, { density: 0.92, max: 50, def: 5 }),
 
   /* ---------- 소스류 ---------- */
   I('tomatosauce','토마토소스',  '🥫', 'sauce', 'g', 300, { salt: 0.8, sugar: 2, def: 100 }),
@@ -143,6 +161,9 @@ const GG_INGREDIENTS = [
   I('doubanjiang','두반장',      '🌶️', 'sauce', 'g', 700, { salt: 15, max: 100, step: 1, def: 15 }),
   I('coconut',    '코코넛밀크',  '🥥', 'sauce', 'mL', 500, { density: 1.0, def: 100 }),
   I('salsa',      '살사소스',    '🍅', 'sauce', 'g', 400, { salt: 1, sugar: 2, def: 50 }),
+  I('mustard',    '머스타드',    '🟡', 'sauce', 'g', 800, { salt: 3, max: 100, step: 1, def: 10 }),
+  I('oystersauce','굴소스',      '🦪', 'sauce', 'g', 800, { salt: 11, sugar: 15, max: 100, step: 1, def: 15 }),
+  I('mala',       '마라 소스',   '🌶️', 'sauce', 'g', 1500, { salt: 8, max: 100, step: 1, def: 20 }),
 
   /* ---------- 물·육수 ---------- */
   I('water',      '물',          '💧', 'liquid', 'mL', 0),

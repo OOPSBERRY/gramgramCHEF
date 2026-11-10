@@ -22,7 +22,6 @@
 <link rel="stylesheet" href="css/home.css">
 <link rel="stylesheet" href="css/kitchen.css">
 <link rel="stylesheet" href="css/dishes.css">
-<link rel="stylesheet" href="css/player.css">
 <link rel="stylesheet" href="css/result.css">
 <link rel="stylesheet" href="css/calc.css">
 <link rel="stylesheet" href="css/polish.css">
@@ -64,10 +63,6 @@
           <span class="t">실제 요리 도전</span>
           <span class="d">세계 여러 나라의 요리를 레시피대로 만들어 봐요</span>
         </button>
-        <button class="home-btn" id="btn-rank">
-          <span class="t">랭킹</span>
-          <span class="d">개인전과 모둠전 점수를 비교해요</span>
-        </button>
       </div>
     </div>
   </section>
@@ -77,7 +72,6 @@
     <header class="k-top">
       <button class="k-back" id="btn-home">← 처음으로</button>
       <div class="k-title" id="k-title">창작 요리</div>
-      <button class="k-who" id="btn-who" hidden aria-label="참가자 바꾸기"></button>
       <button class="k-hint" id="btn-hint" hidden>레시피 힌트</button>
       <button class="snd" aria-label="효과음 켜고 끄기"></button>
       <div class="k-budget" id="budget-select"></div>
@@ -125,43 +119,11 @@
     <div class="modal" id="hint-modal" hidden></div>
   </section>
 
-  <!-- ============ 참가자 정하기 화면 (개인전 / 모둠전) ============ -->
-  <section id="screen-player" class="screen">
-    <div class="pl-card">
-      <h2>누가 도전하나요?</h2>
-      <div class="pl-types">
-        <button class="pl-type on" data-t="solo"><span class="n">개인전</span><span class="d">혼자 도전해요</span></button>
-        <button class="pl-type" data-t="team"><span class="n">모둠전</span><span class="d">한 기기를 모둠이 함께 써요</span></button>
-      </div>
-      <div id="pl-form"></div>
-      <div id="pl-recent"></div>
-      <div class="pl-msg" id="pl-msg"></div>
-      <div class="pl-btns">
-        <button class="pl-back" id="pl-back">← 돌아가기</button>
-        <button class="pl-go" id="pl-go">시작하기</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ 랭킹 화면 ============ -->
-  <section id="screen-rank" class="screen">
-    <header class="k-top">
-      <button class="k-back" id="rank-back">← 처음으로</button>
-      <div class="k-title">랭킹</div>
-      <button class="k-back" id="rank-clear">기록 지우기</button>
-    </header>
-    <div class="d-filter" id="rank-kinds"></div>
-    <div class="d-filter" id="rank-modes"></div>
-    <div class="rk-note" id="rank-note"></div>
-    <div class="rk-list" id="rank-list"></div>
-  </section>
-
   <!-- ============ 요리 고르기 화면 (실제 요리 도전) ============ -->
   <section id="screen-dishes" class="screen">
     <header class="k-top">
       <button class="k-back" id="dishes-back">← 처음으로</button>
       <div class="k-title">실제 요리 도전</div>
-      <button class="k-who" id="btn-who2" hidden aria-label="참가자 바꾸기"></button>
     </header>
     <div class="d-filter" id="d-filter"></div>
     <div class="d-grid" id="d-grid"></div>
@@ -236,11 +198,8 @@
 <script src="js/qr.js"></script>
 <script src="js/sound.js"></script>
 <script src="js/share.js"></script>
-<script src="js/storage.js"></script>
 <script src="js/app.js"></script>
 <script src="js/real.js"></script>
-<script src="js/player.js"></script>
-<script src="js/rank.js"></script>
 <script src="js/result.js"></script>
 <script src="js/opening.js"></script>
 </body>

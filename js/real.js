@@ -81,7 +81,7 @@
   }
 
   /* ---------- 연결 ---------- */
-  $('btn-real').onclick = () => A.requirePlayer(() => { A.show('screen-dishes'); renderFilter(); renderGrid(); });
+  $('btn-real').onclick = () => { A.show('screen-dishes'); renderFilter(); renderGrid(); };
   $('dishes-back').onclick = () => A.show('screen-home');
   $('btn-hint').onclick = openHint;
   [$('d-modal'), $('hint-modal')].forEach((m) => m.addEventListener('click', (e) => { if (e.target === m) m.hidden = true; }));   // 바깥을 누르면 닫힘

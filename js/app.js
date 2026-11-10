@@ -8,7 +8,6 @@
     tab: GG_CATEGORIES[0].id,
     items: [],          // { ing, amount(기본단위), unit(보여줄 단위) }
     budget: null,
-    player: null,       // { type: 'solo'|'team', name, members[] }
     mode: 'creative',   // 'creative'(창작) 또는 'real'(실제 요리 도전)
     recipe: null        // 실제 요리 도전일 때 고른 레시피
   };
@@ -18,11 +17,11 @@
     document.querySelectorAll('.screen').forEach((s) => s.classList.remove('active'));
     $(id).classList.add('active');
   }
-  $('btn-creative').onclick = () => (GGApp.requirePlayer || ((go) => go()))(() => {      // 참가자(개인전/모둠전)를 먼저 정함
+  $('btn-creative').onclick = () => {
     if (state.mode !== 'creative') state.items = [];            // 다른 모드에서 왔으면 재료를 비우고 시작
     state.mode = 'creative'; state.recipe = null;
     show('screen-kitchen'); renderAll();
-  });
+  };
   $('btn-home').onclick = () => show(state.mode === 'real' ? 'screen-dishes' : 'screen-home');
 
   /* ---------- 재료 사진 (파일이 없으면 이모지로 대신 보임) ---------- */

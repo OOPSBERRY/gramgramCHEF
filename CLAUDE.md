@@ -33,3 +33,4 @@
 - 6단계 다듬기: 후라이팬 속 재료 크기가 양에 따라 변함(app.js setSlotSize), 효과음은 파일 없이 WebAudio로 생성(js/sound.js, 기본 꺼짐, localStorage 키 gramgram_sound_v1), 화면 전환·버튼 누름·점수 75점 이상 색종이 효과는 css/polish.css, 입력칸이 키보드에 가려지지 않게 focusin 때 가운데로 스크롤.
 - QR 코드: js/qr.js(외부 라이브러리 없이 QR 생성, 검증 완료), js/share.js(버튼·팝업, 첫 화면과 홈에 버튼), data/share.js(GG_SHARE_URL 비우면 현재 주소 자동 사용).
 - 링크 미리보기: index.html 의 og:* 메타 태그, 이미지는 assets/ui/og.jpg (배포 주소 https://gramgramchef.netlify.app/).
+- 디저트·베이킹 분류(sweet) 추가: 재료 23개 + 블루베리·망고(채소·과일). sweet 재료의 설탕도 단맛 계산에 포함(js/judge.js). 가격·설탕 값은 대략 추정치라 교사 검토 필요.

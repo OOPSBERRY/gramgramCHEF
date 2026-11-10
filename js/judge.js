@@ -89,7 +89,7 @@ const GGJudge = (function () {
     const pct = (g) => (W > 0 ? g / W * 100 : 0);
 
     const saltP  = n1(pct(rows.reduce((s, r) => s + r.g * r.ing.salt / 100, 0)));
-    const sugarP = n1(pct(rows.filter((r) => ['season', 'sauce'].includes(r.ing.cat)).reduce((s, r) => s + r.g * r.ing.sugar / 100, 0)));   // 채소의 자연 단맛은 빼고, 양념·소스의 설탕만
+    const sugarP = n1(pct(rows.filter((r) => ['season', 'sauce', 'sweet'].includes(r.ing.cat)).reduce((s, r) => s + r.g * r.ing.sugar / 100, 0)));   // 채소의 자연 단맛은 빼고, 양념·소스·디저트 재료의 설탕만
     const oilP   = n1(pct(rows.filter((r) => r.ing.cat === 'oil').reduce((s, r) => s + r.g, 0)));
     const waterP = n1(pct(rows.filter((r) => r.ing.cat === 'liquid').reduce((s, r) => s + r.g, 0)));
 

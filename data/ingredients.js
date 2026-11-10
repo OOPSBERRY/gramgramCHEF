@@ -4,7 +4,7 @@
    재료 한 줄 = I( id, 이름, 이모지, 분류, 단위, 100당 가격(원), { 옵션 } )
 
    - id      : 영어/숫자 (중복 금지). 레시피 데이터에서 이 id로 부릅니다.
-   - 분류    : veg meat sea grain dairy season spice oil sauce liquid  (아래 GG_CATEGORIES 참고)
+   - 분류    : veg meat sea grain dairy season spice oil sauce sweet liquid  (아래 GG_CATEGORIES 참고)
    - 단위    : 'g'  = 무게 재료 (g, kg 로 바꿔 볼 수 있음)
                'mL' = 부피 재료 (mL, L 로 바꿔 볼 수 있음)
    - 가격    : 100g 또는 100mL 당 가격(원)
@@ -26,6 +26,7 @@ const GG_CATEGORIES = [
   { id: 'spice',  name: '향신료',      emoji: '🌿' },
   { id: 'oil',    name: '기름',        emoji: '🫗' },
   { id: 'sauce',  name: '소스류',      emoji: '🥫' },
+  { id: 'sweet',  name: '디저트·베이킹', emoji: '🍰' },
   { id: 'liquid', name: '물·육수',     emoji: '💧' }
 ];
 
@@ -40,6 +41,7 @@ const GG_CAT_DEFAULTS = {
   spice:  { max: 30,   step: 1,  def: 2 },
   oil:    { max: 100,  step: 1,  def: 10 },
   sauce:  { max: 300,  step: 5,  def: 50 },
+  sweet:  { max: 300,  step: 5,  def: 50 },
   liquid: { max: 3000, step: 50, def: 500 }
 };
 
@@ -81,6 +83,8 @@ const GG_INGREDIENTS = [
   I('pineapple',  '파인애플',    '🍍', 'veg', 'g', 400),
   I('parsley',    '파슬리',      '🌿', 'veg', 'g', 1500, { max: 50, step: 1, def: 5 }),
   I('asparagus',  '아스파라거스','🌱', 'veg', 'g', 1500, { max: 300, def: 80 }),
+  I('blueberry',  '블루베리',    '🫐', 'veg', 'g', 2500, { max: 300, def: 50 }),
+  I('mango',      '망고',        '🥭', 'veg', 'g', 800, { max: 400 }),
 
   /* ---------- 고기 ---------- */
   I('beef',       '소고기',      '🥩', 'meat', 'g', 2500),
@@ -135,10 +139,11 @@ const GG_INGREDIENTS = [
   I('gochujang',  '고추장',      '🌶️', 'season', 'g', 500, { salt: 7, sugar: 15, max: 100, step: 1, def: 20 }),
   I('miso',       '미소(일본 된장)', '🥣', 'season', 'g', 700, { salt: 11, sugar: 5, max: 100, step: 1, def: 20 }),
   I('gochugaru',  '고춧가루',    '🌶️', 'season', 'g', 900, { max: 50, step: 1, def: 5 }),
+  I('mirin',      '맛술',        '🍶', 'season', 'mL', 300, { sugar: 30, density: 1.1, max: 100, step: 1, def: 15 }),
   I('vinegar',    '식초',        '🍶', 'season', 'mL', 150, { density: 1.0, max: 100, step: 1, def: 10 }),
   I('limejuice',  '라임즙',      '🍋', 'season', 'mL', 1000, { max: 100, step: 1, def: 10 }),
   I('lemonjuice', '레몬즙',      '🍋', 'season', 'mL', 800, { max: 100, step: 1, def: 10 }),
-  I('chickenstock','치킨 스톡(가루)', '🐔', 'season', 'g', 2000, { salt: 45, max: 30, step: 1, def: 5 }),
+  I('chickenstock','치킨 스톡', '🐔', 'season', 'g', 2000, { salt: 45, max: 30, step: 1, def: 5 }),
 
   /* ---------- 향신료 ---------- */
   I('pepper',     '후추',        '⚫', 'spice', 'g', 2000, { max: 10, step: 1, def: 1 }),
@@ -164,6 +169,31 @@ const GG_INGREDIENTS = [
   I('mustard',    '머스타드',    '🟡', 'sauce', 'g', 800, { salt: 3, max: 100, step: 1, def: 10 }),
   I('oystersauce','굴소스',      '🦪', 'sauce', 'g', 800, { salt: 11, sugar: 15, max: 100, step: 1, def: 15 }),
   I('mala',       '마라 소스',   '🌶️', 'sauce', 'g', 1500, { salt: 8, max: 100, step: 1, def: 20 }),
+
+  /* ---------- 디저트·베이킹 ---------- (sugar: 100g 속 설탕 양을 대략 적은 값) */
+  I('cream',        '생크림',          '🥛', 'sweet', 'mL', 1000, { sugar: 3, density: 1.0, max: 500, step: 10, def: 100 }),
+  I('bakingpowder', '베이킹파우더',    '🥄', 'sweet', 'g', 1500, { max: 20, step: 1, def: 3 }),
+  I('bakingsoda',   '베이킹소다',      '🥄', 'sweet', 'g', 800,  { max: 20, step: 1, def: 2 }),
+  I('vanilla',      '바닐라 익스트랙트','🍦', 'sweet', 'mL', 15000, { max: 20, step: 1, def: 3 }),
+  I('yeast',        '이스트',          '🍞', 'sweet', 'g', 3000, { max: 20, step: 1, def: 5 }),
+  I('cornstarch',   '옥수수전분',      '🌽', 'sweet', 'g', 300,  { max: 200, def: 20 }),
+  I('creamcheese',  '크림치즈',        '🧀', 'sweet', 'g', 1800, { salt: 0.8, sugar: 3, def: 100 }),
+  I('chocolate',    '초콜릿',          '🍫', 'sweet', 'g', 2000, { sugar: 50 }),
+  I('cocoa',        '코코아가루',      '🍫', 'sweet', 'g', 2500, { max: 100, step: 1, def: 15 }),
+  I('honey',        '꿀',              '🍯', 'sweet', 'g', 2000, { sugar: 80, max: 100, step: 1, def: 15 }),
+  I('maple',        '메이플시럽',      '🍁', 'sweet', 'mL', 3000, { sugar: 65, density: 1.32, max: 100, step: 1, def: 15 }),
+  I('condensedmilk','연유',            '🥛', 'sweet', 'g', 1000, { sugar: 55, max: 100, step: 1, def: 20 }),
+  I('cinnamon',     '시나몬가루',      '🟤', 'sweet', 'g', 4000, { max: 20, step: 1, def: 2 }),
+  I('caramel',      '카라멜',          '🍮', 'sweet', 'g', 1500, { salt: 0.5, sugar: 60, max: 100, step: 1, def: 20 }),
+  I('redbean',      '팥(마른 것)',     '🫘', 'sweet', 'g', 1000, { def: 100 }),
+  I('glutinousflour','찹쌀가루',       '🍡', 'sweet', 'g', 500,  { def: 100 }),
+  I('matcha',       '녹차가루',        '🍵', 'sweet', 'g', 6000, { max: 30, step: 1, def: 3 }),
+  I('gelatin',      '젤라틴',          '🟨', 'sweet', 'g', 8000, { max: 30, step: 1, def: 5 }),
+  I('yogurt',       '요거트',          '🥣', 'sweet', 'g', 500,  { sugar: 4, def: 100 }),
+  I('nuts',         '견과류',          '🥜', 'sweet', 'g', 2500, { max: 200, def: 30 }),
+  I('raisin',       '건포도',          '🍇', 'sweet', 'g', 1500, { sugar: 60, max: 200, def: 30 }),
+  I('marshmallow',  '마시멜로',        '🍬', 'sweet', 'g', 1500, { sugar: 60, max: 200, def: 30 }),
+  I('icecream',     '아이스크림',      '🍨', 'sweet', 'g', 800,  { sugar: 20, def: 100 }),
 
   /* ---------- 물·육수 ---------- */
   I('water',      '물',          '💧', 'liquid', 'mL', 0),

@@ -48,7 +48,7 @@
 }
 .op-logo-top { font-size: 5vmin; letter-spacing: 1.2vmin; margin-bottom: .6vh; }
 .op-logo h1 {
-  margin: 0; font-family: var(--font-title); font-size: clamp(56px, 12vmin, 130px); line-height: 1.05; font-weight: 400; letter-spacing: 1px;
+  margin: 0; font-size: clamp(56px, 12vmin, 130px); line-height: 1.05; font-weight: 900; letter-spacing: 1px;
   color: var(--op-cream); text-shadow: 0 .6vh 0 rgba(0, 0, 0, .45), 0 0 4vh var(--c-main-glow);
 }
 .op-logo h1 .g2 { color: var(--op-orange); display: inline-block; transform: rotate(-4deg); }

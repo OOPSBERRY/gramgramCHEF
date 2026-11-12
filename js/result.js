@@ -165,7 +165,7 @@
       '<div class="chip-ing"><span class="ph" data-id="' + it.ing.id + '"></span><span>' + esc(it.ing.name) + ' ' + GGCalc.amountText(it.amount, it.ing.unit) + '</span></div>').join('');
     $('res-left').innerHTML =
       '<div class="res-dishvisual" id="res-visual"></div>' +
-      '<div class="res-dishname">' + esc(name) + '</div>' +
+      (R ? '<div class="res-dishname">' + esc(name) + '</div>' : '') +
       '<div class="res-dishtype">' + (R ? R.country + ' 요리, ' : '') + typeObj.name + ', 재료 ' + items.length + '가지</div>' +
       (R ? '<div class="res-intro">' + esc(R.intro) + '</div>' : '') +
       '<div class="res-chips">' + chips + '</div>' +
@@ -174,10 +174,14 @@
     // 재료 사진 칩과 대표 요리 그림 (사진이 없으면 이모지)
     $('res-left').querySelectorAll('.ph').forEach((p) => p.appendChild(A.photo(GG_INGREDIENTS.find((i) => i.id === p.dataset.id))));
     const vis = $('res-visual');
+    if (!R) {                                                          // 창작 요리: 종류별 대표 사진 위에 학생이 지은 이름표를 붙임
+      const tag = document.createElement('div'); tag.className = 'res-nametag'; tag.textContent = name;
+      vis.appendChild(tag);
+    }
     const img = document.createElement('img');
     img.alt = ''; img.src = R ? 'assets/dishes/' + R.id + '.png' : 'assets/ui/dish-' + typeObj.id + '.png';
     img.onerror = () => img.replaceWith(platePhoto(items));          // 대표 사진이 없으면 내가 넣은 재료 사진을 접시에 모아 보여줌
-    vis.appendChild(img);
+    vis.insertBefore(img, vis.firstChild);
   }
 
   async function startResult(result, name, items) {

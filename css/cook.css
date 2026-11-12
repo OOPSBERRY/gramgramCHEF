@@ -63,3 +63,22 @@
 .chop-q.done { border-color: var(--c-green); opacity: 1; }
 .chop-q img { max-width: 100%; max-height: 100%; object-fit: contain; }
 .chop-q .em { font-size: var(--fs-sub); }
+
+/* ---------- 붓기 ---------- */
+.pour-hud { position: absolute; top: var(--sp-3); left: 0; right: 0; text-align: center; font-size: var(--fs-sub); font-weight: 900; }
+.pour-hud b { color: var(--c-gold); }
+.pour-wrap { display: flex; align-items: center; gap: var(--sp-4); height: 78%; margin-top: var(--sp-4); }
+.pour-cup { position: relative; width: 200px; height: 100%; border: 4px solid var(--c-on-dark); border-top: none; border-radius: 0 0 var(--r-card) var(--r-card); background: var(--glass-bg); }
+.pour-liquid { position: absolute; left: 0; right: 0; bottom: 0; height: 0; border-radius: 0 0 14px 14px; opacity: .9; }
+.pour-stream { position: absolute; left: 50%; top: -40px; bottom: 0; width: 12px; margin-left: -6px; border-radius: var(--r-btn); opacity: 0; transition: opacity .1s; }
+.pour-stream.on { opacity: .85; }
+.water { background: var(--c-water); }
+.broth { background: var(--c-broth); }
+.milk  { background: var(--c-milk); }
+.pour-tick { position: absolute; left: 0; width: 36px; border-top: 3px solid var(--c-on-dark); }
+.pour-tick span { position: absolute; left: 44px; top: -12px; font-size: var(--fs-small); font-weight: 900; white-space: nowrap; }
+.pour-unit { position: absolute; right: var(--sp-1); bottom: var(--sp-1); font-size: var(--fs-small); font-weight: 900; }
+.pour-btns { display: flex; flex-direction: column; align-items: center; gap: var(--sp-3); }
+.pour-hold { width: 168px; height: 168px; border-radius: 50%; border: none; background: var(--c-main); color: #fff; font-size: var(--fs-sub); font-weight: 900; line-height: 1.3; box-shadow: var(--shadow-btn); -webkit-touch-callout: none; user-select: none; }
+.pour-hold.on { transform: translateY(4px) scale(.97); box-shadow: var(--shadow-btn-pressed); }
+.pour-done:disabled { opacity: .4; }

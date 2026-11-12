@@ -39,6 +39,12 @@ const GG_CRACK_IDS = ['egg', 'yolk'];
 /* 붓기: 물·육수 분류와 아래 재료. 이 양(mL)보다 적으면 붓기 게임 없이 양념처럼 넣어요 */
 const GG_POUR_IDS = ['milk', 'cream', 'coconut'];
 const GG_POUR_MIN = 30;
+/* 붓기 미니게임 설정
+   seconds : 목표량까지 붓는 데 걸리는 시간(초). 작을수록 빨리 차올라서 어려워요
+   perfect : 이 % 안으로 맞추면 100점,  zero : 이 % 이상 틀리면 0점
+   color   : 액체 색 (water 물 / broth 육수 / milk 하얀 액체) */
+const GG_POUR = { seconds: 3.5, perfect: 3, zero: 30 };
+const GG_POUR_COLOR = { water: 'water', broth: 'broth', milk: 'milk', cream: 'milk', coconut: 'milk' };
 
 /* 요리 종류별 기본 조리 방법 (창작 요리에서 학생이 고르기 전까지 쓰는 값) */
 const GG_DEFAULT_METHOD = {

@@ -31,7 +31,7 @@ const GGSound = (function () {
 
   function sync() {
     document.querySelectorAll('.snd').forEach((b) => {
-      b.textContent = on ? '🔔 소리 켬' : '🔕 소리 끔';
+      b.textContent = on ? '소리 켬' : '소리 끔';
       b.classList.toggle('on', on);
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
     });

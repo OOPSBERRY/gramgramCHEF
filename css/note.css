@@ -1,0 +1,119 @@
+/* ============================================================
+   레시피 노트 스타일 (모든 화면 공통, 맨 마지막에 불러와요)
+   - 바탕: 누런 종이 + 연한 공책 줄
+   - 버튼: 거의 각진 네모, 먹색 테두리, 빛번짐·그림자 없음
+   - 주요 버튼: 토마토 빨강 / 그 밖의 버튼: 밝은 종이색
+   색과 크기는 design-rules.css 의 변수만 써요.
+   ============================================================ */
+
+/* ---------- 바탕: 종이와 공책 줄 ---------- */
+html, body { background: var(--c-paper); color: var(--c-ink); }
+#screen-opening, #screen-home, #screen-kitchen, #screen-dishes, #screen-submit,
+#screen-calc, #screen-cook, #screen-result, #rotate-hint {
+  background: repeating-linear-gradient(0deg, transparent 0 31px, var(--c-rule) 31px 32px), var(--c-paper);
+  color: var(--c-ink);
+}
+
+/* ---------- 글자: 빛번짐·그림자 없이 먹색 ---------- */
+.op-logo h1, .home-title h1 { color: var(--c-ink); text-shadow: none; }
+.op-logo h1 .g2, .home-title h1 .g2 { color: var(--c-main); }
+.op-logo h1 .chef, .home-title h1 .chef { color: var(--c-ink); }
+.op-logo-top { display: none; }
+.op-sub, .home-tag { color: var(--c-ink-soft); }
+.home-kicker { color: var(--c-main); }
+
+/* ---------- 주요 버튼: 빨간 네모 + 먹색 테두리 ---------- */
+.op-start, .home-btn.primary, .k-submit, .sub-go, .res-btn, .calc-go, .m-go, .cook-next {
+  border: var(--line-ink); border-radius: var(--r-btn); box-shadow: none;
+  background: var(--c-main); color: var(--c-cream);
+}
+.op-start { border-radius: var(--r-btn); box-shadow: none; }
+.op-start:active, .home-btn.primary:active, .k-submit:active:not(:disabled), .sub-go:active, .res-btn:active,
+.calc-go:active, .m-go:active, .cook-next:active { box-shadow: none; background: var(--c-main-dark); }
+.k-submit:disabled { border-color: var(--c-line); }
+.res-btn.ghost, .sub-back, .m-ghost { background: var(--c-cream); border: var(--line-ink); color: var(--c-ink); }
+
+/* 둥근 큰 버튼(꾹 누르기, 뒤집기 등)도 네모로 */
+.pour-hold { border-radius: var(--r-card); border: var(--line-ink); box-shadow: none; background: var(--c-main); color: var(--c-cream); }
+.pour-hold.on { box-shadow: none; background: var(--c-main-dark); }
+
+/* ---------- 보조 버튼: 밝은 종이 + 먹색 테두리 ---------- */
+.k-back, .k-small, .chip, .k-tab, .snd, .qr-btn, .budget-input, .k-hint, .del, .pick-hint-btn {
+  border-radius: var(--r-btn); border: 1.5px solid var(--c-ink); background: var(--c-cream); color: var(--c-ink);
+  box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+.budget-input::placeholder { color: var(--c-ink-soft); }
+.chip.on, .k-tab.on, .snd.on { background: var(--c-ink); border-color: var(--c-ink); color: var(--c-cream); }
+.k-hint { background: var(--c-gold); }
+.del { border-radius: var(--r-btn); }
+
+/* ---------- 홈: 왼쪽 종이에 제목과 메뉴, 오른쪽에 붙여 둔 사진 ---------- */
+.home-bg {
+  inset: auto; right: 6%; top: 14%; width: 38%; height: 68%;
+  filter: none; transform: rotate(2.5deg); border: 12px solid var(--c-cream); box-shadow: var(--shadow-float);
+}
+.home-bg::after { display: none; }
+.home-wrap { flex-direction: column; align-items: flex-start; justify-content: center; width: 54%; gap: var(--sp-3); }
+.home-title { flex: none; }
+.home-menu {
+  flex: none; width: 100%; max-width: 520px; padding: 0; gap: var(--sp-2);
+  background: transparent; border: none; -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+.home-btn { border-radius: var(--r-btn); border: var(--line-ink); background: var(--c-cream); color: var(--c-ink); }
+.home-btn .d { color: var(--c-ink-soft); }
+.home-btn.primary .d { color: var(--c-cream); opacity: .9; }
+
+/* ---------- 칸·카드: 반투명 유리 대신 종이 위 흰 칸 ---------- */
+.k-shelf, .k-stage, .k-sum, .cook-stage, .home-menu {
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+.k-shelf, .k-stage, .cook-stage { background: var(--glass-bg); border: 1.5px solid var(--c-ink); }
+.k-sum { background: var(--c-cream); border: 1.5px solid var(--c-ink); }
+.k-cost { color: var(--c-ink); }
+.k-cost-label { color: var(--c-main); }
+.k-sum-row, .k-sum-row strong { color: var(--c-ink); }
+.k-bar { background: var(--c-line); border-radius: 2px; }
+.k-meter-text.over { color: var(--c-danger); }
+.k-listwrap, .sub-card, .calc-left, .calc-right, .cook-info, .modal-card, .qr-card { border: 1.5px solid var(--c-ink); }
+.row, .checks li, .bubble, .chef-card, .final-sim, .h-list li, .sub-type, .tag, .chip-ing, .final-chefs li { border-radius: var(--r-card); }
+.row.flash { background: var(--c-main-tint); }
+.modal { background: rgba(43, 37, 32, .55); }
+
+/* 재료·요리 카드: 얇은 먹색 테두리. 담은 재료는 빨간 테두리 + '담음' 도장 */
+.k-card, .d-card { border: 1.5px solid var(--c-line); }
+.k-card.in { border: 2px solid var(--c-main); }
+.k-card.in::after {
+  content: '담음'; width: auto; height: auto; padding: 2px 6px; border-radius: 3px; line-height: 1.2;
+  background: transparent; border: 2px solid var(--c-main); color: var(--c-main); font-weight: 900; transform: rotate(-8deg);
+}
+
+/* 단위 버튼, 배지 */
+.unit-toggle { border-radius: var(--r-btn); border-color: var(--c-ink); }
+.unit-toggle button { color: var(--c-ink); }
+.unit-toggle button.on { background: var(--c-ink); color: var(--c-cream); }
+.badge { border-radius: 3px; }
+
+/* 슬라이더: 먹색 줄 + 빨간 손잡이 */
+input[type=range]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: var(--c-ink-soft); }
+input[type=range]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--c-ink-soft); }
+input[type=range]::-webkit-slider-thumb { border: 3px solid var(--c-ink); box-shadow: none; margin-top: -17px; }
+input[type=range]::-moz-range-thumb { border: 3px solid var(--c-ink); box-shadow: none; }
+
+/* ---------- 조리하기 ---------- */
+.cook-chip { border-radius: var(--r-btn); border-color: var(--c-ink); opacity: .55; }
+.cook-chip.on { color: var(--c-cream); border-color: var(--c-ink); }
+.cook-chip.done { color: var(--c-cream); border-color: var(--c-ink); }
+.cook-overlay .big { color: var(--c-main); }
+.cook-overlay.great .big { color: var(--c-green); }
+.cook-overlay.good .big { color: var(--c-gold); }
+.pick-btn { border-radius: var(--r-card); border: 1.5px solid var(--c-ink); background: var(--c-cream); }
+.pick-btn:active { color: var(--c-cream); }
+.pick-title { color: var(--c-ink); }
+.pick-hint { border: 1.5px dashed var(--c-ink-soft); }
+.cook-timer, .heat-meter, .heat-progress, .crack-meter, .dn-bar, .fr-thermo { border-radius: 4px; border-color: var(--c-ink); }
+.cook-timer .fill, .heat-progress .fill { border-radius: 2px; }
+.fr-read { text-shadow: none; color: var(--c-cream); }
+
+/* 홈 제목이 한 줄에 들어가게 */
+.home-wrap { width: 60%; }
+.home-title h1 { font-size: clamp(56px, 9vmin, 104px); white-space: nowrap; }

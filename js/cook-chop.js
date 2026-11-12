@@ -3,20 +3,24 @@
    - 제한 시간 안에 다 썰면 높은 점수, 시간이 남을수록 더 높은 점수 */
 (function () {
   const C = GG_CHOP;
-  /* 손과 칼 그림 (칼끝 = 그림의 (52, 236) 지점. 손가락이 닿은 곳에 칼끝이 옴) */
+  /* 칼 그림: 위에서 내려다본 칼. 얇은 칼날이 위로 길게, 손잡이는 아래쪽 (칼날 가운데 = 썰리는 선) */
   const KNIFE =
-    '<svg viewBox="0 0 140 240" aria-hidden="true"><g transform="rotate(14 52 236)">' +
-    '<path class="blade" d="M52 236 L40 98 L86 98 L86 150 Q80 200 52 236 Z"/>' +
-    '<rect class="spine" x="38" y="88" width="50" height="12" rx="3"/>' +
-    '<rect class="handle" x="46" y="8" width="34" height="82" rx="12"/>' +
-    '<circle class="rivet" cx="63" cy="30" r="4"/><circle class="rivet" cx="63" cy="66" r="4"/>' +
-    '<ellipse class="skin" cx="104" cy="50" rx="30" ry="38"/>' +
-    '<rect class="skin" x="40" y="18" width="70" height="17" rx="8.5"/>' +
-    '<rect class="skin" x="38" y="35" width="72" height="17" rx="8.5"/>' +
-    '<rect class="skin" x="40" y="52" width="70" height="17" rx="8.5"/>' +
-    '<rect class="skin" x="44" y="69" width="64" height="15" rx="7.5"/>' +
-    '</g></svg>';
-  const KW = 120, KH = 206, TIPX = 52 / 140 * KW, TIPY = 236 / 240 * KH;
+    '<svg viewBox="0 0 40 480" aria-hidden="true">' +
+    '<path class="blade" d="M15 300 L15 22 Q20 0 25 22 L25 300 Z"/>' +
+    '<rect class="spine" x="12" y="296" width="16" height="16" rx="4"/>' +
+    '<rect class="handle" x="8" y="308" width="24" height="170" rx="12"/>' +
+    '<rect class="shine" x="13" y="320" width="4" height="140" rx="2"/>' +
+    '</svg>';
+  /* 왼손 그림: 손등이 위로, 손가락 끝을 오른쪽으로 오므려 재료를 누르고 있어요 (손가락 끝 = 그림 오른쪽 끝) */
+  const HAND =
+    '<svg viewBox="0 0 200 170" aria-hidden="true">' +
+    '<rect class="skin" x="-40" y="34" width="150" height="104" rx="44"/>' +
+    '<rect class="skin" x="88" y="22" width="78" height="30" rx="15"/>' +
+    '<rect class="skin" x="94" y="52" width="86" height="30" rx="15"/>' +
+    '<rect class="skin" x="94" y="82" width="82" height="30" rx="15"/>' +
+    '<rect class="skin" x="88" y="112" width="68" height="28" rx="14"/>' +
+    '<path class="nail" d="M150 30 q10 6 0 14"/><path class="nail" d="M164 60 q10 6 0 14"/><path class="nail" d="M160 90 q10 6 0 14"/>' +
+    '</svg>';
 
   function cutsFor(it) {
     const g = GGCalc.grams(it.ing, it.amount);
@@ -31,38 +35,40 @@
 
     stage.innerHTML =
       '<div class="chop-hud"><span class="chop-name"></span><span class="chop-left"></span></div>' +
-      '<div class="chop-board"><div class="chop-food"></div></div>' +
+      '<div class="chop-board"><div class="chop-food"></div><div class="chop-hand">' + HAND + '</div></div>' +
       '<div class="chop-queue"></div>' +
-      '<div class="chop-knife rest">' + KNIFE + '</div>';
+      '<div class="chop-knife"><div class="in">' + KNIFE + '</div></div>';
     const board = stage.querySelector('.chop-board');
     const food = stage.querySelector('.chop-food');
     const knife = stage.querySelector('.chop-knife');
-    /* 칼끝을 무대 안의 (x, y) 화면 좌표로 옮김. 칼끝은 도마 안에서만 움직임 */
-    function knifeTo(cx, cy) {
-      const sr = stage.getBoundingClientRect(), br = board.getBoundingClientRect();
-      const x = Math.max(br.left + 10, Math.min(br.right - 10, cx)) - sr.left;
-      const y = Math.max(br.top - 40, Math.min(br.bottom - 16, cy)) - sr.top;
-      knife.style.transform = 'translate(' + (x - TIPX) + 'px, ' + (y - TIPY) + 'px)';
-    }
-    function knifeRest() {
-      const br = board.getBoundingClientRect();
-      knife.classList.add('rest');
-      knifeTo(br.right - 40, br.top + br.height * 0.35);
+    const hand = stage.querySelector('.chop-hand');
+    /* 재료를 (칼질 횟수 + 1) 조각으로 나눠요. 오른쪽부터 한 조각씩 썰어 나가요 */
+    const cutAt = (q, j) => 1 - j / (q.need + 1);      // j번째 칼질 자리 (재료 왼쪽 0 ~ 오른쪽 1)
+
+    /* 칼을 다음에 썰 자리로 옮기고, 왼손은 남은 재료의 왼쪽을 눌러요 */
+    function placeTools() {
+      const q = queue[idx]; if (!q) return;
+      const sr = stage.getBoundingClientRect(), fr = food.getBoundingClientRect(), br = board.getBoundingClientRect();
+      const f = cutAt(q, q.done + 1);
+      const x = fr.left + fr.width * f - sr.left;
+      knife.style.transform = 'translate(' + (x - knife.offsetWidth / 2) + 'px, ' + (br.top - sr.top - knife.offsetHeight * 0.12) + 'px)';
+      const tip = fr.left + fr.width * Math.max(0.12, f * 0.55) - br.left;         // 손가락 끝은 칼보다 왼쪽에
+      hand.style.transform = 'translate(' + (tip - hand.offsetWidth) + 'px, -50%)';
     }
 
-    /* 재료 사진을 칼질 횟수만큼 조각내서 보여줌 (사진을 세로로 잘라 조금씩 벌림) */
+    /* 재료 사진을 조각내서 보여줌: 남은 덩어리 + 썰린 조각들(오른쪽으로 조금씩 밀려남) */
     function drawFood() {
       const q = queue[idx]; if (!q) return;
-      const k = q.done + 1;
       food.innerHTML = '';
-      for (let i = 0; i < k; i++) {
+      const pieces = [[0, cutAt(q, q.done), 0]];
+      for (let j = 1; j <= q.done; j++) pieces.push([cutAt(q, j), cutAt(q, j - 1), (q.done - j + 1) * 7]);
+      pieces.forEach(([l, r, dx]) => {
         const s = document.createElement('div'); s.className = 'chop-slice';
-        const l = i / k * 100, r = 100 - (i + 1) / k * 100;
-        s.style.clipPath = 'inset(0 ' + r + '% 0 ' + l + '%)';
-        s.style.transform = 'translateX(' + ((i - (k - 1) / 2) * 10) + 'px)';
+        s.style.clipPath = 'inset(0 ' + (100 - r * 100) + '% 0 ' + (l * 100) + '%)';
+        s.style.transform = 'translateX(' + dx + 'px)';
         s.appendChild(window.GGApp.photo(q.it.ing));
         food.appendChild(s);
-      }
+      });
       stage.querySelector('.chop-name').textContent = q.it.ing.name + ' ' + GGCalc.amountText(q.it.amount, q.it.ing.unit);
       stage.querySelector('.chop-left').textContent = '남은 칼질 ' + (q.need - q.done) + '번';
       const qb = stage.querySelector('.chop-queue'); qb.innerHTML = '';
@@ -72,29 +78,32 @@
         d.appendChild(window.GGApp.photo(x.it.ing));
         qb.appendChild(d);
       });
+      requestAnimationFrame(placeTools);
     }
 
-    function slash(x) {
-      const r = board.getBoundingClientRect();
-      const m = document.createElement('div'); m.className = 'chop-slash';
-      m.style.left = Math.max(8, Math.min(r.width - 8, x - r.left)) + 'px';
-      board.appendChild(m);
-      setTimeout(() => m.remove(), 400);
+    function chopAnim() {
+      knife.classList.remove('chop'); void knife.offsetWidth; knife.classList.add('chop');
     }
 
-    function cut(x) {
+    function cut() {
       const q = queue[idx]; if (!q || !playing) return;
       q.done++; doneAll++;
       if (window.GGSound) GGSound.play('chop');
       GGCook.ui.buzz(15);
-      slash(x);
+      chopAnim();
       if (q.done >= q.need) {
         idx++;
         GGCook.ui.buzz([30, 40, 30]);                       // 재료 하나 다 썰면 두 번 '드르륵'
-        if (idx >= queue.length) { end(true); return; }
-        food.classList.remove('next'); void food.offsetWidth; food.classList.add('next');
+        if (idx >= queue.length) { drawFoodDone(q); end(true); return; }
+        setTimeout(() => { food.classList.remove('next'); void food.offsetWidth; food.classList.add('next'); drawFood(); }, 250);
+        drawFoodDone(q);
+        return;
       }
       drawFood();
+    }
+    /* 마지막 칼질 직후 잠깐 다 썰린 모습 보여주기 */
+    function drawFoodDone(q) {
+      const keep = idx; idx = queue.indexOf(q); drawFood(); idx = keep;
     }
 
     function end(finished) {
@@ -114,24 +123,23 @@
 
     /* 손가락으로 위아래 문지르기 감지: 세로로 충분히 움직이면 칼질 1번 */
     let ax = 0, ay = 0, lastY = 0, dir = 0, down = false, armed = true;   // armed: 한 번 쓸 때 칼질은 한 번만
-    stage.onpointerdown = (e) => { down = true; armed = true; ax = e.clientX; ay = lastY = e.clientY; dir = 0; knife.classList.remove('rest'); knifeTo(e.clientX, e.clientY); };
+    stage.onpointerdown = (e) => { down = true; armed = true; ax = e.clientX; ay = lastY = e.clientY; dir = 0; };
     stage.onpointermove = (e) => {
       if (!down || !playing) return;
-      knifeTo(e.clientX, e.clientY);
       const y = e.clientY, d = Math.sign(y - lastY);
       if (d && dir && d !== dir) { ax = e.clientX; ay = lastY; armed = true; }     // 방향이 바뀌면 거기서 새로 시작
       if (d) dir = d;
       lastY = y;
       const minStroke = board.clientHeight * 0.22;
       if (armed && Math.abs(y - ay) > minStroke && Math.abs(y - ay) > Math.abs(e.clientX - ax) * 1.2) {
-        armed = false; cut(e.clientX);
+        armed = false; cut();
       }
     };
-    stage.onpointerup = stage.onpointercancel = () => { down = false; knifeRest(); };
+    stage.onpointerup = stage.onpointercancel = () => { down = false; };
+    window.addEventListener('resize', placeTools);
 
     drawFood();
-    requestAnimationFrame(knifeRest);
-    GGCook.ui.intro(stage, '썰기', '손가락으로 재료 위를 <b>위아래로 쓱쓱</b> 문질러 썰어요.<br>칼질 ' + total + '번, 제한 시간 ' + seconds + '초!', () => {
+    GGCook.ui.intro(stage, '썰기', '칼이 썰 자리에 서 있어요. 손가락으로 화면을 <b>위아래로 쓱쓱</b> 문지르면<br>칼이 한 번씩 내려가며 썰어요.<br>칼질 ' + total + '번, 제한 시간 ' + seconds + '초!', () => {
       playing = true;
       timer = GGCook.ui.timer(stage, seconds, () => end(false));
     });

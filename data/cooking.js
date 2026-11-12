@@ -17,6 +17,9 @@ const GG_COOK_GAMES = {
   grill:   { name: '굽기',      desc: '노릇노릇할 때 뒤집어요' },
   fry:     { name: '튀기기',    desc: '기름 온도를 맞춰 튀겨요' },
   toss:    { name: '버무리기',  desc: '골고루 섞어요' },
+  whip:    { name: '거품 내기', desc: '빙글빙글 저어 거품을 내요' },
+  knead:   { name: '반죽하기',  desc: '꾹꾹 눌러 매끈하게 반죽해요' },
+  chill:   { name: '굳히기',    desc: '알맞은 시간만큼 차갑게 굳혀요' },
   season:  { name: '양념 넣기', desc: '양념을 넣어요' },
   plate:   { name: '담기',      desc: '그릇에 예쁘게 담아요' }
 };
@@ -77,6 +80,20 @@ const GG_FRY = { low: 120, high: 220, sweepSec: 3, best: [170, 180], ok: [160, 1
 /* 버무리기 미니게임 설정
    손가락으로 그릇 안을 동그랗게 돌려요. 돌릴 바퀴 수 = 재료 무게(g) ÷ gramsPerTurn  (minTurns~maxTurns) */
 const GG_TOSS = { gramsPerTurn: 120, minTurns: 3, maxTurns: 7, secPerTurn: 2.2, extraSec: 5 };
+
+/* 거품 내기 미니게임 설정
+   손가락으로 빙글빙글 돌린 바퀴 수에 따라 거품 상태가 변해요
+   peak : 이 바퀴 수 사이면 '뿔이 섰어요!' (성공),  butter : 이 바퀴 수를 넘으면 버터가 돼 버려요 */
+const GG_WHIP = { peak: [6, 8], butter: 10, limitSec: 15 };
+
+/* 반죽하기 미니게임 설정
+   손가락으로 반죽을 아래로 꾹 밀 때마다 1번. 필요한 횟수 = 가루 무게(g) ÷ gramsPerPush  (minPush~maxPush) */
+const GG_KNEAD = { gramsPerPush: 20, minPush: 6, maxPush: 14, secPerPush: 0.9, extraSec: 5 };
+
+/* 굳히기 미니게임 설정
+   냉장고 안 시간이 1초에 minPerSec 분씩 흘러요. 목표 시간(분)에 [꺼내기]
+   레시피에서 chillMin 으로 목표 시간을 정할 수 있어요 (없으면 defaultMin) */
+const GG_CHILL = { defaultMin: 120, minPerSec: 30, perfect: 10, zero: 60 };
 
 /* 요리 종류별 기본 조리 방법 (창작 요리에서 학생이 고르기 전까지 쓰는 값) */
 const GG_DEFAULT_METHOD = {

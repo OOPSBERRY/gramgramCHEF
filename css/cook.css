@@ -49,15 +49,13 @@
 /* ---------- 썰기 ---------- */
 .chop-hud { position: absolute; top: 64px; left: 0; right: 0; display: flex; justify-content: center; gap: var(--sp-3); font-size: var(--fs-sub); font-weight: 900; }
 .chop-left { color: var(--c-gold); }
-.chop-board { position: relative; width: 72%; height: 58%; margin-top: var(--sp-4); border-radius: var(--r-card); background: var(--c-wood); border: 8px solid var(--c-wood-dark); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.chop-food { position: relative; width: 70%; height: 80%; }
+.chop-board { position: relative; width: 80%; height: 50%; margin-top: var(--sp-4); border-radius: var(--r-card); background: var(--c-wood); border: 8px solid var(--c-wood-dark); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.chop-food { position: relative; width: 62%; height: 80%; margin-left: 12%; }
 .chop-food.next { animation: m-pop .3s ease-out both; }
 .chop-slice { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transition: transform .15s ease-out; }
 .chop-slice img { max-width: 100%; max-height: 100%; object-fit: contain; pointer-events: none; }
 .chop-slice .em { font-size: var(--fs-display); }
-.chop-slash { position: absolute; top: 6%; bottom: 6%; width: 6px; margin-left: -3px; border-radius: var(--r-btn); background: var(--c-cream); animation: chop-slash .4s ease-out forwards; pointer-events: none; }
-@keyframes chop-slash { from { opacity: .95; transform: scaleY(.4); } to { opacity: 0; transform: scaleY(1.05); } }
-.chop-queue { position: absolute; bottom: var(--sp-2); left: 0; right: 0; display: flex; justify-content: center; gap: var(--sp-1); }
+.chop-queue { position: absolute; bottom: var(--sp-2); left: var(--sp-2); right: var(--sp-2); display: flex; justify-content: flex-end; gap: var(--sp-1); }
 .chop-q { width: 56px; height: 56px; border-radius: var(--r-card); padding: 4px; border: 2px solid var(--glass-border); display: flex; align-items: center; justify-content: center; opacity: .5; }
 .chop-q.on { border-color: var(--c-main); opacity: 1; }
 .chop-q.done { border-color: var(--c-green); opacity: 1; }
@@ -154,15 +152,19 @@
 .fry-word { position: absolute; top: 40%; left: 0; right: 96px; text-align: center; font-size: var(--fs-title); font-weight: 900; pointer-events: none; animation: m-pop .25s ease-out both; }
 .fry-word.bad { color: var(--c-danger); }
 
-/* 썰기: 손과 칼 (손가락을 따라다니며 칼끝이 손가락 위치에 옴) */
-.chop-knife { position: absolute; z-index: 2; width: 120px; height: 206px; left: 0; top: 0; pointer-events: none; transition: transform .06s linear; filter: drop-shadow(var(--shadow-float)); }
-.chop-knife.rest { transition: transform .3s ease-out; }
-.chop-knife svg { width: 100%; height: 100%; display: block; }
-.chop-knife .blade { fill: var(--c-steel); stroke: var(--c-steel-dark); stroke-width: 3; }
+/* 썰기: 칼(위에서 내려다본 모습)과 재료를 누르는 왼손 */
+.chop-knife { position: absolute; z-index: 2; height: 74%; aspect-ratio: 40 / 480; left: 0; top: 0; pointer-events: none; transition: transform .18s ease-out; filter: drop-shadow(var(--shadow-float)); }
+.chop-knife .in, .chop-knife svg { width: 100%; height: 100%; display: block; }
+.chop-knife.chop .in { animation: chop-down .16s ease-out; }
+@keyframes chop-down { 50% { transform: translateY(5%) scaleX(1.25); } }
+.chop-knife .blade { fill: var(--c-steel); stroke: var(--c-steel-dark); stroke-width: 2; }
 .chop-knife .spine { fill: var(--c-steel-dark); }
 .chop-knife .handle { fill: var(--c-wood-dark); }
-.chop-knife .rivet { fill: var(--c-steel); }
-.chop-knife .skin { fill: var(--c-skin); stroke: var(--c-wood-dark); stroke-width: 2; }
+.chop-knife .shine { fill: var(--c-wood); }
+.chop-hand { position: absolute; z-index: 1; left: 0; top: 50%; width: 34%; aspect-ratio: 200 / 170; pointer-events: none; transition: transform .25s ease-out; }
+.chop-hand svg { width: 100%; height: 100%; display: block; }
+.chop-hand .skin { fill: var(--c-skin); stroke: var(--c-wood-dark); stroke-width: 3; }
+.chop-hand .nail { fill: none; stroke: var(--c-wood-dark); stroke-width: 2; }
 
 /* ---------- 굽기·튀기기·버무리기 공통 ---------- */
 .mx-piece { position: absolute; width: 30%; aspect-ratio: 1; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; }
@@ -203,3 +205,36 @@
 .mx-food { position: absolute; inset: 6%; border-radius: 50%; }
 .mx-guide { position: absolute; inset: 22%; border-radius: 50%; border: 3px dashed var(--c-ink-soft); opacity: .4; pointer-events: none; }
 .mx-prog { left: var(--sp-3); right: var(--sp-3); }
+
+/* ---------- 거품 내기 ---------- */
+.wh-cream { position: absolute; inset: 14%; border-radius: 50%; background: var(--c-milk); border: 4px solid var(--c-line); transform: scale(.55); transition: transform .2s; }
+.wh-cream.peak { border-radius: 46% 54% 50% 50%; background: var(--c-cream); box-shadow: inset 0 -12px 0 var(--c-line); }
+.wh-cream.butter { background: var(--c-butter); border-color: var(--c-gold); }
+.wh-whisk { position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; margin: -23px 0 0 -23px; border-radius: 50%; border: 5px solid var(--c-steel-dark); background: transparent; pointer-events: none; }
+.wh-state { position: absolute; left: 0; right: 0; bottom: 120px; text-align: center; font-size: var(--fs-title); font-weight: 900; }
+.wh-state.perfect { color: var(--c-green); } .wh-state.good { color: var(--c-gold); } .wh-state.bad { color: var(--c-danger); }
+.wh-done { position: absolute; bottom: var(--sp-3); left: 50%; transform: translateX(-50%); }
+.wh-done:active { transform: translateX(-50%) translateY(4px); }
+
+/* ---------- 반죽하기 ---------- */
+.kn-board { position: absolute; top: 130px; left: 14%; width: 72%; height: auto; bottom: 110px; margin: 0; }
+.kn-dough { position: relative; width: 56%; aspect-ratio: 1.3; border-radius: 48% 52% 46% 54%; background: var(--c-dough); border: 4px solid var(--c-wood-dark); }
+.kn-dough i { position: absolute; border-radius: 50%; background: var(--c-dough); border: 3px solid var(--c-wood-dark); transform: translate(-50%, -50%); transition: opacity .3s; }
+.kn-dough.squash { animation: kn-squash .3s ease-out; }
+@keyframes kn-squash { 40% { transform: scale(1.18, .78); } 100% { transform: none; } }
+
+/* ---------- 굳히기 ---------- */
+.ch-wrap { position: absolute; top: 120px; left: 0; right: 0; bottom: 200px; display: flex; align-items: center; justify-content: center; gap: var(--sp-4); }
+.ch-fridge { position: relative; width: 260px; height: 100%; max-height: 420px; border-radius: var(--r-card); background: var(--c-fridge); border: 8px solid var(--c-on-dark); }
+.ch-fridge.freeze { background: var(--c-freezer); }
+.ch-food { position: absolute; inset: 0; transition: filter .3s; }
+.ch-piece { left: 50%; top: 55%; width: 70%; }
+.ch-food.set .ch-piece { animation: ch-wobble .6s ease-in-out infinite alternate; }
+@keyframes ch-wobble { from { transform: translate(-50%, -50%) scale(1, 1); } to { transform: translate(-50%, -50%) scale(1.04, .96); } }
+.ch-clock { display: flex; flex-direction: column; align-items: center; gap: var(--sp-2); }
+.ch-face { position: relative; width: 220px; height: 220px; border-radius: 50%; background: var(--c-cream); border: 8px solid var(--c-on-dark); }
+.ch-face i { position: absolute; left: 50%; bottom: 50%; border-radius: var(--r-btn); transform-origin: bottom center; background: var(--c-ink); }
+.ch-face .h { width: 10px; height: 26%; margin-left: -5px; }
+.ch-face .m { width: 6px; height: 40%; margin-left: -3px; background: var(--c-main); }
+.ch-read { font-size: var(--fs-sub); font-weight: 900; }
+.ch-face b { position: absolute; transform: translate(-50%, -50%); font-size: var(--fs-body); font-weight: 900; color: var(--c-ink); }

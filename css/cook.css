@@ -108,3 +108,98 @@
 .crack-word.perfect { color: var(--c-green); }
 .crack-word.good { color: var(--c-gold); }
 .crack-word.bad { color: var(--c-danger); }
+
+/* ---------- 불 쓰는 게임 공통: 세로 막대(불 세기·탐), 가로 막대(끓임·익힘) ---------- */
+.heat-hud { position: absolute; top: 64px; left: 0; right: 0; text-align: center; font-size: var(--fs-sub); font-weight: 900; }
+.heat-meter { position: absolute; right: var(--sp-3); top: 120px; bottom: 120px; width: 44px; border-radius: var(--r-btn); background: var(--glass-bg); border: 2px solid var(--glass-border); overflow: hidden; }
+.heat-meter .zone { position: absolute; left: 0; right: 0; background: var(--c-green); }
+.heat-meter .over { position: absolute; left: 0; right: 0; background: var(--c-danger); opacity: .7; }
+.heat-meter .mark { position: absolute; left: -2px; right: -2px; height: 10px; margin-bottom: -5px; border-radius: var(--r-btn); background: var(--c-on-dark); }
+.heat-meter span { position: absolute; bottom: 4px; left: 0; right: 0; text-align: center; font-size: var(--fs-small); font-weight: 900; }
+.heat-progress { position: absolute; left: var(--sp-3); right: 96px; bottom: var(--sp-3); height: 36px; border-radius: var(--r-btn); background: var(--glass-bg); border: 2px solid var(--glass-border); overflow: hidden; }
+.heat-progress .fill { height: 100%; width: 0; background: var(--c-green); border-radius: var(--r-btn); transition: width .15s; }
+.heat-progress span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: var(--fs-small); font-weight: 900; }
+
+/* ---------- 끓이기 ---------- */
+.boil-wrap { position: absolute; top: 120px; left: var(--sp-3); right: 96px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.boil-pot { position: relative; width: 300px; height: 190px; border-radius: 12px 12px 60px 60px; background: var(--c-pot); border: 6px solid var(--c-on-dark); overflow: hidden; }
+.boil-soup { position: absolute; left: 0; right: 0; top: 22%; bottom: 0; opacity: .9; }
+.boil-pot.over .boil-soup { top: 0; }
+.boil-bubbles { position: absolute; left: 0; right: 0; top: 22%; bottom: 0; }
+.boil-bubbles i { position: absolute; bottom: 0; width: 16px; height: 16px; border-radius: 50%; border: 3px solid var(--c-cream); animation: boil-up 1.2s linear infinite; }
+@keyframes boil-up { from { transform: translateY(0) scale(.6); opacity: 0; } 30% { opacity: 1; } to { transform: translateY(-120px) scale(1.2); opacity: 0; } }
+.boil-word { position: absolute; top: -2px; left: 0; right: 0; text-align: center; font-size: var(--fs-body); font-weight: 900; color: var(--c-on-dark); }
+.boil-word.good { color: var(--c-cream); }
+.boil-word.bad { color: var(--c-danger); background: var(--c-cream); }
+.boil-fire { display: flex; gap: var(--sp-2); height: 70px; margin-top: 4px; transform-origin: top center; transition: transform .1s; }
+.boil-fire i { width: 36px; height: 100%; background: var(--c-main); clip-path: polygon(50% 100%, 0 30%, 25% 0, 50% 35%, 75% 0, 100% 30%); transform: rotate(180deg); animation: fire-flick .3s ease-in-out infinite alternate; }
+.boil-fire i:nth-child(2) { background: var(--c-gold); animation-delay: .1s; }
+@keyframes fire-flick { from { transform: rotate(180deg) scaleY(.85); } to { transform: rotate(180deg) scaleY(1.1); } }
+.heat-btn { position: absolute; left: calc(50% - 48px); bottom: 72px; width: 140px; height: 140px; margin-left: -70px; font-size: var(--fs-body); }
+.boil-wrap { bottom: 220px; }
+
+/* ---------- 볶기 ---------- */
+.fry-pan { position: absolute; top: 120px; left: var(--sp-3); right: 96px; bottom: 80px; display: flex; align-items: center; justify-content: center; transition: transform .12s ease-out; }
+.fry-panimg { max-width: 92%; max-height: 100%; object-fit: contain; filter: drop-shadow(var(--shadow-float)); pointer-events: none; }
+.fry-pan.nopan::before { content: ''; width: 60%; aspect-ratio: 1; border-radius: 50%; background: var(--c-pot); border: 10px solid var(--c-on-dark); }
+.fry-food { position: absolute; left: 12%; right: 46%; top: 36%; bottom: 28%; }
+.fry-piece { position: absolute; width: 26%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; transition: left .15s ease-out, top .15s ease-out, transform .15s ease-out; }
+.fry-piece img { max-width: 100%; max-height: 100%; object-fit: contain; pointer-events: none; }
+.fry-piece .em { font-size: var(--fs-title); }
+.fry-smoke { position: absolute; left: 18%; right: 50%; top: 10%; height: 30%; opacity: 0; pointer-events: none; }
+.fry-smoke i { position: absolute; bottom: 0; width: 70px; height: 70px; border-radius: 50%; background: var(--c-smoke); animation: smoke-up 1.4s ease-out infinite; }
+.fry-smoke i:nth-child(1) { left: 0; } .fry-smoke i:nth-child(2) { left: 35%; animation-delay: .45s; } .fry-smoke i:nth-child(3) { left: 70%; animation-delay: .9s; }
+@keyframes smoke-up { from { transform: translateY(0) scale(.5); opacity: .9; } to { transform: translateY(-110px) scale(1.4); opacity: 0; } }
+.heat-meter.burn .mark { background: var(--c-gold); }
+.fry-word { position: absolute; top: 40%; left: 0; right: 96px; text-align: center; font-size: var(--fs-title); font-weight: 900; pointer-events: none; animation: m-pop .25s ease-out both; }
+.fry-word.bad { color: var(--c-danger); }
+
+/* 썰기: 손과 칼 (손가락을 따라다니며 칼끝이 손가락 위치에 옴) */
+.chop-knife { position: absolute; z-index: 2; width: 120px; height: 206px; left: 0; top: 0; pointer-events: none; transition: transform .06s linear; filter: drop-shadow(var(--shadow-float)); }
+.chop-knife.rest { transition: transform .3s ease-out; }
+.chop-knife svg { width: 100%; height: 100%; display: block; }
+.chop-knife .blade { fill: var(--c-steel); stroke: var(--c-steel-dark); stroke-width: 3; }
+.chop-knife .spine { fill: var(--c-steel-dark); }
+.chop-knife .handle { fill: var(--c-wood-dark); }
+.chop-knife .rivet { fill: var(--c-steel); }
+.chop-knife .skin { fill: var(--c-skin); stroke: var(--c-wood-dark); stroke-width: 2; }
+
+/* ---------- 굽기·튀기기·버무리기 공통 ---------- */
+.mx-piece { position: absolute; width: 30%; aspect-ratio: 1; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; }
+.mx-piece img { max-width: 100%; max-height: 100%; object-fit: contain; pointer-events: none; }
+.mx-piece .em { font-size: var(--fs-title); }
+.dn-bar { position: absolute; left: 10%; right: 10%; bottom: 210px; height: 40px; border-radius: var(--r-btn); background: var(--glass-bg); border: 2px solid var(--glass-border); }
+.dn-zone { position: absolute; top: 0; bottom: 0; background: var(--c-green); }
+.dn-mark { position: absolute; top: -6px; bottom: -6px; width: 10px; margin-left: -5px; border-radius: var(--r-btn); background: var(--c-on-dark); }
+.dn-bar span { position: absolute; top: 46px; font-size: var(--fs-small); font-weight: 900; }
+.dn-bar .l { left: 0; } .dn-bar .r { right: 0; } .dn-bar .m { transform: translateX(-50%); color: var(--c-green); }
+.gr-btn { position: absolute; bottom: var(--sp-3); left: 50%; width: 140px; height: 140px; margin-left: -70px; font-size: var(--fs-body); }
+
+/* 굽기: 석쇠 */
+.gr-grill { position: absolute; top: 120px; left: 18%; right: 18%; bottom: 290px; border-radius: var(--r-card); background: repeating-linear-gradient(90deg, var(--c-grate) 0 14px, var(--c-pot) 14px 22px); border: 6px solid var(--c-on-dark); }
+.gr-food { position: absolute; inset: 8%; transition: transform .4s ease-in-out; }
+.gr-food.flip { transform: rotateX(180deg) scale(.9); }
+.gr-food .mx-piece:nth-child(1) { left: 30%; top: 35%; } .gr-food .mx-piece:nth-child(2) { left: 70%; top: 35%; }
+.gr-food .mx-piece:nth-child(3) { left: 30%; top: 72%; } .gr-food .mx-piece:nth-child(4) { left: 70%; top: 72%; }
+.gr-food .mx-piece:only-child { left: 50%; top: 50%; width: 55%; }
+
+/* 튀기기: 기름 냄비와 온도계 */
+.fr-pot { position: absolute; top: 130px; left: 15%; width: 50%; bottom: 290px; border-radius: 12px 12px 70px 70px; background: var(--c-pot); border: 6px solid var(--c-on-dark); overflow: hidden; }
+.fr-oil { position: absolute; left: 0; right: 0; top: 25%; bottom: 0; background: var(--c-oil); opacity: .85; }
+.fr-food { position: absolute; left: 0; right: 0; top: -60%; height: 70%; transition: top .5s ease-in; }
+.fr-food.in { top: 22%; }
+.fr-food .mx-piece:nth-child(1) { left: 30%; top: 50%; } .fr-food .mx-piece:nth-child(2) { left: 55%; top: 40%; } .fr-food .mx-piece:nth-child(3) { left: 75%; top: 55%; }
+.fr-bubbles { top: 25%; opacity: 0; }
+.fr-bubbles.on { opacity: 1; }
+.fr-thermo { position: absolute; top: 130px; right: 20%; width: 72px; bottom: 290px; border-radius: var(--r-btn); background: var(--glass-bg); border: 3px solid var(--c-on-dark); overflow: hidden; }
+.fr-ok { position: absolute; left: 0; right: 0; background: var(--c-gold); opacity: .55; }
+.fr-best { position: absolute; left: 0; right: 0; background: var(--c-green); z-index: 1; }
+.fr-level { position: absolute; left: 14px; right: 14px; bottom: 0; border-radius: var(--r-btn); background: var(--c-danger); z-index: 2; }
+.fr-read { position: absolute; top: 4px; left: 0; right: 0; text-align: center; font-size: var(--fs-small); font-weight: 900; z-index: 3; text-shadow: 0 0 4px var(--c-dark); }
+.fr-donewrap[hidden], .fr-thermo[hidden] { display: none; }
+
+/* 버무리기: 큰 그릇 */
+.mx-bowl { position: absolute; top: 120px; left: 50%; width: min(62%, 460px); aspect-ratio: 1; transform: translateX(-50%); border-radius: 50%; background: var(--c-cream); border: 10px solid var(--c-line); }
+.mx-food { position: absolute; inset: 6%; border-radius: 50%; }
+.mx-guide { position: absolute; inset: 22%; border-radius: 50%; border: 3px dashed var(--c-ink-soft); opacity: .4; pointer-events: none; }
+.mx-prog { left: var(--sp-3); right: var(--sp-3); }

@@ -51,6 +51,33 @@ const GG_POUR_MIN = 30;
 const GG_POUR = { seconds: 3.5, perfect: 3, zero: 30 };
 const GG_POUR_COLOR = { water: 'water', broth: 'broth', milk: 'milk', cream: 'milk', coconut: 'milk' };
 
+/* 끓이기 미니게임 설정
+   불 세기(0~100)를 초록 칸(zone) 안에 유지하면 끓임 막대가 차요
+   필요한 시간(초) = baseSec + 물·육수 1L마다 perLiter초  (maxSec까지)
+   rise : 버튼을 누를 때 1초에 오르는 불 세기,  fall : 손을 떼면 1초에 내려가는 불 세기
+   over : 이 값보다 세면 넘쳐요 (감점) */
+const GG_BOIL = { zone: [45, 72], over: 88, baseSec: 5, perLiter: 4, maxSec: 12, rise: 55, fall: 22 };
+
+/* 볶기 미니게임 설정
+   팬을 좌우로 흔든 횟수가 필요한 만큼 차면 완성
+   필요한 횟수 = 재료 무게(g) ÷ gramsPerToss  (minToss~maxToss)
+   burnPerSec : 가만히 두면 1초에 타는 정도(100이 되면 탐),  coolPerToss : 한 번 흔들 때 줄어드는 정도 */
+const GG_STIRFRY = { gramsPerToss: 40, minToss: 8, maxToss: 18, burnPerSec: 30, coolPerToss: 22 };
+
+/* 굽기 미니게임 설정
+   익힘(0~100)이 secToBurn 초 만에 끝까지 올라요. 노릇노릇 칸(zone)에서 [뒤집기]를 누르면 성공
+   sides : 몇 면을 굽는지 (2 = 앞뒤) */
+const GG_GRILL = { secToBurn: 4.5, zone: [58, 80], sides: 2 };
+
+/* 튀기기 미니게임 설정
+   1) 기름 온도가 low~high ℃ 사이를 sweepSec 초에 한 번씩 오르내려요. best 칸에서 [넣기]
+   2) 튀김 색(0~100)이 secToBurn 초 만에 끝까지 가요. 노릇 칸(zone)에서 [건지기] */
+const GG_FRY = { low: 120, high: 220, sweepSec: 3, best: [170, 180], ok: [160, 190], secToBurn: 4, zone: [58, 80] };
+
+/* 버무리기 미니게임 설정
+   손가락으로 그릇 안을 동그랗게 돌려요. 돌릴 바퀴 수 = 재료 무게(g) ÷ gramsPerTurn  (minTurns~maxTurns) */
+const GG_TOSS = { gramsPerTurn: 120, minTurns: 3, maxTurns: 7, secPerTurn: 2.2, extraSec: 5 };
+
 /* 요리 종류별 기본 조리 방법 (창작 요리에서 학생이 고르기 전까지 쓰는 값) */
 const GG_DEFAULT_METHOD = {
   soup: 'boil',

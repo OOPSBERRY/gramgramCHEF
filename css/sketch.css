@@ -87,3 +87,6 @@ input[type=range]::-webkit-slider-thumb { border-radius: 48% 52% 50% 50% / 52% 4
 .react-rage .pc-line { stroke: var(--c-main); }
 @media (prefers-reduced-motion: reduce) { .chef-avatar svg { animation: none !important; } }
 .sketch .pc-brow { stroke-width: 2.4; }
+
+/* 첫 화면 제목 글꼴 (굵기가 한 종류인 손글씨 글꼴이라 억지로 굵게 만들지 않음) */
+.op-logo h1 { font-family: var(--font-title); font-weight: 400; letter-spacing: 0; }

@@ -18,7 +18,7 @@
 }
 .sub-type .n { font-size: var(--fs-sub); font-weight: 900; }
 .sub-type .d { font-size: var(--fs-small); color: var(--c-ink-soft); text-align: center; line-height: 1.2; word-break: keep-all; }
-.sub-type.on { border-color: var(--c-main); background: #fff2e8; }
+.sub-type.on { border-color: var(--c-main); background: var(--c-main-tint); }
 .sub-input {
   width: 100%; height: var(--btn-h); padding: 0 var(--sp-2); border-radius: var(--r-card); border: 2px solid var(--c-line);
   font-size: var(--fs-body); color: var(--c-ink); background: #fff; user-select: text;

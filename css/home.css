@@ -23,7 +23,7 @@
 .home-kicker { font-size: var(--fs-sub); color: var(--c-gold); letter-spacing: 2px; margin-bottom: var(--sp-1); }
 .home-title h1 {
   margin: 0; font-size: clamp(64px, 11vmin, 120px); line-height: 1.08; font-weight: 900;
-  color: var(--c-cream); text-shadow: 0 .5vh 0 rgba(0, 0, 0, .45), 0 0 4vh rgba(232, 89, 12, .35);
+  color: var(--c-cream); text-shadow: 0 .5vh 0 rgba(0, 0, 0, .45), 0 0 4vh var(--c-main-glow);
 }
 .home-title h1 .g2 { color: var(--c-main); display: inline-block; transform: rotate(-4deg); }
 .home-title h1 .chef { color: var(--c-gold); }

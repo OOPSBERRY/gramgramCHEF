@@ -217,7 +217,8 @@
     if (window.GGSound) GGSound.play(total >= 75 ? 'good' : 'soft');
     if (total < 75) return;
     const box = document.createElement('div'); box.className = 'confetti';
-    const colors = ['#E8590C', '#E3B04B', '#5E7F4F', '#2E86AB', '#C0392B'];
+    const cssVar = (n, d) => (getComputedStyle(document.documentElement).getPropertyValue(n).trim() || d);
+    const colors = [cssVar('--c-main', '#CF6830'), cssVar('--c-gold', '#E3B04B'), cssVar('--c-green', '#5E7F4F'), '#2E86AB', '#C0392B'];
     const n = total >= 90 ? 60 : 36;
     for (let i = 0; i < n; i++) {
       const p = document.createElement('i');

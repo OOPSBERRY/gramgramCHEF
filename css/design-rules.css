@@ -11,13 +11,23 @@
   font-weight: 400; font-style: normal; font-display: swap;
 }
 
+/* 첫 화면 제목 글꼴: 온글잎 재건사 (원본 파일 그대로 사용. 파일을 고치면 안 되는 글꼴이에요) */
+@font-face {
+  font-family: 'OngleipJaegeonsa';
+  src: url('../assets/fonts/OngleipJaegeonsa.ttf') format('truetype');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+
 :root {
   /* ---------- 글꼴 ---------- */
+  --font-title: 'OngleipJaegeonsa', 'SuseongDotum', sans-serif;   /* 첫 화면 제목 */
   --font-main: 'SuseongDotum', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
 
   /* ---------- 색 ---------- */
-  --c-main:       #E8590C;   /* 메인: 파프리카 주황 (주요 버튼, 강조 숫자) */
-  --c-main-dark:  #A83F06;   /* 주요 버튼 아랫면 */
+  --c-main:       #CF6830;   /* 메인: 차분한 주황 (주요 버튼, 강조 숫자) */
+  --c-main-dark:  #8D4A25;   /* 주요 버튼 아랫면 */
+  --c-main-tint:  #F8EADF;   /* 메인 주황을 아주 연하게 (선택된 카드 배경) */
+  --c-main-glow:  rgba(207, 104, 48, .4);   /* 메인 주황 빛번짐 (제목 글자 빛) */
   --c-green:      #5E7F4F;   /* 보조1: 허브 초록 (완료, 체크, 예산 안 넘음) */
   --c-gold:       #E3B04B;   /* 보조2: 금색 (점수, 별, 부제) */
   --c-dark:       #1B1917;   /* 어두운 배경: 슬레이트 (첫 화면, 요리 화면) */

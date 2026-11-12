@@ -247,8 +247,3 @@
 .pick-hint[hidden], .pick-hint-btn[hidden] { display: none; }
 .pick-hint-btn { min-height: var(--btn-h); }
 
-/* ---------- 양념 넣기, 담기 ---------- */
-.sp-bowl { position: absolute; top: 150px; left: 50%; width: min(56%, 420px); aspect-ratio: 1.6; transform: translateX(-50%); border-radius: 0 0 50% 50% / 0 0 100% 100%; background: var(--c-cream); border: 8px solid var(--c-line); border-top-width: 14px; overflow: hidden; }
-.sp-in { position: absolute; inset: 0; }
-.sp-drop { width: 22%; animation: sp-fall .4s ease-in both; }
-@keyframes sp-fall { from { transform: translate(-50%, -300%); opacity: 0; } to { transform: translate(-50%, -50%); opacity: 1; } }

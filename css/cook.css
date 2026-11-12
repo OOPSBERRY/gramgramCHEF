@@ -234,3 +234,15 @@
 .ch-face .m { width: 6px; height: 40%; margin-left: -3px; background: var(--c-main); }
 .ch-read { font-size: var(--fs-sub); font-weight: 900; }
 .ch-face b { position: absolute; transform: translate(-50%, -50%); font-size: var(--fs-body); font-weight: 900; color: var(--c-ink); }
+
+/* ---------- 조리 방법 고르기 ---------- */
+.pick-wrap { width: 100%; height: 100%; padding: var(--sp-3); display: flex; flex-direction: column; align-items: center; gap: var(--sp-2); overflow-y: auto; }
+.pick-title { font-size: var(--fs-title); font-weight: 900; color: var(--c-gold); }
+.pick-grid { width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-1); }
+.pick-btn { min-height: 96px; padding: var(--sp-1); border-radius: var(--r-card); border: 2px solid var(--glass-border); background: var(--glass-bg); color: var(--c-on-dark); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+.pick-btn .n { font-size: var(--fs-sub); font-weight: 900; }
+.pick-btn .d { font-size: var(--fs-small); opacity: .8; text-align: center; line-height: 1.25; word-break: keep-all; }
+.pick-btn:active { border-color: var(--c-main); background: var(--c-main); }
+.pick-hint { width: 100%; padding: var(--sp-2); border-radius: var(--r-card); background: var(--c-cream); color: var(--c-ink); font-size: var(--fs-body); line-height: 1.5; }
+.pick-hint[hidden], .pick-hint-btn[hidden] { display: none; }
+.pick-hint-btn { min-height: var(--btn-h); }

@@ -17,7 +17,10 @@ const GG_DISH_TYPES = [
   { id: 'salad',   name: '샐러드',  desc: '신선하게 버무린 요리', emoji: '🥗',
     salt: [0.3, 1.0], sugar: [0, 3],   oil: [3, 10], water: [0, 10],  main: [20, 60] },
   { id: 'noodle',  name: '면',      desc: '면이 주인공인 요리',        emoji: '🍜',
-    salt: [0.8, 1.4], sugar: [0, 3.5], oil: [0, 8],  water: [0, 65],  main: [25, 85] }
+    salt: [0.8, 1.4], sugar: [0, 3.5], oil: [0, 8],  water: [0, 65],  main: [25, 85] },
+  /* 디저트: 단맛이 주인공이라 설탕 범위가 넓고, 소금은 아주 조금만. sweet 는 단맛÷짠맛 한도(디저트는 사실상 제한 없음) */
+  { id: 'dessert', name: '디저트', desc: '달콤한 후식',          emoji: '🍰',
+    salt: [0, 0.5],   sugar: [5, 25],  oil: [0, 15], water: [0, 60],  main: [20, 70], sweet: 999 }
 ];
 
 /* 종류와 상관없이 쓰는 범위 */
@@ -25,6 +28,9 @@ const GG_COMMON_RANGES = {
   variety: [4, 10],        // 재료 가짓수 (물·육수 제외)
   amount:  [300, 2500]     // 전체 무게(g)
 };
+
+/* 디저트에 들어가면 어색한 재료 분류 */
+const GG_DESSERT_ODD_CATS = ['meat', 'sea'];
 
 /* 면 요리에 꼭 필요한 면 재료 (재료 id) */
 const GG_NOODLE_IDS = ['udon', 'spaghetti', 'ricenoodle', 'glass', 'macaroni'];

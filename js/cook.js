@@ -122,10 +122,61 @@ const GGCook = (function () {
     }
   };
 
+  /* 받침이 있으면 '은', 없으면 '는' */
+  const eunNeun = (w) => { const c = w.charCodeAt(w.length - 1); return w + ((c >= 0xac00 && c <= 0xd7a3 && (c - 0xac00) % 28 !== 0) ? '은' : '는'); };
+
+  /* ---------- 창작 요리: 조리 방법 평가 (data/cooking.js 의 규칙) ---------- */
+  function evalMethod(method, typeId, items) {
+    const fit = GG_METHOD_FIT[typeId] || { good: [], ok: [] };
+    const typeName = (GG_DISH_TYPES.find((t) => t.id === typeId) || {}).name || '이 요리';
+    const name = GG_COOK_GAMES[method].name;
+    let score, notes = [];
+    if (fit.good.includes(method)) { score = 1; notes.push(typeName + '에 딱 맞는 조리 방법이에요'); }
+    else if (fit.ok.includes(method)) { score = 0.75; notes.push(typeName + '에 ' + name + '도 괜찮아요'); }
+    else { score = 0.3; notes.push(typeName + '에 ' + eunNeun(name) + ' 어색해요'); }
+    const ids = new Set(items.map((it) => it.ing.id));
+    const broken = GG_METHOD_RULES.filter((r) => r.ids.some((id) => ids.has(id)) && !r.need.includes(method));
+    broken.forEach((r) => notes.push(r.msg));
+    score = Math.max(0, score - 0.3 * broken.length);
+    return { score, notes, broken: broken.length };
+  }
+
+  /* 힌트: 요리 종류에 어울리는 방법 + 재료 규칙 */
+  function hintText(typeId, items) {
+    const fit = GG_METHOD_FIT[typeId] || { good: [], ok: [] };
+    const typeName = (GG_DISH_TYPES.find((t) => t.id === typeId) || {}).name || '이 요리';
+    const names = (list) => list.map((m) => GG_COOK_GAMES[m].name).join(', ');
+    let t = eunNeun(typeName) + ' 보통 <b>' + names(fit.good) + '</b>' + (fit.ok.length ? ' (' + names(fit.ok) + '도 괜찮아요)' : '') + '로 만들어요.';
+    const ids = new Set(items.map((it) => it.ing.id));
+    GG_METHOD_RULES.filter((r) => r.ids.some((id) => ids.has(id))).forEach((r) => { t += '<br>' + r.msg + '.'; });
+    return t;
+  }
+
+  /* 조리 방법 고르기 화면 → 고르면 onPick(방법, 힌트를 봤는지) */
+  function pickMethod(stage, typeId, items, onPick) {
+    let hinted = false;
+    stage.innerHTML = '<div class="pick-wrap"><div class="pick-title">어떻게 조리할까요?</div><div class="pick-grid"></div>' +
+      '<div class="pick-hint" hidden></div><button class="k-small pick-hint-btn">힌트 보기 (점수가 조금 깎여요)</button></div>';
+    const grid = stage.querySelector('.pick-grid');
+    GG_METHODS.forEach((m) => {
+      const g = GG_COOK_GAMES[m];
+      const b = document.createElement('button'); b.className = 'pick-btn';
+      b.innerHTML = '<span class="n">' + g.name + '</span><span class="d">' + g.desc + '</span>';
+      b.onclick = () => onPick(m, hinted);
+      grid.appendChild(b);
+    });
+    const hb = stage.querySelector('.pick-hint-btn');
+    hb.onclick = () => {
+      hinted = true; hb.hidden = true;
+      const h = stage.querySelector('.pick-hint'); h.hidden = false; h.innerHTML = hintText(typeId, items);
+    };
+  }
+
   /* ---------- 진행 ---------- */
   function start(items, opt, done) {
     const my = ++run;
     const steps = buildSteps(items, opt.typeId);
+    if (!opt.recipe) steps.forEach((s) => { if (s.method) s.title = '조리 고르기'; });
     $('cook-title').textContent = '조리하기: ' + (opt.name || '나의 요리');
     let cur = 0;
 
@@ -136,6 +187,20 @@ const GGCook = (function () {
       renderProgress(steps, cur);
       renderInfo(step, cur, steps.length);
       const stage = $('cook-stage'); stage.innerHTML = '';
+      if (step.method && !opt.recipe && !step.chosen) {                // 창작 요리: 조리 방법을 학생이 골라요
+        $('cook-name').textContent = '조리 방법 고르기';
+        $('cook-desc').textContent = '내 요리에 어울리는 조리 방법을 골라요';
+        pickMethod(stage, opt.typeId, items, (m, hinted) => {
+          step.chosen = m; step.game = m; step.title = GG_COOK_GAMES[m].name;
+          step.hinted = hinted;
+          const ev = evalMethod(m, opt.typeId, items);
+          step.methodScore = ev.score * (hinted ? GG_HINT_KEEP : 1);
+          step.methodNotes = ev.notes;
+          if (window.GGSound) GGSound.play('click');
+          next();
+        });
+        return;
+      }
       (games[step.game] || placeholder)(stage, step, (score) => {
         if (my !== run) return;
         step.score = score;
@@ -151,5 +216,5 @@ const GGCook = (function () {
     next();
   }
 
-  return { start, games, buildSteps, ui };
+  return { start, games, buildSteps, ui, evalMethod };
 })();

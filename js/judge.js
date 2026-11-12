@@ -82,7 +82,7 @@ const GGJudge = (function () {
   function analyze(items, typeId, recipe, extra) {
     extra = extra || {};
     const type = Object.assign({}, GG_DISH_TYPES.find((t) => t.id === typeId), (recipe && recipe.ranges) || {});   // 레시피에 따로 적은 범위가 있으면 그걸 씀
-    const sweetMax = (recipe && recipe.sweet) || 1.5;                                                              // 단맛÷짠맛 허용 한도
+    const sweetMax = (recipe && recipe.sweet) || type.sweet || 1.5;                                               // 단맛÷짠맛 허용 한도 (디저트는 아주 큼)
     const rows = items.filter((it) => it.amount > 0).map((it) => ({ ing: it.ing, g: GGCalc.grams(it.ing, it.amount) }));
     const W = rows.reduce((s, r) => s + r.g, 0);
     const ids = new Set(rows.map((r) => r.ing.id));
@@ -100,7 +100,7 @@ const GGJudge = (function () {
     const foodRows = rows.filter((r) => r.ing.cat !== 'liquid');
     const variety = foodRows.length;
     const catCount = new Set(foodRows.map((r) => r.ing.cat)).size;
-    const flavorCount = rows.filter((r) => FLAVOR_CATS.includes(r.ing.cat)).length;
+    const flavorCount = rows.filter((r) => FLAVOR_CATS.includes(r.ing.cat) || (typeId === 'dessert' && r.ing.cat === 'sweet')).length;   // 디저트는 디저트 재료도 맛을 내는 재료
     const combos = findCombos(ids);
 
     const m = {};
@@ -122,7 +122,7 @@ const GGJudge = (function () {
     if (plain) balance *= 0.5;
     m.balance = { label: '맛의 균형', value: ratio, range: [0, sweetMax], score: balance,
       status: balance >= 0.7 ? 'good' : (ratio > sweetMax ? 'high' : 'low'),
-      text: plain ? '맛의 균형: 간이 거의 없어서 밋밋해요' : saltP < 0.1 ? '맛의 균형: 짠맛이 거의 없고 단맛만 있어요' : '단맛 ÷ 짠맛 = ' + fmt(ratio) + ' (알맞은 범위 0~' + sweetMax + '), 양념 ' + flavorCount + '가지' };
+      text: plain ? '맛의 균형: 간이 거의 없어서 밋밋해요' : typeId === 'dessert' ? '맛의 균형: 디저트 재료·양념 ' + flavorCount + '가지' : saltP < 0.1 ? '맛의 균형: 짠맛이 거의 없고 단맛만 있어요' : '단맛 ÷ 짠맛 = ' + fmt(ratio) + ' (알맞은 범위 0~' + sweetMax + '), 양념 ' + flavorCount + '가지' };
     // 물·육수
     m.water = { label: '물·육수 비율', value: waterP, range: type.water, score: rangeScore(waterP, ...type.water), status: status(waterP, type.water),
       text: '물·육수 비율 ' + fmt(waterP) + '% (알맞은 범위 ' + rangeText(type.water, '%') + ')' };
@@ -148,6 +148,12 @@ const GGJudge = (function () {
       const vegP = solidW > 0 ? vegW / solidW * 100 : 0;
       fit = Math.min(1, vegP / 40);
       fitText = '샐러드의 채소 비중 ' + fmt(vegP) + '% (알맞은 범위 40% 이상)';
+    }
+    if (typeId === 'dessert') {
+      const odd = rows.filter((r) => GG_DESSERT_ODD_CATS.includes(r.ing.cat));
+      fit = Math.min(1, sugarP / 5) * (odd.length ? 0.4 : 1);
+      fitText = odd.length ? '디저트에 ' + odd.map((r) => r.ing.name).join(', ') + '이(가) 들어갔어요'
+        : '디저트의 단맛 ' + fmt(sugarP) + '% (알맞은 범위 5% 이상)';
     }
     m.fit = { label: '종류와 재료', value: fit, score: fit, status: fit >= 0.8 ? 'good' : 'low', text: fitText };
 

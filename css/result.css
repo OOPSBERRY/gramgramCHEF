@@ -11,13 +11,13 @@
 }
 .sub-card h2 { margin: 0 0 var(--sp-1); font-size: var(--fs-title); }
 .sub-label { margin: var(--sp-2) 0 var(--sp-1); font-size: var(--fs-body); font-weight: 900; }
-.sub-types { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-1); }
+.sub-types { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--sp-1); }
 .sub-type {
   min-height: 88px; padding: var(--sp-1); border-radius: var(--r-card); border: 2px solid var(--c-line); background: #fff; color: var(--c-ink);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
 }
 .sub-type .n { font-size: var(--fs-sub); font-weight: 900; }
-.sub-type .d { font-size: var(--fs-small); color: var(--c-ink-soft); text-align: center; line-height: 1.2; }
+.sub-type .d { font-size: var(--fs-small); color: var(--c-ink-soft); text-align: center; line-height: 1.2; word-break: keep-all; }
 .sub-type.on { border-color: var(--c-main); background: #fff2e8; }
 .sub-input {
   width: 100%; height: var(--btn-h); padding: 0 var(--sp-2); border-radius: var(--r-card); border: 2px solid var(--c-line);

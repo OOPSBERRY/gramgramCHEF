@@ -100,5 +100,37 @@ const GG_DEFAULT_METHOD = {
   soup: 'boil',
   stirfry: 'stirfry',
   salad: 'toss',
-  noodle: 'boil'
+  noodle: 'boil',
+  dessert: 'whip'
 };
+
+/* ============================================================
+   창작 요리: 조리 방법 고르기
+   ------------------------------------------------------------
+   학생이 고를 수 있는 조리 방법 (이 순서대로 버튼이 나와요) */
+const GG_METHODS = ['boil', 'stirfry', 'grill', 'fry', 'toss', 'whip', 'knead', 'chill'];
+
+/* 요리 종류별로 어울리는 조리 방법
+   good : 딱 맞아요 (100%),  ok : 괜찮아요 (75%),  나머지는 어색해요 (30%) */
+const GG_METHOD_FIT = {
+  soup:    { good: ['boil'],                      ok: [] },
+  stirfry: { good: ['stirfry'],                   ok: ['grill', 'fry'] },
+  salad:   { good: ['toss'],                      ok: ['grill'] },
+  noodle:  { good: ['boil'],                      ok: ['stirfry'] },
+  dessert: { good: ['whip', 'chill', 'knead', 'grill'], ok: ['boil', 'fry', 'toss'] }
+};
+
+/* 재료를 보고 꼭 지켜야 하는 규칙 (어기면 30%씩 깎여요)
+   ids    : 이 재료가 들어 있으면,  need : 이 조리 방법 중 하나를 골라야 해요 */
+const GG_METHOD_RULES = [
+  { ids: ['beef', 'pork', 'chicken', 'mincedmeat', 'bacon', 'shrimp', 'snail', 'egg', 'yolk'],
+    need: ['boil', 'stirfry', 'grill', 'fry'], msg: '날고기·날달걀·해산물은 꼭 불로 익혀야 해요' },
+  { ids: ['spaghetti', 'ricenoodle', 'glass', 'macaroni', 'lentil', 'redbean'],
+    need: ['boil'], msg: '마른 면과 마른 콩은 물에 삶아야 먹을 수 있어요' },
+  { ids: ['gelatin'],
+    need: ['chill'], msg: '젤라틴을 넣었으면 차갑게 굳혀야 해요' }
+];
+
+/* 힌트를 보면 조리 방법 점수가 이만큼만 남아요 (0.8 = 80%) */
+const GG_HINT_KEEP = 0.8;
+

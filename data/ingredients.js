@@ -194,6 +194,7 @@ const GG_INGREDIENTS = [
   I('raisin',       '건포도',          '🍇', 'sweet', 'g', 1500, { sugar: 60, max: 200, def: 30 }),
   I('marshmallow',  '마시멜로',        '🍬', 'sweet', 'g', 1500, { sugar: 60, max: 200, def: 30 }),
   I('icecream',     '아이스크림',      '🍨', 'sweet', 'g', 800,  { sugar: 20, def: 100 }),
+  I('ice',          '얼음',            '🧊', 'sweet', 'g', 50,   { max: 600, step: 10, def: 200 }),
 
   /* ---------- 물·육수 ---------- */
   I('water',      '물',          '💧', 'liquid', 'mL', 0),

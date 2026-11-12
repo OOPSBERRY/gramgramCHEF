@@ -120,14 +120,15 @@ const GG_METHOD_FIT = {
   dessert: { good: ['whip', 'chill', 'knead', 'grill'], ok: ['boil', 'fry', 'toss'] }
 };
 
-/* 재료를 보고 꼭 지켜야 하는 규칙 (어기면 30%씩 깎여요)
-   ids    : 이 재료가 들어 있으면,  need : 이 조리 방법 중 하나를 골라야 해요 */
+/* 재료를 보고 꼭 지켜야 하는 규칙 (어기면 penalty 만큼 깎여요. 없으면 30%)
+   ids    : 이 재료가 들어 있으면,  need : 이 조리 방법 중 하나를 골라야 해요
+   key 가 raw 인 규칙을 어기면 셰프들이 특히 크게 혼내요 */
 const GG_METHOD_RULES = [
-  { ids: ['beef', 'pork', 'chicken', 'mincedmeat', 'bacon', 'shrimp', 'snail', 'egg', 'yolk'],
-    need: ['boil', 'stirfry', 'grill', 'fry'], msg: '날고기·날달걀·해산물은 꼭 불로 익혀야 해요' },
-  { ids: ['spaghetti', 'ricenoodle', 'glass', 'macaroni', 'lentil', 'redbean'],
+  { key: 'raw', ids: ['beef', 'pork', 'chicken', 'mincedmeat', 'bacon', 'shrimp', 'snail', 'egg', 'yolk'],
+    need: ['boil', 'stirfry', 'grill', 'fry'], penalty: 0.6, msg: '날고기·날달걀·해산물은 꼭 불로 익혀야 해요' },
+  { key: 'dry', ids: ['spaghetti', 'ricenoodle', 'glass', 'macaroni', 'lentil', 'redbean'],
     need: ['boil'], msg: '마른 면과 마른 콩은 물에 삶아야 먹을 수 있어요' },
-  { ids: ['gelatin'],
+  { key: 'gel', ids: ['gelatin'],
     need: ['chill'], msg: '젤라틴을 넣었으면 차갑게 굳혀야 해요' }
 ];
 

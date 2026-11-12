@@ -8,6 +8,7 @@
                        variety(재료 다양성) main(주재료 비중) amount(전체 양) combos(이상한 조합) fit(요리 종류에 맞는 재료)
                        recipe(레시피 일치도, 실제 요리 도전에서만) price(가격·예산) accuracy(계산 확인 정확성)
                        creative(창의성) nameq(요리 이름) brave(도전 정신)
+                       cook(조리 실력: 미니게임 점수 평균) method(조리 방법: 창작 요리에서 고른 방법이 알맞은지)
    ★ base  : 기본 점수 비율(0~1). 해피 셰프처럼 후한 셰프는 높게. (0.5 이면 최소 12.5점부터 시작)
    ★ avatar: 얼굴 그림 설정  (brow: angry/flat/soft/happy, mouth: shout/line/smile/grin, extra: none/glasses/mustache/blush)
    ★ lines : 대사. 점수대(high 80%↑ / mid 50%↑ / low) 안에 상황별로 여러 개씩 적으면 랜덤으로 골라요.
@@ -18,6 +19,8 @@
              lowVariety(재료가 적음) tooMany(재료가 너무 많음) mainOff(주재료가 불분명) typeMismatch(요리 종류와 재료가 안 맞음) wellMade(구성이 좋음)
              overBudget(예산 초과) budgetPerfect(예산을 잘 지킴) pricey(비쌈) calcExact(계산 정확) calcOff(계산이 틀림) calcSkipped(계산 건너뜀)
              nameGreat(이름이 멋짐) boldMix(창의적인 조합) tryHard(도전 정신)
+             rawFood(날고기를 안 익힘) methodWrong(조리 방법이 어색함) hintUsed(힌트를 봄) cookGreat(조리를 아주 잘함) cookClumsy(조리가 서툶)
+       ★ 조리하기 대사는 이 파일 맨 아래 GG_COOK_LINES 에 따로 모아 두었어요
        ★ priority : 여러 상황이 겹칠 때 먼저 말할 순서 (가장 심한 상황이 우선이고, 같으면 이 순서)
        없는 상황은 다른 점수대의 같은 상황 대사 → 기본(general) 대사 순서로 대신 씁니다.
    ============================================================ */
@@ -25,7 +28,8 @@ const GG_CHEFS = [
   {
     id: 'bureok', name: '버럭 셰프', trait: '호통은 쳐도 정은 많아요', color: '#C0392B', ready: true,
     avatar: { brow: 'angry', mouth: 'shout', extra: 'blush', skin: '#F2C29B' },
-    focus: [{ metric: 'salt', weight: 9 }, { metric: 'sugar', weight: 5 }, { metric: 'balance', weight: 8 }, { metric: 'oil', weight: 3 }],
+    focus: [{ metric: 'salt', weight: 9 }, { metric: 'sugar', weight: 5 }, { metric: 'balance', weight: 8 }, { metric: 'oil', weight: 3 },
+            { metric: 'method', weight: 6 }, { metric: 'cook', weight: 3 }],     // method(조리 방법)는 창작 요리에서만 계산돼요
     base: 0,
     priority: ['notEnough', 'weirdCombo', 'notSimilar', 'tooSalty', 'tooSweet', 'tooBland', 'tooOily', 'similarRecipe', 'balanced'],
     lines: {
@@ -87,7 +91,7 @@ const GG_CHEFS = [
     id: 'kkankkan', name: '깐깐 셰프', trait: '위생과 구성을 꼼꼼히 봐요', color: '#2E86AB', ready: true,
     avatar: { brow: 'flat', mouth: 'line', extra: 'glasses', skin: '#F6D2B0' },
     focus: [{ metric: 'variety', weight: 6 }, { metric: 'main', weight: 5 }, { metric: 'combos', weight: 7 }, { metric: 'fit', weight: 3 },
-            { metric: 'recipe', weight: 4 }],      // recipe 는 실제 요리 도전 모드에서만 계산돼요
+            { metric: 'recipe', weight: 4 }, { metric: 'method', weight: 7 }],      // recipe 는 실제 요리 도전, method 는 창작 요리에서만 계산돼요
     base: 0,
     priority: ['weirdCombo', 'typeMismatch', 'notSimilar', 'notEnough', 'lowVariety', 'mainOff', 'tooMany', 'similarRecipe', 'wellMade'],
     lines: {
@@ -188,7 +192,7 @@ const GG_CHEFS = [
   {
     id: 'happy', name: '해피 셰프', trait: '뭐든 맛있다고 해요', color: '#E3B04B', ready: true,
     avatar: { brow: 'happy', mouth: 'grin', extra: 'blush', skin: '#F7CFA8' },
-    focus: [{ metric: 'creative', weight: 8 }, { metric: 'nameq', weight: 8 }, { metric: 'brave', weight: 9 }],
+    focus: [{ metric: 'creative', weight: 8 }, { metric: 'nameq', weight: 8 }, { metric: 'brave', weight: 9 }, { metric: 'cook', weight: 6 }],
     base: 0.5,
     priority: ['weirdCombo', 'notEnough', 'nameGreat', 'boldMix', 'tryHard'],
     lines: {
@@ -235,3 +239,56 @@ const GG_CHEFS = [
     }
   }
 ];
+
+/* ============================================================
+   조리하기 대사 (조리 방법·미니게임 실력)
+   셰프 id 별로 high / mid / low 점수대 안에 상황별 대사를 적어요. 위의 셰프 대사에 자동으로 합쳐져요.
+   상황: rawFood(날고기를 안 익힘) methodWrong(조리 방법이 어색함) hintUsed(힌트를 봄) cookGreat(조리를 아주 잘함) cookClumsy(조리가 서툶)
+   ============================================================ */
+const GG_COOK_LINES = {
+  bureok: {
+    high: {
+      cookGreat: ['손놀림 봐라! {dish}, 칼질도 불 조절도 일품이야!', '허! {dish}, 조리 솜씨가 보통이 아닌걸? 합격!']
+    },
+    mid: {
+      rawFood: ['날고기를 그냥 내면 어떡해! {dish}, 고기랑 달걀은 꼭 불로 익혀야 한다고!'],
+      methodWrong: ['{dish}를 왜 그렇게 조리했어?! 요리 종류에 맞는 조리법을 골라야지!'],
+      cookClumsy: ['{dish}, 간은 괜찮은데 손이 아직 서툴러! 불 앞에서는 정신 바짝 차려!'],
+      hintUsed: ['힌트를 봤구먼! {dish}, 다음엔 스스로 생각해 보라고!']
+    },
+    low: {
+      rawFood: ['으악! 날고기잖아! {dish}, 이러다 손님 배탈 나! 꼭 익혀!'],
+      methodWrong: ['{dish}를 이렇게 조리하면 안 돼! 조리 방법부터 다시!'],
+      cookClumsy: ['{dish}, 타고 넘치고 난리야! 불 조절부터 다시 연습해!']
+    }
+  },
+  kkankkan: {
+    high: {
+      cookGreat: ['{dish}, 손질부터 마무리까지 조리 과정이 아주 깔끔했습니다.'],
+      rawFood: ['구성은 좋지만 {dish}에 익히지 않은 고기가 있습니다. 위생상 꼭 익혀야 해요.']
+    },
+    mid: {
+      rawFood: ['위생상 날고기와 날달걀은 반드시 익혀야 합니다. {dish}는 그 부분이 걱정되네요.'],
+      methodWrong: ['{dish}에 어울리는 조리 방법을 다시 생각해 보세요. 조리법도 요리의 일부입니다.'],
+      cookClumsy: ['{dish}, 조리 과정이 조금 거칠었습니다. 서두르지 말고 침착하게 해 보세요.'],
+      hintUsed: ['힌트를 참고했군요. 다음에는 스스로 판단해 보세요.']
+    },
+    low: {
+      rawFood: ['{dish}는 위생 기준을 통과할 수 없습니다. 날고기는 꼭 익혀 주세요.'],
+      methodWrong: ['{dish}의 조리 방법이 요리와 맞지 않습니다. 어떻게 익히는 요리인지 다시 확인해 주세요.']
+    }
+  },
+  happy: {
+    high: {
+      cookGreat: ['우와! {dish} 만드는 솜씨가 진짜 셰프 같아요!', '칼질 탁탁, 불 조절 척척! {dish} 최고예요!'],
+      cookClumsy: ['조금 타도 괜찮아요! {dish}에서 정성이 느껴져요!']
+    },
+    mid: {
+      cookGreat: ['{dish}, 요리하는 모습이 정말 멋졌어요!'],
+      cookClumsy: ['조금 서툴러도 괜찮아요! {dish}, 다음엔 더 잘할 거예요!']
+    },
+    low: {
+      cookClumsy: ['처음엔 다 그래요! {dish}, 같이 다시 해 봐요!']
+    }
+  }
+};

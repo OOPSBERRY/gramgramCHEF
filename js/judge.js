@@ -25,6 +25,13 @@ const GGJudge = (function () {
     }).map((r) => r.msg);
   }
 
+  /* 조리하기 대사(data/chefs.js 의 GG_COOK_LINES)를 셰프 대사에 합치기 */
+  if (typeof GG_COOK_LINES !== 'undefined') GG_CHEFS.forEach((c) => {
+    const add = GG_COOK_LINES[c.id]; if (!add) return;
+    ['high', 'mid', 'low'].forEach((t) => { c.lines[t] = Object.assign(c.lines[t] || {}, add[t] || {}); });
+    c.priority = ['rawFood', 'methodWrong'].concat(c.priority || [], ['cookClumsy', 'cookGreat', 'hintUsed']);
+  });
+
   /** 받침 유무에 따라 와/과, 은/는 등을 고름 */
   function josa(word, a, b) {
     const c = word.charCodeAt(word.length - 1);
@@ -151,9 +158,10 @@ const GGJudge = (function () {
     }
     if (typeId === 'dessert') {
       const odd = rows.filter((r) => GG_DESSERT_ODD_CATS.includes(r.ing.cat));
-      fit = Math.min(1, sugarP / 5) * (odd.length ? 0.4 : 1);
+      const sweetLo = Math.max(0.1, type.sugar[0]);
+      fit = Math.min(1, sugarP / sweetLo) * (odd.length ? 0.4 : 1);
       fitText = odd.length ? '디저트에 ' + odd.map((r) => r.ing.name).join(', ') + '이(가) 들어갔어요'
-        : '디저트의 단맛 ' + fmt(sugarP) + '% (알맞은 범위 5% 이상)';
+        : '디저트의 단맛 ' + fmt(sugarP) + '% (알맞은 범위 ' + type.sugar[0] + '% 이상)';
     }
     m.fit = { label: '종류와 재료', value: fit, score: fit, status: fit >= 0.8 ? 'good' : 'low', text: fitText };
 
@@ -204,6 +212,23 @@ const GGJudge = (function () {
     m.brave = { label: '도전 정신', value: bv, score: bv, status: bv >= 0.7 ? 'nice' : 'low',
       text: recipe ? '도전 정신: ' + recipe.name + '에 도전했어요!' : '도전 정신: 재료 ' + variety + '가지에 도전했어요' };
 
+    // ----- 조리하기: 미니게임 실력과 조리 방법 -----
+    if (extra.cook && extra.cook.steps) {
+      const st = extra.cook.steps;
+      const played = st.filter((x) => typeof x.score === 'number');
+      if (played.length) {
+        const avg = played.reduce((t, x) => t + x.score, 0) / played.length / 100;
+        m.cook = { label: '조리 실력', value: Math.round(avg * 100), score: avg, status: avg >= 0.8 ? 'good' : 'low',
+          text: '조리 실력 ' + Math.round(avg * 100) + '점 (' + played.map((x) => x.title + ' ' + x.score + '점').join(', ') + ')' };
+      }
+      const pick = st.find((x) => x.method && typeof x.methodScore === 'number');
+      if (pick && !recipe) {
+        m.method = { label: '조리 방법', value: pick.methodScore, score: pick.methodScore, status: pick.methodScore >= 0.7 ? 'good' : 'bad',
+          text: '조리 방법 ' + pick.title + ': ' + (pick.methodNotes || []).join(' / ') + (pick.hinted ? ' (힌트를 봤어요)' : ''),
+          broken: pick.methodBroken || [], hinted: !!pick.hinted };
+      }
+    }
+
     let recipeResult = null;
     if (recipe) {
       recipeResult = recipeMatch(rows, W, recipe);
@@ -242,6 +267,15 @@ const GGJudge = (function () {
     if (m.nameq.score >= 0.85 && !a.recipe) s.set('nameGreat', 0.5);
     if (m.creative.score >= 0.75 && !a.recipe) s.set('boldMix', 0.4);
     if (m.brave.score >= 0.8) s.set('tryHard', 0.3);
+    if (m.method) {
+      if (m.method.broken.includes('raw')) s.set('rawFood', 1);
+      else if (m.method.score < 0.6) s.set('methodWrong', 1 - m.method.score);
+      if (m.method.hinted) s.set('hintUsed', 0.15);
+    }
+    if (m.cook) {
+      if (m.cook.score >= 0.9) s.set('cookGreat', 0.35);
+      else if (m.cook.score < 0.6) s.set('cookClumsy', 1 - m.cook.score);
+    }
     if (a.recipe) {
       if (a.recipe.total >= 0.75) s.set('similarRecipe', 0.3);
       else if (a.recipe.total < 0.45) s.set('notSimilar', 1 - a.recipe.total);
@@ -250,11 +284,11 @@ const GGJudge = (function () {
   }
 
   /** 대사의 {dish} 자리에 요리 이름을 넣고, 바로 뒤의 조사(가/이, 를/을, 는/은, 와/과, 라는/이라는 등)를 받침에 맞게 고침 */
-  const JOSA_PAIRS = [['이라는', '라는'], ['이라고', '라고'], ['으로', '로'], ['이', '가'], ['을', '를'], ['은', '는'], ['과', '와']];   // [받침 있을 때, 없을 때]
+  const JOSA_PAIRS = [['이에요', '예요'], ['이라는', '라는'], ['이라고', '라고'], ['으로', '로'], ['이', '가'], ['을', '를'], ['은', '는'], ['과', '와']];   // [받침 있을 때, 없을 때]
   function fillDish(tpl, dish) {
     const c = dish.charCodeAt(dish.length - 1), isHangul = c >= 0xac00 && c <= 0xd7a3;
     const hasFinal = isHangul && (c - 0xac00) % 28 !== 0, isRieul = isHangul && (c - 0xac00) % 28 === 8;
-    return tpl.replace(/{dish}(이라는|라는|이라고|라고|으로|로|이|가|을|를|은|는|과|와)?/g, (m, p) => {
+    return tpl.replace(/{dish}(이에요|예요|이라는|라는|이라고|라고|으로|로|이|가|을|를|은|는|과|와)?/g, (m, p) => {
       if (!p) return dish;
       const pair = JOSA_PAIRS.find((x) => x.includes(p));
       if (!pair) return dish + p;

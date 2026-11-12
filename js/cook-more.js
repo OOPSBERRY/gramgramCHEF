@@ -243,3 +243,33 @@
     });
   };
 })();
+
+/* 양념 넣기, 담기: 점수 없이 버튼 한 번으로 넘어가는 단계 */
+(function () {
+  function simple(stage, step, finish, opt) {
+    stage.innerHTML = '<div class="heat-hud">' + opt.hud + '</div><div class="sp-bowl"><div class="sp-in"></div></div>' +
+      '<button class="pour-hold gr-btn">' + opt.btn + '</button>';
+    const box = stage.querySelector('.sp-in');
+    const btn = stage.querySelector('.gr-btn');
+    let done = false;
+    btn.onclick = () => {
+      if (done) return; done = true;
+      const list = step.items.length ? step.items : [];
+      list.slice(0, 8).forEach((it, i) => {
+        const d = document.createElement('div'); d.className = 'mx-piece sp-drop';
+        d.style.left = (25 + (i % 4) * 17) + '%'; d.style.top = (35 + Math.floor(i / 4) * 30) + '%';
+        d.style.animationDelay = (i * 0.08) + 's';
+        d.appendChild(window.GGApp.photo(it.ing)); box.appendChild(d);
+      });
+      GGCook.ui.buzz(20);
+      if (window.GGSound) GGSound.play('pop');
+      if (opt.after) opt.after(stage);
+      setTimeout(() => finish(null), 900 + list.length * 80);
+    };
+  }
+  GGCook.games.season = (stage, step, finish) => simple(stage, step, finish, { hud: '양념을 넣어요', btn: '넣기' });
+  GGCook.games.plate = (stage, step, finish) => simple(stage, step, finish, {
+    hud: '그릇에 예쁘게 담아요', btn: '담기',
+    after: (st) => { const w = document.createElement('div'); w.className = 'crack-word perfect'; w.textContent = '완성!'; st.appendChild(w); }
+  });
+})();

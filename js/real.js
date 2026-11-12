@@ -21,7 +21,7 @@
   /* ---------- 요리 고르기 ---------- */
   function renderFilter() {
     const box = $('d-filter'); box.innerHTML = '';
-    ['전체'].concat(GG_COUNTRIES).forEach((c) => {
+    ['전체', '디저트'].concat(GG_COUNTRIES).forEach((c) => {
       const b = document.createElement('button');
       b.className = 'k-tab' + (filter === c ? ' on' : ''); b.textContent = c;
       b.onclick = () => { filter = c; renderFilter(); renderGrid(); };
@@ -31,7 +31,7 @@
 
   function renderGrid() {
     const g = $('d-grid'); g.innerHTML = ''; g.scrollTop = 0;
-    GG_RECIPES.filter((r) => filter === '전체' || r.country === filter).forEach((r) => {
+    GG_RECIPES.filter((r) => filter === '전체' || (filter === '디저트' ? r.type === 'dessert' : r.country === filter)).forEach((r) => {
       const c = document.createElement('button');
       c.className = 'd-card';
       c.appendChild(dishPhoto(r, 'ph'));

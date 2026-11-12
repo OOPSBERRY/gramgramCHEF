@@ -36,4 +36,6 @@
 - 디저트·베이킹 분류(sweet) 추가: 재료 23개 + 블루베리·망고(채소·과일). sweet 재료의 설탕도 단맛 계산에 포함(js/judge.js). 가격·설탕 값은 대략 추정치라 교사 검토 필요.
 - 조리하기(2026-11-12~): 제출 → 조리하기(screen-cook) → 계산 확인 → 심사. js/cook.js(단계 자동 생성, 공통 화면 ui.intro/timer/feedback/buzz, 창작 요리 조리 방법 고르기·힌트·평가), 미니게임 js/cook-chop·pour·crack·heat(끓이기·볶기)·more(굽기·튀기기·버무리기)·dessert(거품·반죽·굳히기).js, 설정·규칙은 data/cooking.js, 스타일 css/cook.css. 진동은 navigator.vibrate(안드로이드만).
 - 요리 종류에 디저트(dessert) 추가: data/rules.js, 단맛 범위 넓고 sweet:999, 고기·해산물은 어색함(GG_DESSERT_ODD_CATS).
-- 남은 일: 실제 요리 레시피별 조리 순서 + 디저트 레시피 9개(사진 대기), 조리 점수·셰프 대사 반영(step.score, step.methodScore/methodNotes/hinted 는 이미 기록됨).
+- 레시피의 cook 필드 = 조리 순서(실제 요리는 고르기 없이 이 순서대로). 디저트 레시피 9개(patbingsu, hotteok, pancake, brownie, crepe, pannacotta, mango-lassi, churros, sutlac) + 재료 얼음(ice). 요리 고르기에 '디저트' 필터.
+- 조리 점수: judge.js 의 metrics.cook(미니게임 평균), metrics.method(창작 요리만, 힌트 시 80%, 날고기 미조리 감점 0.6). 셰프 focus: 버럭 method·cook, 깐깐 method, 해피 cook. 조리 대사는 data/chefs.js 맨 아래 GG_COOK_LINES (rawFood, methodWrong, hintUsed, cookGreat, cookClumsy).
+- 남은 일: 디저트 완성 사진 9장, 얼음 재료 사진, 창작 요리 대표 접시 5장.

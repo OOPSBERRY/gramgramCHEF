@@ -16,7 +16,7 @@ const GGCook = (function () {
     (it.ing.cat === 'liquid' || GG_POUR_IDS.includes(it.ing.id)) && it.amount >= GG_POUR_MIN;
 
   /* ---------- 담은 재료로 조리 단계 만들기 ---------- */
-  function buildSteps(items, typeId) {
+  function buildSteps(items, typeId, recipe) {
     const steps = [];
     const used = new Set();
     const take = (list) => { list.forEach((it) => used.add(it.ing.id)); return list; };
@@ -29,8 +29,15 @@ const GGCook = (function () {
 
     take(items.filter(isPour)).forEach((it) => steps.push({ game: 'pour', items: [it] }));   // 붓기는 재료마다 따로
 
-    const method = GG_DEFAULT_METHOD[typeId] || 'stirfry';
-    steps.push({ game: method, items: items.slice(), method: true });
+    if (recipe && recipe.cook) {                                     // 실제 요리: 레시피에 정해진 조리 순서
+      recipe.cook.forEach((c) => {
+        const o = typeof c === 'string' ? { game: c } : c;
+        steps.push({ game: o.game, items: items.slice(), method: true, chillMin: o.min, freeze: o.freeze });
+      });
+    } else {
+      const method = GG_DEFAULT_METHOD[typeId] || 'stirfry';
+      steps.push({ game: method, items: items.slice(), method: true });
+    }
 
     const rest = items.filter((it) => !used.has(it.ing.id));
     if (rest.length) steps.push({ game: 'season', items: rest });
@@ -137,8 +144,8 @@ const GGCook = (function () {
     const ids = new Set(items.map((it) => it.ing.id));
     const broken = GG_METHOD_RULES.filter((r) => r.ids.some((id) => ids.has(id)) && !r.need.includes(method));
     broken.forEach((r) => notes.push(r.msg));
-    score = Math.max(0, score - 0.3 * broken.length);
-    return { score, notes, broken: broken.length };
+    score = Math.max(0, score - broken.reduce((t, r) => t + (r.penalty || 0.3), 0));
+    return { score, notes, broken: broken.map((r) => r.key) };
   }
 
   /* 힌트: 요리 종류에 어울리는 방법 + 재료 규칙 */
@@ -175,7 +182,7 @@ const GGCook = (function () {
   /* ---------- 진행 ---------- */
   function start(items, opt, done) {
     const my = ++run;
-    const steps = buildSteps(items, opt.typeId);
+    const steps = buildSteps(items, opt.typeId, opt.recipe);
     if (!opt.recipe) steps.forEach((s) => { if (s.method) s.title = '조리 고르기'; });
     $('cook-title').textContent = '조리하기: ' + (opt.name || '나의 요리');
     let cur = 0;
@@ -196,6 +203,7 @@ const GGCook = (function () {
           const ev = evalMethod(m, opt.typeId, items);
           step.methodScore = ev.score * (hinted ? GG_HINT_KEEP : 1);
           step.methodNotes = ev.notes;
+          step.methodBroken = ev.broken;
           if (window.GGSound) GGSound.play('click');
           next();
         });

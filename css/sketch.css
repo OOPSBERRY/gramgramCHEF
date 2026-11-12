@@ -91,3 +91,8 @@ input[type=range]::-webkit-slider-thumb { border-radius: 48% 52% 50% 50% / 52% 4
 /* 첫 화면 제목과 소개 문장만 손글씨 글꼴 (버튼은 다른 화면처럼 수성돋움체로 두어 누르는 곳임을 알 수 있게) */
 #screen-opening h1, #screen-opening .op-sub { font-family: var(--font-title); font-weight: 400; letter-spacing: 0; }
 .op-sub { font-size: clamp(22px, 3.6vmin, 34px); }
+
+/* 붓기: 계량컵 안을 조금 진하게 해서 하얀 우유도 잘 보이게, 액체 윗면에 선 */
+.pour-cup { background: var(--c-cup); }
+.pour-liquid { border-top: 3px solid var(--c-ink-soft); }
+.pour-liquid.milk, .pour-stream.milk { box-shadow: inset 0 0 0 1px var(--c-line); }

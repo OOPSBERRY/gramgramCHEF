@@ -244,7 +244,7 @@
   };
 })();
 
-/* 양념 넣기, 담기: 점수 없이 버튼 한 번으로 넘어가는 단계 */
+/* 양념 넣기: 점수 없이 버튼 한 번으로 넘어가는 단계 */
 (function () {
   function simple(stage, step, finish, opt) {
     stage.innerHTML = '<div class="heat-hud">' + opt.hud + '</div><div class="sp-bowl"><div class="sp-in"></div></div>' +
@@ -263,13 +263,8 @@
       });
       GGCook.ui.buzz(20);
       if (window.GGSound) GGSound.play('pop');
-      if (opt.after) opt.after(stage);
       setTimeout(() => finish(null), 900 + list.length * 80);
     };
   }
   GGCook.games.season = (stage, step, finish) => simple(stage, step, finish, { hud: '양념을 넣어요', btn: '넣기' });
-  GGCook.games.plate = (stage, step, finish) => simple(stage, step, finish, {
-    hud: '그릇에 예쁘게 담아요', btn: '담기',
-    after: (st) => { const w = document.createElement('div'); w.className = 'crack-word perfect'; w.textContent = '완성!'; st.appendChild(w); }
-  });
 })();

@@ -42,7 +42,6 @@ const GGCook = (function () {
     const rest = items.filter((it) => !used.has(it.ing.id));
     if (rest.length) steps.push({ game: 'season', items: rest });
 
-    steps.push({ game: 'plate', items: [] });
     steps.forEach((s) => { s.title = GG_COOK_GAMES[s.game].name; });
     return steps;
   }

@@ -24,6 +24,7 @@ const GGSound = (function () {
     ding:  () => { tone(880, 0, 0.18, 'sine', 0.13); tone(1320, 0.07, 0.25, 'sine', 0.1); },            // 셰프 점수
     good:  () => [523, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.12, 0.3, 'triangle', 0.14)),     // 높은 점수
     soft:  () => { tone(392, 0, 0.25, 'sine', 0.12); tone(330, 0.18, 0.35, 'sine', 0.1); },              // 아쉬운 점수
+    chop:  () => { tone(1400, 0, 0.03, 'square', 0.05, 600); tone(160, 0.01, 0.06, 'triangle', 0.12); },   // 도마 위 칼질
     error: () => { tone(220, 0, 0.12, 'square', 0.06); tone(180, 0.1, 0.16, 'square', 0.06); }
   };
   function play(name) { if (!on) return; try { (SOUNDS[name] || SOUNDS.click)(); } catch (e) { /* 소리가 안 나도 앱은 계속 */ } }

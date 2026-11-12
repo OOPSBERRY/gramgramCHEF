@@ -38,7 +38,8 @@
     const f = GGFilter.check(name);
     if (!f.ok) { $('sub-msg').textContent = f.msg; if (window.GGSound) GGSound.play('error'); return; }
     const items = A.state.items.filter((it) => it.amount > 0);
-    askCalc(items, (calc) => startResult(GGJudge.judge(items, typeId, name, null, { calc, budget: A.state.budget }), name, items));
+    GGCook.start(items, { typeId, name }, (cook) =>
+      askCalc(items, (calc) => startResult(GGJudge.judge(items, typeId, name, null, { calc, cook, budget: A.state.budget }), name, items)));
   }
 
   /* ================= 계산 확인 (그램 셰프의 질문) ================= */
@@ -263,7 +264,8 @@
     const R = A.state.recipe;
     const items = A.state.items.filter((it) => it.amount > 0);
     if (!R || !items.length) return;
-    askCalc(items, (calc) => startResult(GGJudge.judge(items, R.type, R.name, R, { calc, budget: A.state.budget }), R.name, items));
+    GGCook.start(items, { typeId: R.type, name: R.name, recipe: R }, (cook) =>
+      askCalc(items, (calc) => startResult(GGJudge.judge(items, R.type, R.name, R, { calc, cook, budget: A.state.budget }), R.name, items)));
   }
   $('btn-submit').onclick = () => (A.state.mode === 'real' ? submitReal() : openSubmit());
   $('sub-cancel').onclick = () => A.show('screen-kitchen');

@@ -24,6 +24,7 @@
 <link rel="stylesheet" href="css/dishes.css">
 <link rel="stylesheet" href="css/result.css">
 <link rel="stylesheet" href="css/calc.css">
+<link rel="stylesheet" href="css/cook.css">
 <link rel="stylesheet" href="css/polish.css">
 <link rel="stylesheet" href="css/opening.css">
 </head>
@@ -147,6 +148,24 @@
     </div>
   </section>
 
+  <!-- ============ 조리하기 화면 (단계별 미니게임) ============ -->
+  <section id="screen-cook" class="screen">
+    <header class="cook-top">
+      <button class="k-back" id="cook-back">← 재료로</button>
+      <div class="k-title" id="cook-title">조리하기</div>
+      <div class="cook-steps" id="cook-steps"></div>
+    </header>
+    <div class="cook-body">
+      <div class="cook-stage" id="cook-stage"></div>
+      <div class="cook-info">
+        <div class="cook-count" id="cook-count"></div>
+        <div class="cook-name" id="cook-name"></div>
+        <div class="cook-desc" id="cook-desc"></div>
+        <div class="cook-items" id="cook-items"></div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ 계산 확인 화면 (그램 셰프의 질문) ============ -->
   <section id="screen-calc" class="screen">
     <div class="calc-wrap">
@@ -192,6 +211,7 @@
 <script src="data/rules.js"></script>
 <script src="data/chefs.js"></script>
 <script src="data/recipes.js"></script>
+<script src="data/cooking.js"></script>
 <script src="js/calc.js"></script>
 <script src="js/judge.js"></script>
 <script src="js/filter.js"></script>
@@ -200,6 +220,8 @@
 <script src="js/share.js"></script>
 <script src="js/app.js"></script>
 <script src="js/real.js"></script>
+<script src="js/cook.js"></script>
+<script src="js/cook-chop.js"></script>
 <script src="js/result.js"></script>
 <script src="js/opening.js"></script>
 </body>

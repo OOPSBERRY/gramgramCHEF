@@ -1,0 +1,65 @@
+/* 조리하기 화면 (디자인 규칙: design-rules.css) — 요리 화면처럼 어두운 톤 */
+#screen-cook { background: radial-gradient(ellipse at 50% 20%, var(--c-dark-warm) 0%, var(--c-dark) 65%); color: var(--c-on-dark); padding: var(--sp-2); gap: var(--sp-2); }
+
+.cook-top { display: flex; align-items: center; gap: var(--sp-2); }
+.cook-top .k-title { flex: none; }
+.cook-steps { flex: 1; min-width: 0; display: flex; gap: var(--sp-1); overflow-x: auto; scrollbar-width: none; }
+.cook-steps::-webkit-scrollbar { display: none; }
+.cook-chip { flex: none; padding: var(--sp-1) var(--sp-2); border-radius: var(--r-btn); font-size: var(--fs-small); font-weight: 900; border: 1px solid var(--glass-border); color: var(--c-on-dark); opacity: .6; }
+.cook-chip.on { background: var(--c-main); border-color: var(--c-main); opacity: 1; }
+.cook-chip.done { background: var(--c-green); border-color: var(--c-green); opacity: 1; }
+
+.cook-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 2fr 1fr; gap: var(--sp-2); }
+
+/* 미니게임 무대 */
+.cook-stage { position: relative; min-height: 0; border-radius: var(--r-card); background: var(--glass-bg); border: 1px solid var(--glass-border); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); overflow: hidden; display: flex; align-items: center; justify-content: center; touch-action: none; }
+.cook-soon { display: flex; flex-direction: column; align-items: center; gap: var(--sp-2); font-size: var(--fs-body); text-align: center; }
+.cook-soon .big { font-size: var(--fs-title); font-weight: 900; color: var(--c-gold); }
+
+/* 오른쪽 안내 카드 */
+.cook-info { min-height: 0; background: var(--c-cream); color: var(--c-ink); border-radius: var(--r-card); padding: var(--sp-2) var(--sp-3); display: flex; flex-direction: column; gap: var(--sp-1); overflow-y: auto; }
+.cook-count { font-size: var(--fs-small); color: var(--c-ink-soft); font-weight: 900; }
+.cook-name { font-size: var(--fs-title); font-weight: 900; color: var(--c-main); line-height: 1.1; }
+.cook-desc { font-size: var(--fs-body); }
+.cook-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: var(--sp-1); margin-top: var(--sp-1); }
+.cook-item { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px; }
+.cook-item .ph { width: 72px; height: 72px; display: flex; align-items: center; justify-content: center; }
+.cook-item .ph img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.cook-item .ph .em { font-size: var(--fs-title); }
+.cook-item .nm { font-size: var(--fs-small); font-weight: 900; word-break: keep-all; }
+.cook-item .am { font-size: var(--fs-small); color: var(--c-ink-soft); }
+
+/* 주요 버튼 (주황 알약) */
+.cook-next { min-height: var(--btn-h); padding: 0 var(--sp-4); border-radius: var(--r-btn); border: none; font-size: var(--fs-body); font-weight: 900; background: var(--c-main); color: #fff; box-shadow: var(--shadow-btn); }
+.cook-next:active { transform: translateY(4px); box-shadow: var(--shadow-btn-pressed); }
+
+/* ---------- 미니게임 공통: 시작 안내·평가 덮개, 시간 막대 ---------- */
+.cook-overlay { position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--sp-2); text-align: center; padding: var(--sp-4); background: var(--dim-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); animation: m-pop .25s ease-out both; }
+.cook-overlay .big { font-size: var(--fs-title); font-weight: 900; color: var(--c-gold); }
+.cook-overlay .txt { font-size: var(--fs-body); line-height: 1.5; }
+.cook-overlay .score { font-size: var(--fs-display); font-weight: 900; line-height: 1; color: var(--c-on-dark); }
+.cook-overlay.great .big { color: var(--c-gold); }
+.cook-overlay.good .big { color: var(--c-main); }
+.cook-overlay.soso .big { color: var(--c-on-dark); }
+.cook-timer { position: absolute; top: var(--sp-2); left: var(--sp-2); right: var(--sp-2); z-index: 3; height: 32px; border-radius: var(--r-btn); background: var(--glass-bg); border: 1px solid var(--glass-border); overflow: hidden; }
+.cook-timer .fill { height: 100%; background: var(--c-gold); border-radius: var(--r-btn); }
+.cook-timer.low .fill { background: var(--c-danger); }
+.cook-timer span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: var(--fs-small); font-weight: 900; color: var(--c-on-dark); }
+
+/* ---------- 썰기 ---------- */
+.chop-hud { position: absolute; top: 64px; left: 0; right: 0; display: flex; justify-content: center; gap: var(--sp-3); font-size: var(--fs-sub); font-weight: 900; }
+.chop-left { color: var(--c-gold); }
+.chop-board { position: relative; width: 72%; height: 58%; margin-top: var(--sp-4); border-radius: var(--r-card); background: var(--c-wood); border: 8px solid var(--c-wood-dark); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.chop-food { position: relative; width: 70%; height: 80%; }
+.chop-food.next { animation: m-pop .3s ease-out both; }
+.chop-slice { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transition: transform .15s ease-out; }
+.chop-slice img { max-width: 100%; max-height: 100%; object-fit: contain; pointer-events: none; }
+.chop-slice .em { font-size: var(--fs-display); }
+.chop-slash { position: absolute; top: 6%; bottom: 6%; width: 6px; margin-left: -3px; border-radius: var(--r-btn); background: var(--c-cream); animation: chop-slash .4s ease-out forwards; pointer-events: none; }
+@keyframes chop-slash { from { opacity: .95; transform: scaleY(.4); } to { opacity: 0; transform: scaleY(1.05); } }
+.chop-queue { position: absolute; bottom: var(--sp-2); left: 0; right: 0; display: flex; justify-content: center; gap: var(--sp-1); }
+.chop-q { width: 56px; height: 56px; border-radius: var(--r-card); padding: 4px; border: 2px solid var(--glass-border); display: flex; align-items: center; justify-content: center; opacity: .5; }
+.chop-q.on { border-color: var(--c-main); opacity: 1; }
+.chop-q.done { border-color: var(--c-green); opacity: 1; }
+.chop-q img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.chop-q .em { font-size: var(--fs-sub); }

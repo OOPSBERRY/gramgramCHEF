@@ -91,7 +91,7 @@ const GGCook = (function () {
     intro(stage, title, text, onStart) {
       const d = document.createElement('div'); d.className = 'cook-overlay';
       d.innerHTML = '<div class="big">' + title + '</div><div class="txt">' + text + '</div>';
-      const b = document.createElement('button'); b.className = 'cook-next'; b.textContent = '시작!';
+      const b = document.createElement('button'); b.className = 'cook-next'; b.textContent = '시작';
       b.onclick = () => { d.remove(); onStart(); };
       d.appendChild(b); stage.appendChild(d);
     },
@@ -116,10 +116,12 @@ const GGCook = (function () {
     /* 평가 보여 주기: 점수(0~100)에 따라 완벽해요/좋아요/아쉬워요 → [다음 단계] */
     feedback(stage, score, finish, detail) {
       const s = Math.max(0, Math.min(100, Math.round(score)));
-      const [word, cls, snd] = s >= 90 ? ['완벽해요!', 'great', 'good'] : s >= 70 ? ['좋아요!', 'good', 'ding'] : ['아쉬워요', 'soso', 'soft'];
+      const [word, cls, snd] = s >= 90 ? ['완벽해요', 'great', 'good'] : s >= 70 ? ['좋아요', 'good', 'ding'] : ['아쉬워요', 'soso', 'soft'];
       if (window.GGSound) GGSound.play(snd);
+      GGCook.ui.buzz(s >= 70 ? 40 : [40, 40, 40]);
       const d = document.createElement('div'); d.className = 'cook-overlay ' + cls;
-      d.innerHTML = '<div class="big">' + word + '</div><div class="score">' + s + '점</div>' + (detail ? '<div class="txt">' + detail + '</div>' : '');
+      d.innerHTML = '<div class="cook-stamp"><span class="w">' + word + '</span><span class="s">' + s + '<small>점</small></span></div>' +
+        (detail ? '<div class="txt">' + detail + '</div>' : '');
       const b = document.createElement('button'); b.className = 'cook-next'; b.textContent = '다음 단계';
       b.onclick = () => finish(s);
       d.appendChild(b); stage.appendChild(d);
@@ -165,7 +167,7 @@ const GGCook = (function () {
     GG_METHODS.forEach((m) => {
       const g = GG_COOK_GAMES[m];
       const b = document.createElement('button'); b.className = 'pick-btn';
-      b.innerHTML = '<span class="n">' + g.name + '</span><span class="d">' + g.desc + '</span>';
+      b.innerHTML = '<span class="n">' + g.name + '</span>';
       b.onclick = () => onPick(m, hinted);
       grid.appendChild(b);
     });
@@ -183,6 +185,10 @@ const GGCook = (function () {
     if (!opt.recipe) steps.forEach((s) => { if (s.method) s.title = '조리 고르기'; });
     $('cook-title').textContent = '조리하기: ' + (opt.name || '나의 요리');
     let cur = 0;
+    $('cook-log').innerHTML = '';
+    function logLine(name, val) {                                    // 오른쪽 '조리 기록'에 한 줄씩 적어 나감
+      $('cook-log').insertAdjacentHTML('beforeend', '<li><span>' + name + '</span><i></i><b>' + val + '</b></li>');
+    }
 
     function next() {
       if (my !== run) return;
@@ -197,6 +203,7 @@ const GGCook = (function () {
         pickMethod(stage, opt.typeId, items, (m, hinted) => {
           step.chosen = m; step.game = m; step.title = GG_COOK_GAMES[m].name;
           step.hinted = hinted;
+          logLine('조리 방법', GG_COOK_GAMES[m].name + (hinted ? ' (힌트)' : ''));
           const ev = evalMethod(m, opt.typeId, items);
           step.methodScore = ev.score * (hinted ? GG_HINT_KEEP : 1);
           step.methodNotes = ev.notes;
@@ -209,6 +216,7 @@ const GGCook = (function () {
       (games[step.game] || placeholder)(stage, step, (score) => {
         if (my !== run) return;
         step.score = score;
+        if (typeof score === 'number') logLine(step.title, score + '점');
         if (window.GGSound) GGSound.play('click');
         cur++; next();
       });

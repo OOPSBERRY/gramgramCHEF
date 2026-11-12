@@ -19,7 +19,7 @@
     GG_DISH_TYPES.forEach((t) => {
       const b = document.createElement('button');
       b.className = 'sub-type'; b.dataset.id = t.id;
-      b.innerHTML = '<span class="n">' + t.name + '</span><span class="d">' + t.desc + '</span>';
+      b.innerHTML = '<span class="n">' + t.name + '</span>';
       b.onclick = () => {
         typeId = t.id; $('sub-msg').textContent = '';
         box.querySelectorAll('.sub-type').forEach((x) => x.classList.toggle('on', x === b));
@@ -80,34 +80,40 @@
   }
 
   /* ================= 셰프 얼굴 (직접 그린 오리지널 캐릭터) ================= */
+  /* 셰프 얼굴: 연필로 스케치한 느낌 (흔들리는 선 + 겹쳐 그은 선 + 빗금 그림자). 색은 design-rules.css 변수 */
+  let sketchId = 0;
   function chefSvg(chef) {
-    const a = chef.avatar || {}, skin = a.skin || '#F2C29B', ink = '#3a2a1a';
+    const a = chef.avatar || {}, id = 'pc' + (++sketchId);
     const brow = {
-      angry: '<path d="M27 43 L44 50 M73 43 L56 50" />',
-      flat:  '<path d="M29 46 H45 M55 46 H71" />',
-      soft:  '<path d="M29 49 Q37 43 45 47 M55 47 Q63 43 71 49" />',
-      happy: '<path d="M30 47 Q37 40 44 47 M56 47 Q63 40 70 47" />'
+      angry: 'M27 43 L44 50 M73 43 L56 50',
+      flat:  'M29 46 H45 M55 46 H71',
+      soft:  'M29 49 Q37 43 45 47 M55 47 Q63 43 71 49',
+      happy: 'M30 47 Q37 40 44 47 M56 47 Q63 40 70 47'
     }[a.brow] || '';
-    const eyes = a.brow === 'happy'
-      ? '<path d="M31 58 Q37 51 43 58 M57 58 Q63 51 69 58" fill="none" />'
-      : '<circle cx="37" cy="58" r="3.6" fill="' + ink + '" stroke="none" /><circle cx="63" cy="58" r="3.6" fill="' + ink + '" stroke="none" />';
-    const mouth = {
-      shout: '<ellipse cx="50" cy="77" rx="9" ry="7" fill="#7a2a2a" stroke="' + ink + '" /><path d="M43 74 H57" stroke="#fff" stroke-width="3" />',
-      line:  '<path d="M42 77 H58" />',
-      smile: '<path d="M40 74 Q50 84 60 74" fill="none" />',
-      grin:  '<path d="M37 72 Q50 90 63 72 Z" fill="#fff" />'
-    }[a.mouth] || '';
+    const eyes = a.brow === 'happy' ? 'M31 58 Q37 51 43 58 M57 58 Q63 51 69 58' : '';
+    const dots = a.brow === 'happy' ? '' : '<circle cx="37" cy="58" r="2.8" class="pc-fill"/><circle cx="63" cy="58" r="2.8" class="pc-fill"/>';
+    const mouth = { shout: 'M41 73 Q50 86 59 73 Q50 70 41 73 Z', line: 'M42 77 Q50 78 58 76', smile: 'M40 74 Q50 84 60 74', grin: 'M37 72 Q50 90 63 72 Q50 75 37 72 Z' }[a.mouth] || '';
     const extra = {
-      glasses: '<circle cx="37" cy="58" r="9" fill="none" /><circle cx="63" cy="58" r="9" fill="none" /><path d="M46 58 H54" />',
-      mustache: '<path d="M38 69 Q44 64 50 69 Q56 64 62 69" fill="' + ink + '" />',
-      blush: '<circle cx="28" cy="68" r="5" fill="#ff8a7a" stroke="none" opacity=".55" /><circle cx="72" cy="68" r="5" fill="#ff8a7a" stroke="none" opacity=".55" />'
+      glasses: 'M28 58 a9 9 0 1 0 18 0 a9 9 0 1 0 -18 0 M54 58 a9 9 0 1 0 18 0 a9 9 0 1 0 -18 0 M46 58 H54',
+      mustache: 'M38 69 Q44 63 50 68 Q56 63 62 69 Q56 71 50 69 Q44 71 38 69',
+      blush: 'M24 67 l6 -4 M26 71 l6 -4 M68 67 l6 -4 M70 71 l6 -4'
     }[a.extra] || '';
-    return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-      '<circle cx="50" cy="62" r="32" fill="' + skin + '" stroke="' + ink + '" stroke-width="2.5" />' +
-      '<path d="M22 40 Q14 14 38 18 Q50 4 62 18 Q86 14 78 40 Z" fill="#fff" stroke="' + ink + '" stroke-width="2.5" stroke-linejoin="round" />' +
-      '<rect x="22" y="36" width="56" height="9" rx="3" fill="' + chef.color + '" stroke="' + ink + '" stroke-width="2.5" />' +
-      '<g stroke="' + ink + '" stroke-width="3" stroke-linecap="round" fill="none">' + brow + eyes + extra + mouth + '</g></svg>';
+    const lines = 'M50 30 m-32 32 a32 32 0 1 0 64 0 a32 32 0 1 0 -64 0' +                         // 얼굴
+      ' M22 40 Q14 14 38 18 Q50 4 62 18 Q86 14 78 40 Z' +                                              // 모자
+      ' M22 36 H78 V45 H22 Z' +                                                                        // 모자 띠
+      ' M44 22 Q46 30 44 36 M58 20 Q56 28 58 36' +                                                     // 모자 주름
+      ' ' + brow + ' ' + eyes + ' ' + mouth + ' ' + extra;
+    const hatch = '<path class="pc-hatch" d="M26 50 l8 -6 M28 54 l10 -7 M66 50 l8 -6 M64 54 l10 -7 M36 88 l10 -6 M44 92 l12 -8 M54 92 l10 -7"/>' +
+      '<path class="pc-band" d="M26 44 l6 -8 M33 44 l6 -8 M40 44 l6 -8 M47 44 l6 -8 M54 44 l6 -8 M61 44 l6 -8 M68 44 l6 -8 M75 44 l3 -4" style="stroke:' + chef.color + '"/>';
+    return '<svg class="sketch" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+      '<defs><filter id="' + id + '" x="-10%" y="-10%" width="120%" height="120%">' +
+      '<feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed="' + (sketchId % 7 + 1) + '" result="n"/>' +
+      '<feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G"/></filter></defs>' +
+      '<g filter="url(#' + id + ')">' + hatch +
+      '<path class="pc-line" d="' + lines + '"/>' +
+      '<path class="pc-line pc-again" d="' + lines + '" transform="translate(.8 -.6) rotate(.6 50 50)"/>' + dots + '</g></svg>';
   }
+
 
   /* ================= 결과 화면 ================= */
   function countUp(el, to, ms, from) {
@@ -219,7 +225,7 @@
       await new Promise((resolve) => { $('btn-next').onclick = resolve; });
     }
     if (my !== run) return;
-    showFinal(result);
+    showFinal(result, name, items);
   }
 
   function finalButtons() {
@@ -253,32 +259,43 @@
     setTimeout(() => box.remove(), 5000);
   }
 
-  async function showFinal(result) {
+  /* 최종 결과: 손으로 쓴 레시피 카드 한 장 (요리 이름, 점수 도장, 재료와 양, 만드는 순서, 셰프 한마디) */
+  async function showFinal(result, name, items) {
     const my = run;
     const all = Object.values(result.analysis.metrics);
-    const names = result.chefs.map((c, i) => '<li style="--chef:' + c.chef.color + ';animation-delay:' + (i * 0.3) + 's"><span class="mini">' + chefSvg(c.chef) + '</span><span>' + esc(c.chef.name) + '</span><b>' + c.score + ' / 25</b></li>').join('');
     const rc = result.analysis.recipe, R = A.state.mode === 'real' ? A.state.recipe : null;
+    const typeObj = result.analysis.type;
+    const ing = (items || []).slice().sort((a, b) => GGCalc.grams(b.ing, b.amount) - GGCalc.grams(a.ing, a.amount))
+      .map((it) => '<li><span>' + esc(it.ing.name) + '</span><i></i><b>' + GGCalc.amountText(it.amount, it.ing.unit) + '</b></li>').join('');
+    const steps = (result.analysis.cookSteps || []).filter((x) => GG_COOK_GAMES[x.game])
+      .map((x) => '<li>' + esc(GG_COOK_GAMES[x.game].name) + (typeof x.score === 'number' ? ' <small>' + x.score + '점</small>' : '') + '</li>').join('');
+    const chefs = result.chefs.map((c) => '<li style="--chef:' + c.chef.color + '"><span class="mini">' + chefSvg(c.chef) + '</span>' +
+      '<div><b>' + esc(c.chef.name) + ' ' + c.score + '점</b><p>' + esc(c.line) + '</p></div></li>').join('');
     const sim = (rc && R)
-      ? '<div class="final-sim"><div class="sim-big">실제 ' + esc(R.name) + josa(R.name) + ' <b>' + rc.pct + '%</b> 비슷해요</div>' +
-        '<div class="sim-parts">필수 재료 ' + rc.reqPresent + '/' + rc.reqTotal + ', 비율 일치도 ' + rc.parts.ratio + '%, 관계없는 재료 점수 ' + rc.parts.extra + '%</div>' +
-        (rc.missing.length ? '<div class="sim-miss">빠진 재료: ' + rc.missing.map(esc).join(', ') + '</div>' : '') + '</div>' +
-        '<details class="final-table"><summary>레시피와 비교해 보기 (숫자)</summary><ul class="checks">' + detailRows(rc.rows) + '</ul></details>'
+      ? '<div class="rc-sim">실제 ' + esc(R.name) + josa(R.name) + ' <b>' + rc.pct + '%</b> 비슷해요' +
+        (rc.missing.length ? '<span class="miss">빠진 재료: ' + rc.missing.map(esc).join(', ') + '</span>' : '') + '</div>'
       : '';
-    const note = result.chefCount < GG_CHEFS.length
-      ? '<div class="res-note">지금은 심사위원 ' + result.chefCount + '명이에요. ' + result.chefCount + '명의 점수를 100점 만점으로 바꿔서 보여줘요.</div>' : '';
+    const cost = GGCalc.totalCost(items || []);
     $('res-right').innerHTML =
-      '<div class="final-score"><span class="num" id="final-num">0</span><span class="unit">점</span></div>' +
-      '<div class="final-grade">' + esc(result.grade.title) + '</div>' +
-      '<div class="final-msg">' + esc(result.grade.msg) + '</div>' + sim +
-      '<ul class="final-chefs">' + names + '</ul>' + note +
+      '<article class="recipe-card">' +
+      '  <header class="rc-head"><div><h2>' + esc(name) + '</h2>' +
+      '    <div class="rc-sub">' + (R ? esc(R.country) + ' 요리, ' : '') + esc(typeObj.name) + ', 재료 ' + (items || []).length + '가지, 원가 ' + GGCalc.won(cost) + '</div></div>' +
+      '    <div class="rc-stamp" id="rc-stamp"><span class="n" id="final-num">0</span><span class="u">점</span><span class="g">' + esc(result.grade.title) + '</span></div></header>' +
+      '  <p class="rc-msg">' + esc(result.grade.msg) + '</p>' + sim +
+      '  <div class="rc-cols"><section><h3>재료</h3><ul class="rc-ing">' + ing + '</ul></section>' +
+      (steps ? '<section><h3>만드는 순서</h3><ol class="rc-steps">' + steps + '</ol></section>' : '') + '</div>' +
+      '  <section><h3>셰프 한마디</h3><ul class="rc-chefs">' + chefs + '</ul></section>' +
+      '</article>' +
+      (rc && R ? '<details class="final-table"><summary>레시피와 비교해 보기 (숫자)</summary><ul class="checks">' + detailRows(rc.rows) + '</ul></details>' : '') +
       '<details class="final-table"><summary>내 요리 분석표 보기 (숫자)</summary><ul class="checks">' + detailRows(all) + '</ul></details>' +
       finalButtons();
     bindFinal();
-    await wait(result.chefs.length * 300 + 400);                    // 셰프들의 점수가 차례로 나타난 뒤에 합계 공개
+    await wait(500);
     if (my !== run) return;
-    await countUp($('final-num'), result.total, 1600);
-    if (my === run) celebrate(result.total);
-    if (my === run) $('final-num').parentNode.classList.add('done');
+    await countUp($('final-num'), result.total, 1400);
+    if (my !== run) return;
+    $('rc-stamp').classList.add('done');
+    celebrate(result.total);
   }
 
   /* ================= 연결 ================= */

@@ -29,8 +29,8 @@ const GGCalc = (function () {
 
   /** 양을 읽기 좋게 (예: 1500g → "1.5kg", 250mL → "250mL") */
   function amountText(amount, base) {
-    if (amount >= 1000) return round(amount / 1000, 3) + BIG[base];
-    return round(amount, 1) + base;
+    if (amount >= 1000) return round(amount / 1000, 2) + BIG[base];
+    return round(amount, amount >= 100 ? 0 : 1) + base;
   }
 
   return { unitPair, factor, round, toDisplay, fromDisplay, cost, grams, totalCost, totalGrams, won, amountText };

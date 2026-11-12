@@ -67,7 +67,7 @@
       let score, detail;
       if (done) {
         score = 100 - Math.min(45, overSec * 12);
-        detail = overSec > 0.3 ? '다 끓였지만 ' + Math.round(overSec) + '초 동안 넘쳤어요.' : '넘치지 않고 알맞게 끓였어요!';
+        detail = overSec > 0.3 ? '다 끓였지만 ' + Math.round(overSec) + '초 동안 넘쳤어요.' : '넘치지 않고 알맞게 끓였어요.';
       } else {
         score = 70 * inZone / need - Math.min(30, overSec * 8);
         detail = '시간 안에 다 끓이지 못했어요.';
@@ -80,7 +80,7 @@
     btn.onpointerup = btn.onpointerleave = btn.onpointercancel = () => { holding = false; btn.classList.remove('on'); };
     btn.oncontextmenu = (e) => e.preventDefault();
 
-    GGCook.ui.intro(stage, '끓이기', '[꾹 눌러서 불 세게]를 눌렀다 뗐다 하면서<br>불 세기를 <b>초록 칸</b> 안에 맞춰요. 너무 세면 넘쳐요!<br>' +
+    GGCook.ui.intro(stage, '끓이기', '[꾹 눌러서 불 세게]를 눌렀다 뗐다 하면서<br>불 세기를 <b>초록 칸</b> 안에 맞춰요. 너무 세면 넘쳐요.<br>' +
       (liters > 0 ? '물·육수가 ' + GGCalc.amountText(liters * 1000, 'mL') + '라서 ' : '') + Math.round(need) + '초 동안 끓여야 해요.', () => {
       playing = true; last = performance.now();
       timer = GGCook.ui.timer(stage, limit, () => end(false));
@@ -98,7 +98,7 @@
     let tosses = 0, burn = 0, burnt = 0, playing = false, last = 0, timer = null;
 
     stage.innerHTML =
-      '<div class="heat-hud">팬을 좌우로 흔들어요!</div>' +
+      '<div class="heat-hud">팬을 좌우로 흔들어요</div>' +
       '<div class="fry-pan"><img class="fry-panimg" src="assets/ui/pan.png" alt=""><div class="fry-food"></div><div class="fry-smoke"><i></i><i></i><i></i></div></div>' +
       '<div class="heat-meter burn"><div class="over"></div><div class="mark"></div><span>탐</span></div>' +
       '<div class="heat-progress"><div class="fill"></div><span>익힘</span></div>' +
@@ -169,7 +169,7 @@
       let score, detail;
       if (done) {
         score = 100 - burnt * 25;
-        detail = burnt ? '다 볶았지만 ' + burnt + '번 탔어요.' : '하나도 안 태우고 잘 볶았어요!';
+        detail = burnt ? '다 볶았지만 ' + burnt + '번 탔어요.' : '하나도 안 태우고 잘 볶았어요.';
       } else {
         score = 70 * tosses / need - burnt * 15;
         detail = '시간 안에 다 볶지 못했어요.';
@@ -191,8 +191,8 @@
     stage.onpointerup = stage.onpointercancel = () => { down = false; };
 
     scatter();
-    GGCook.ui.intro(stage, '볶기', '손가락으로 팬을 <b>좌우로 쓱쓱</b> 흔들어요.<br>가만히 두면 재료가 타요! 탐 막대가 빨간 칸에 가기 전에 흔들어요.<br>' +
-      need + '번 흔들면 완성!', () => {
+    GGCook.ui.intro(stage, '볶기', '손가락으로 팬을 <b>좌우로 쓱쓱</b> 흔들어요.<br>가만히 두면 재료가 타요. 탐 막대가 빨간 칸에 가기 전에 흔들어요.<br>' +
+      need + '번 흔들면 완성이에요.', () => {
       playing = true; last = performance.now();
       timer = GGCook.ui.timer(stage, limit, () => end(false));
       frame();

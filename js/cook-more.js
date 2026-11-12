@@ -90,7 +90,7 @@
     btn.oncontextmenu = (e) => e.preventDefault();
 
     hud();
-    GGCook.ui.intro(stage, '굽기', '재료 색이 <b>날것 → 노릇노릇 → 탐</b>으로 변해요.<br>아래 막대가 <b>초록 칸</b>에 왔을 때 [뒤집기]를 눌러요.<br>앞뒤 ' + G.sides + '번!', () => {
+    GGCook.ui.intro(stage, '굽기', '재료 색이 <b>날것 → 노릇노릇 → 탐</b>으로 변해요.<br>아래 막대가 <b>초록 칸</b>에 왔을 때 [뒤집기]를 눌러요.<br>앞뒤 ' + G.sides + '번 구워요.', () => {
       playing = true; t0 = performance.now(); frame();
     });
   };
@@ -178,7 +178,7 @@
     btn.onpointerdown = (e) => { e.preventDefault(); press(); };
     btn.oncontextmenu = (e) => e.preventDefault();
 
-    GGCook.ui.intro(stage, '튀기기', '기름 온도가 오르내려요. <b>' + F.best[0] + '~' + F.best[1] + '℃</b>(초록 칸)일 때 [넣기]!<br>그다음 튀김이 <b>노릇노릇</b>해지면 [건지기]를 눌러요.', () => {
+    GGCook.ui.intro(stage, '튀기기', '기름 온도가 오르내려요. <b>' + F.best[0] + '~' + F.best[1] + '℃</b>(초록 칸)일 때 [넣기]를 눌러요.<br>그다음 튀김이 <b>노릇노릇</b>해지면 [건지기]를 눌러요.', () => {
       playing = true; t0 = performance.now(); frame();
     });
   };
@@ -234,11 +234,11 @@
       if (!playing) return;
       playing = false; timer.stop();
       const score = done ? 75 + Math.min(25, timer.left() / limit * 80) : 70 * turned / need;
-      GGCook.ui.feedback(stage, score, finish, done ? need + '바퀴 골고루 섞었어요!' : need + '바퀴 중 ' + Math.floor(turned) + '바퀴 섞었어요.');
+      GGCook.ui.feedback(stage, score, finish, done ? need + '바퀴 골고루 섞었어요.' : need + '바퀴 중 ' + Math.floor(turned) + '바퀴 섞었어요.');
     }
 
     draw();
-    GGCook.ui.intro(stage, '버무리기', '손가락으로 그릇 안을 <b>동그랗게 빙글빙글</b> 돌려요.<br>' + need + '바퀴 돌리면 완성! 제한 시간 ' + limit + '초', () => {
+    GGCook.ui.intro(stage, '버무리기', '손가락으로 그릇 안을 <b>동그랗게 빙글빙글</b> 돌려요.<br>' + need + '바퀴 돌리면 완성이에요. 제한 시간 ' + limit + '초', () => {
       playing = true; timer = GGCook.ui.timer(stage, limit, () => end(false));
     });
   };

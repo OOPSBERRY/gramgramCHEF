@@ -63,7 +63,7 @@
     stage.querySelector('.wh-done').onclick = () => end(false);
 
     draw();
-    GGCook.ui.intro(stage, '거품 내기', '손가락으로 그릇 안을 <b>빙글빙글</b> 돌려 거품을 내요.<br><b>"뿔이 섰어요!"</b>가 보이면 [다 됐어요]를 눌러요.<br>너무 오래 저으면 버터가 돼 버려요!', () => {
+    GGCook.ui.intro(stage, '거품 내기', '손가락으로 그릇 안을 <b>빙글빙글</b> 돌려 거품을 내요.<br><b>"뿔이 섰어요!"</b>가 보이면 [다 됐어요]를 눌러요.<br>너무 오래 저으면 버터가 돼 버려요.', () => {
       playing = true; timer = GGCook.ui.timer(stage, W.limitSec, () => end(true));
     });
   };
@@ -118,11 +118,11 @@
       if (!playing) return;
       playing = false; timer.stop();
       const score = done ? 75 + Math.min(25, timer.left() / limit * 80) : 70 * pushes / need;
-      GGCook.ui.feedback(stage, score, finish, done ? '반죽이 매끈해졌어요!' : need + '번 중 ' + pushes + '번 반죽했어요.');
+      GGCook.ui.feedback(stage, score, finish, done ? '반죽이 매끈해졌어요.' : need + '번 중 ' + pushes + '번 반죽했어요.');
     }
 
     draw();
-    GGCook.ui.intro(stage, '반죽하기', '손가락으로 반죽을 <b>위에서 아래로 꾹</b> 밀어요.<br>' + need + '번 밀면 매끈한 반죽이 돼요! 제한 시간 ' + limit + '초', () => {
+    GGCook.ui.intro(stage, '반죽하기', '손가락으로 반죽을 <b>위에서 아래로 꾹</b> 밀어요.<br>' + need + '번 밀면 매끈한 반죽이 돼요. 제한 시간 ' + limit + '초', () => {
       playing = true; timer = GGCook.ui.timer(stage, limit, () => end(false));
     });
   };
@@ -167,14 +167,14 @@
       const score = err <= C.perfect ? 100 : Math.max(0, 100 * (C.zero - err) / (C.zero - C.perfect));
       GGCook.ui.buzz(30);
       const detail = '목표 ' + fmt(target) + ', 굳힌 시간 ' + fmt(mins) +
-        (err <= C.perfect ? ' (딱 맞아요!)' : mins < target ? ' (덜 굳었어요)' : ' (너무 오래 뒀어요)');
+        (err <= C.perfect ? ' (딱 맞아요)' : mins < target ? ' (덜 굳었어요)' : ' (너무 오래 뒀어요)');
       GGCook.ui.feedback(stage, score, finish, detail);
     }
     const btn = stage.querySelector('.gr-btn');
     btn.onpointerdown = (e) => { e.preventDefault(); take(); };
     btn.oncontextmenu = (e) => e.preventDefault();
 
-    GGCook.ui.intro(stage, '굳히기', (freeze ? '냉동실' : '냉장고') + ' 안에서는 시간이 아주 빨리 흘러요!<br>시계가 <b>' + fmt(target) + '</b>이 됐을 때 [꺼내기]를 눌러요.<br>시계 바늘을 잘 읽어 봐요.', () => {
+    GGCook.ui.intro(stage, '굳히기', (freeze ? '냉동실' : '냉장고') + ' 안에서는 시간이 아주 빨리 흘러요.<br>시계가 <b>' + fmt(target) + '</b>이 됐을 때 [꺼내기]를 눌러요.<br>시계 바늘을 잘 읽어 봐요.', () => {
       playing = true; t0 = performance.now(); frame();
     });
   };

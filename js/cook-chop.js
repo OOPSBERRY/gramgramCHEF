@@ -100,7 +100,7 @@
       if (finished) {
         const ratio = timer.left() / seconds;               // 남은 시간 비율
         score = 75 + Math.min(25, ratio * 80);               // 시간 안에 다 썰면 75점부터, 빨리 썰수록 100점까지
-        detail = '칼질 ' + total + '번을 ' + Math.max(1, Math.round(seconds - timer.left())) + '초 만에 끝냈어요!';
+        detail = '칼질 ' + total + '번을 ' + Math.max(1, Math.round(seconds - timer.left())) + '초 만에 끝냈어요.';
       } else {
         score = 70 * doneAll / total;
         detail = '칼질 ' + total + '번 중 ' + doneAll + '번 했어요.';
@@ -126,7 +126,7 @@
     window.addEventListener('resize', placeTools);
 
     drawFood();
-    GGCook.ui.intro(stage, '썰기', '칼이 썰 자리에 서 있어요. 손가락으로 화면을 <b>위아래로 쓱쓱</b> 문지르면<br>칼이 한 번씩 내려가며 썰어요.<br>칼질 ' + total + '번, 제한 시간 ' + seconds + '초!', () => {
+    GGCook.ui.intro(stage, '썰기', '칼이 썰 자리에 서 있어요. 손가락으로 화면을 <b>위아래로 쓱쓱</b> 문지르면<br>칼이 한 번씩 내려가며 썰어요.<br>칼질 ' + total + '번, 제한 시간 ' + seconds + '초', () => {
       playing = true;
       timer = GGCook.ui.timer(stage, seconds, () => end(false));
     });

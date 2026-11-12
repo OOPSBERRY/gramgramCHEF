@@ -68,11 +68,11 @@
       const p = Math.round(poured), diff = Math.abs(p - target);
       const errPct = diff / target * 100;
       const score = errPct <= P.perfect ? 100 : Math.max(0, 100 * (P.zero - errPct) / (P.zero - P.perfect));
-      const detail = '목표 ' + target + 'mL, 부은 양 ' + p + 'mL' + (diff ? ' (' + diff + 'mL ' + (p > target ? '많아요' : '적어요') + ')' : ' (딱 맞아요!)');
+      const detail = '목표 ' + target + 'mL, 부은 양 ' + p + 'mL' + (diff ? ' (' + diff + 'mL ' + (p > target ? '많아요' : '적어요') + ')' : ' (딱 맞아요)');
       GGCook.ui.feedback(stage, score, finish, detail);
     };
 
     draw();
-    GGCook.ui.intro(stage, '붓기', '<b>' + it.ing.name + ' ' + target + 'mL</b>를 계량컵에 부어요.<br>[꾹 눌러서 붓기]를 누르고 있다가 <b>눈금을 보고</b> 손을 떼요.<br>여러 번 나눠 부어도 돼요!', () => { playing = true; });
+    GGCook.ui.intro(stage, '붓기', '<b>' + it.ing.name + ' ' + target + 'mL</b>를 계량컵에 부어요.<br>[꾹 눌러서 붓기]를 누르고 있다가 <b>눈금을 보고</b> 손을 떼요.<br>여러 번 나눠 부어도 돼요.', () => { playing = true; });
   };
 })();

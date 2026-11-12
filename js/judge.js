@@ -236,7 +236,7 @@ const GGJudge = (function () {
         text: '실제 ' + recipe.name + josa(recipe.name, '와', '과') + ' ' + recipeResult.pct + '% 비슷해요' };
     }
 
-    return { type, W, count: rows.length, metrics: m, rows, recipe: recipeResult, budget, cost };
+    return { type, W, count: rows.length, metrics: m, rows, recipe: recipeResult, budget, cost, cookSteps: (extra.cook && extra.cook.steps) || [] };
   }
 
   /** 점수대: 25점 만점 기준 */

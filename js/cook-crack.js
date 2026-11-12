@@ -88,7 +88,7 @@
     btn.oncontextmenu = (e) => e.preventDefault();
 
     hud();
-    GGCook.ui.intro(stage, '달걀 깨기', '움직이는 표시가 가운데 <b>초록 칸</b>에 왔을 때 <b>[톡!]</b>을 눌러요.<br>너무 약하거나 세면 껍데기가 들어가요!<br>깰 개수: ' + eggs.length + '개', () => {
+    GGCook.ui.intro(stage, '달걀 깨기', '움직이는 표시가 가운데 <b>초록 칸</b>에 왔을 때 <b>[톡!]</b>을 눌러요.<br>너무 약하거나 세면 껍데기가 들어가요.<br>깰 개수: ' + eggs.length + '개', () => {
       playing = true; t0 = performance.now(); loop();
     });
   };

@@ -142,21 +142,17 @@
     }).join('');
   }
 
-  /* 접시 위에 재료 사진을 둥글게 모아 놓은 그림 (무거운 재료가 가운데, 최대 7가지) */
-  function platePhoto(items) {
-    const plate = document.createElement('div'); plate.className = 'res-plate';
-    const list = items.slice().sort((a, b) => GGCalc.grams(b.ing, b.amount) - GGCalc.grams(a.ing, a.amount)).slice(0, 7);
-    list.forEach((it, i) => {
-      const d = document.createElement('div'); d.className = 'res-plate-item' + (i === 0 ? ' main' : '');
-      if (i > 0) {
-        const a = (i - 1) / Math.max(1, list.length - 1) * Math.PI * 2 - Math.PI / 2;
-        d.style.left = (50 + Math.cos(a) * 27) + '%'; d.style.top = (50 + Math.sin(a) * 27) + '%';
-      }
-      d.appendChild(A.photo(it.ing));
-      plate.appendChild(d);
-    });
-    return plate;
-  }
+  /* 창작 요리: 은빛 뚜껑(클로슈)을 덮은 접시. 안에 무엇이 있는지는 학생 상상에 맡겨요 */
+  const CLOCHE =
+    '<svg class="cloche" viewBox="0 0 400 300" aria-hidden="true">' +
+    '<g class="steam"><path d="M150 70 q-14 -22 0 -44 q14 -22 0 -44"/><path d="M200 60 q-14 -22 0 -44 q14 -22 0 -44"/><path d="M250 70 q-14 -22 0 -44 q14 -22 0 -44"/></g>' +
+    '<ellipse class="plate" cx="200" cy="262" rx="190" ry="30"/>' +
+    '<ellipse class="plate-in" cx="200" cy="256" rx="150" ry="18"/>' +
+    '<g class="lid"><path class="dome" d="M48 252 Q48 92 200 92 Q352 92 352 252 Z"/>' +
+    '<path class="shine" d="M92 214 Q96 136 168 116"/>' +
+    '<rect class="rim" x="36" y="244" width="328" height="16" rx="8"/>' +
+    '<circle class="knob" cx="200" cy="80" r="16"/></g>' +
+    '</svg>';
 
   function buildLeft(name, items, typeObj) {
     const R = A.state.mode === 'real' ? A.state.recipe : null;       // 실제 요리 도전이면 레시피 정보를 함께 보여줌
@@ -174,14 +170,16 @@
     // 재료 사진 칩과 대표 요리 그림 (사진이 없으면 이모지)
     $('res-left').querySelectorAll('.ph').forEach((p) => p.appendChild(A.photo(GG_INGREDIENTS.find((i) => i.id === p.dataset.id))));
     const vis = $('res-visual');
-    if (!R) {                                                          // 창작 요리: 종류별 대표 사진 위에 학생이 지은 이름표를 붙임
+    if (!R) {                                                          // 창작 요리: 뚜껑 덮인 접시 + 학생이 지은 이름표
+      vis.innerHTML = CLOCHE;
       const tag = document.createElement('div'); tag.className = 'res-nametag'; tag.textContent = name;
       vis.appendChild(tag);
+      return;
     }
     const img = document.createElement('img');
-    img.alt = ''; img.src = R ? 'assets/dishes/' + R.id + '.png' : 'assets/ui/dish-' + typeObj.id + '.png';
-    img.onerror = () => img.replaceWith(platePhoto(items));          // 대표 사진이 없으면 내가 넣은 재료 사진을 접시에 모아 보여줌
-    vis.insertBefore(img, vis.firstChild);
+    img.alt = ''; img.src = 'assets/dishes/' + R.id + '.png';
+    img.onerror = () => { const e = document.createElement('div'); e.className = 'big-emoji'; e.textContent = typeObj.emoji; img.replaceWith(e); };
+    vis.appendChild(img);
   }
 
   async function startResult(result, name, items) {

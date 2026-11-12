@@ -40,3 +40,4 @@
 - 레시피의 cook 필드 = 조리 순서(실제 요리는 고르기 없이 이 순서대로). 디저트 레시피 9개(patbingsu, hotteok, pancake, brownie, crepe, pannacotta, mango-lassi, churros, sutlac) + 재료 얼음(ice). 요리 고르기에 '디저트' 필터.
 - 조리 점수: judge.js 의 metrics.cook(미니게임 평균), metrics.method(창작 요리만, 힌트 시 80%, 날고기 미조리 감점 0.6). 셰프 focus: 버럭 method·cook, 깐깐 method, 해피 cook. 조리 대사는 data/chefs.js 맨 아래 GG_COOK_LINES (rawFood, methodWrong, hintUsed, cookGreat, cookClumsy).
 - 남은 일: 디저트 완성 사진 9장, 얼음 재료 사진, 창작 요리 대표 접시 5장.
+- 창작 요리 결과 그림: 은빛 뚜껑 덮인 접시(js/result.js 의 CLOCHE SVG, 뚜껑 들림·김 애니메이션) + 학생이 지은 이름표(.res-nametag). 종류별 대표 사진은 학생 요리와 안 맞아서 쓰지 않음. AI 이미지 생성도 비용·부적절한 이름·API 키 노출 문제로 쓰지 않기로 함.

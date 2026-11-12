@@ -12,17 +12,18 @@
   font-weight: 400; font-style: normal; font-display: swap;
 }
 
-/* 첫 화면 글꼴: 교보 손글씨 2025 이유빈 (원본 파일 그대로 사용) */
+/* 게임 전체 글꼴: 교보 손글씨 2025 이유빈 (원본 파일 그대로 사용) */
 @font-face {
   font-family: 'KyoboHandwriting2025';
   src: url('../assets/fonts/KyoboHandwriting2025.otf') format('opentype');
   font-weight: 400; font-style: normal; font-display: swap;
+  size-adjust: 122%;   /* 손글씨가 같은 크기에서 작아 보여서 조금 키움 */
 }
 
 :root {
   /* ---------- 글꼴 ---------- */
-  --font-title: 'KyoboHandwriting2025', 'SuseongDotum', sans-serif;   /* 첫 화면 글자 전부 */
-  --font-main: 'SuseongDotum', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  --font-title: 'KyoboHandwriting2025', 'SuseongDotum', sans-serif;   /* 제목 */
+  --font-main: 'KyoboHandwriting2025', 'SuseongDotum', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
 
   /* ---------- 색: 레시피 노트 (누런 종이 + 먹색 글씨 + 토마토 빨강 도장) ---------- */
   --c-paper:      #F2EBDD;   /* 바탕: 누런 종이 */

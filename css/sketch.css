@@ -88,8 +88,6 @@ input[type=range]::-webkit-slider-thumb { border-radius: 48% 52% 50% 50% / 52% 4
 @media (prefers-reduced-motion: reduce) { .chef-avatar svg { animation: none !important; } }
 .sketch .pc-brow { stroke-width: 2.4; }
 
-/* 첫 화면 글자 전부 손글씨 글꼴 (굵기가 한 종류라 억지로 굵게 만들지 않음) */
-#screen-opening, #screen-opening h1, #screen-opening .op-sub, #screen-opening button { font-family: var(--font-title); font-weight: 400; letter-spacing: 0; }
+/* 첫 화면 제목과 소개 문장만 손글씨 글꼴 (버튼은 다른 화면처럼 수성돋움체로 두어 누르는 곳임을 알 수 있게) */
+#screen-opening h1, #screen-opening .op-sub { font-family: var(--font-title); font-weight: 400; letter-spacing: 0; }
 .op-sub { font-size: clamp(22px, 3.6vmin, 34px); }
-.op-start { font-size: 32px; }
-.op-qr { font-size: var(--fs-body); }

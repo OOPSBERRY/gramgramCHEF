@@ -114,7 +114,7 @@
     return new Promise((resolve) => {
       const t0 = performance.now();
       (function tick(now) {
-        const p = Math.min(1, (now - t0) / ms);
+        const p = Math.max(0, Math.min(1, (now - t0) / ms));      // 첫 프레임 시각이 시작보다 살짝 앞설 수 있어서 0 아래로 내려가지 않게
         el.textContent = Math.round(from + (to - from) * (1 - Math.pow(1 - p, 3)));
         if (p < 1) requestAnimationFrame(tick); else resolve();
       })(t0);

@@ -32,7 +32,7 @@
 - 셰프 4명(버럭·깐깐·그램·해피) 모두 ready: true. 새 심사 항목: price(가격·예산), accuracy(계산 확인: 제출 전 총 원가·총 무게를 직접 계산해 입력, 도우미 사용 시 최대 절반), creative·nameq·brave(해피). 계산 확인 화면은 css/calc.css. 대사의 {dish} 뒤 조사(가/이, 를/을 등)는 요리 이름 받침에 맞춰 자동 수정됨.
 - 6단계 다듬기: 후라이팬 속 재료 크기가 양에 따라 변함(app.js setSlotSize), 효과음은 파일 없이 WebAudio로 생성(js/sound.js, 기본 꺼짐, localStorage 키 gramgram_sound_v1), 화면 전환·버튼 누름·점수 75점 이상 색종이 효과는 css/polish.css, 입력칸이 키보드에 가려지지 않게 focusin 때 가운데로 스크롤.
 - QR 코드: js/qr.js(외부 라이브러리 없이 QR 생성, 검증 완료), js/share.js(버튼·팝업, 첫 화면과 홈에 버튼), data/share.js(GG_SHARE_URL 비우면 현재 주소 자동 사용).
-- 링크 미리보기: index.html 의 og:* 메타 태그, 이미지는 assets/ui/og.jpg (배포 주소 https://gramgramchef.netlify.app/).
+- 링크 미리보기: index.html 의 og:* 메타 태그, 이미지는 assets/ui/og.jpg (배포 주소 https://gramgramchef.vercel.app/).
 - 디저트·베이킹 분류(sweet) 추가: 재료 23개 + 블루베리·망고(채소·과일). sweet 재료의 설탕도 단맛 계산에 포함(js/judge.js). 가격·설탕 값은 대략 추정치라 교사 검토 필요.
 - 조리하기(2026-11-12~): 제출 → 조리하기(screen-cook) → 계산 확인 → 심사. js/cook.js(단계 자동 생성, 공통 화면 ui.intro/timer/feedback/buzz, 창작 요리 조리 방법 고르기·힌트·평가), 미니게임 js/cook-chop·pour·crack·heat(끓이기·볶기)·more(굽기·튀기기·버무리기)·dessert(거품·반죽·굳히기).js, 설정·규칙은 data/cooking.js, 스타일 css/cook.css. 진동은 navigator.vibrate(안드로이드만).
 - 요리 종류에 디저트(dessert) 추가: data/rules.js, 단맛 범위 넓고 sweet:999, 고기·해산물은 어색함(GG_DESSERT_ODD_CATS).

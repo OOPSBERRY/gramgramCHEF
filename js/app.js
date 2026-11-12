@@ -217,7 +217,7 @@
     const amt = GGCalc.round(it.amount, 1), times = GGCalc.round(it.amount / 100, 3), price = ing.price.toLocaleString('ko-KR');
     row.querySelector('.formula').innerHTML = ing.price === 0
       ? '<div class="f1">' + ing.name + '은(는) 공짜예요</div><div class="f2">0원</div>'
-      : '<div class="f1">100' + ing.unit + '당 ' + price + '원 · ' + amt.toLocaleString('ko-KR') + ' ÷ 100 = ' + times + '배</div>' +
+      : '<div class="f1">100' + ing.unit + '당 ' + price + '원, ' + amt.toLocaleString('ko-KR') + ' ÷ 100 = ' + times + '배</div>' +
         '<div class="f2">' + price + '원 × ' + times + ' = ' + GGCalc.won(cost) + '</div>';
   }
 
@@ -271,7 +271,7 @@
     const real = state.mode === 'real' && state.recipe;
     $('k-title').textContent = real ? '도전: ' + state.recipe.name + ' (' + state.recipe.country + ')' : '창작 요리';
     $('btn-hint').hidden = !real;
-    $('btn-home').textContent = real ? '← 요리 고르기' : '← 처음으로';
+    $('btn-home').textContent = real ? '요리 고르기' : '처음으로';
     renderBudget(); renderTabs(); renderGrid(); renderPot(); rebuildPile();
   }
 

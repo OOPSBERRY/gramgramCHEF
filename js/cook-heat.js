@@ -81,7 +81,7 @@
     btn.oncontextmenu = (e) => e.preventDefault();
 
     GGCook.ui.intro(stage, '끓이기', '[꾹 눌러서 불 세게]를 눌렀다 뗐다 하면서<br>불 세기를 <b>초록 칸</b> 안에 맞춰요. 너무 세면 넘쳐요!<br>' +
-      (liters > 0 ? '물·육수 ' + GGCalc.amountText(liters * 1000, 'mL') + ' → ' : '') + Math.round(need) + '초 동안 끓여야 해요.', () => {
+      (liters > 0 ? '물·육수가 ' + GGCalc.amountText(liters * 1000, 'mL') + '라서 ' : '') + Math.round(need) + '초 동안 끓여야 해요.', () => {
       playing = true; last = performance.now();
       timer = GGCook.ui.timer(stage, limit, () => end(false));
       frame();

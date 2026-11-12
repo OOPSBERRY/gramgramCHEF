@@ -117,3 +117,23 @@ input[type=range]::-moz-range-thumb { border: 3px solid var(--c-ink); box-shadow
 /* 홈 제목이 한 줄에 들어가게 */
 .home-wrap { width: 60%; }
 .home-title h1 { font-size: clamp(56px, 9vmin, 104px); white-space: nowrap; }
+
+/* 결과 줄: 빨간 펜 채점 표시 (○ 알맞음, △ 아쉬움, ✕ 이상함) */
+.checks li { align-items: flex-start; background: transparent; border: none; border-bottom: 1px dashed var(--c-line); border-radius: 0; padding: var(--sp-1) 4px; }
+.checks .mark { flex: none; width: 32px; text-align: center; font-size: var(--fs-sub); line-height: 1; font-weight: 900; color: var(--c-main); }
+.checks .mark.tri { color: var(--c-gold); }
+.checks .mark.x { color: var(--c-danger); }
+.checks .t { font-size: var(--fs-body); }
+.checks .t small { display: block; font-size: var(--fs-small); color: var(--c-ink-soft); }
+
+/* 제목 위 작은 색 글씨 대신 제목 아래 평범한 글씨 */
+.di-meta { color: var(--c-ink-soft); font-weight: 400; margin-top: 4px; }
+.cook-count { font-weight: 400; }
+.k-cost-label { color: var(--c-ink-soft); }
+
+/* 창작 요리 결과: 대표 사진이 없을 때 재료 사진을 접시에 모아 보여줌 */
+.res-plate { position: relative; width: min(100%, 360px); aspect-ratio: 1; border-radius: 50%; background: var(--c-cream); border: 10px solid var(--c-line); box-shadow: var(--shadow-float); }
+.res-plate-item { position: absolute; left: 50%; top: 50%; width: 30%; aspect-ratio: 1; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; }
+.res-plate-item.main { width: 42%; }
+.res-plate-item img { max-width: 100%; max-height: 100%; object-fit: contain; filter: none; }
+.res-plate-item .em { font-size: var(--fs-title); }

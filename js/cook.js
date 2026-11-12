@@ -59,7 +59,7 @@ const GGCook = (function () {
 
   function renderInfo(step, i, total) {
     const g = GG_COOK_GAMES[step.game];
-    $('cook-count').textContent = (i + 1) + ' / ' + total + ' 단계';
+    $('cook-count').textContent = '전체 ' + total + '단계 중 ' + (i + 1) + '단계';
     $('cook-name').textContent = g.name;
     $('cook-desc').textContent = g.desc;
     const box = $('cook-items'); box.innerHTML = '';
@@ -77,7 +77,7 @@ const GGCook = (function () {
     const g = GG_COOK_GAMES[step.game];
     stage.innerHTML = '<div class="cook-soon"><div class="big">' + g.name + '</div><div>미니게임은 곧 만들어요</div></div>';
     const b = document.createElement('button');
-    b.className = 'cook-next'; b.textContent = '다음 단계 →';
+    b.className = 'cook-next'; b.textContent = '다음 단계';
     b.onclick = () => finish(null);
     stage.querySelector('.cook-soon').appendChild(b);
   }
@@ -120,7 +120,7 @@ const GGCook = (function () {
       if (window.GGSound) GGSound.play(snd);
       const d = document.createElement('div'); d.className = 'cook-overlay ' + cls;
       d.innerHTML = '<div class="big">' + word + '</div><div class="score">' + s + '점</div>' + (detail ? '<div class="txt">' + detail + '</div>' : '');
-      const b = document.createElement('button'); b.className = 'cook-next'; b.textContent = '다음 단계 →';
+      const b = document.createElement('button'); b.className = 'cook-next'; b.textContent = '다음 단계';
       b.onclick = () => finish(s);
       d.appendChild(b); stage.appendChild(d);
     }

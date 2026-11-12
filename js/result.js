@@ -2,7 +2,8 @@
 (function () {
   const $ = (id) => document.getElementById(id);
   const A = window.GGApp;
-  const BADGE = { good: ['알맞아요', 'good'], high: ['많아요', 'warn'], low: ['부족해요', 'warn'], bad: ['이상해요', 'bad'], nice: ['멋져요', 'good'] };
+  /* 결과 줄 앞의 채점 표시: 선생님이 빨간 펜으로 채점하듯 ○ △ ✕ */
+  const MARK = { good: ['o', '알맞아요', '○'], nice: ['o', '멋져요', '○'], high: ['tri', '많아요', '△'], low: ['tri', '부족해요', '△'], bad: ['x', '이상해요', '✕'] };
   let typeId = null;
   let run = 0;                       // 화면을 다시 열면 이전 연출이 멈추도록 하는 번호
 
@@ -27,8 +28,8 @@
     });
     const items = A.state.items.filter((it) => it.amount > 0);
     const cost = GGCalc.totalCost(items), grams = GGCalc.totalGrams(items), bud = A.state.budget;
-    $('sub-summary').innerHTML = '재료 <b>' + items.length + '가지</b> · 총 원가 <b>' + GGCalc.won(cost) + '</b> · 총 무게 <b>' + GGCalc.amountText(grams, 'g') + '</b>' +
-      (bud === null ? '' : ' · 예산 ' + GGCalc.won(bud) + (cost > bud ? ' <b class="over">(초과!)</b>' : ' <b class="okay">(통과)</b>'));
+    $('sub-summary').innerHTML = '재료 <b>' + items.length + '가지</b>, 총 원가 <b>' + GGCalc.won(cost) + '</b>, 총 무게 <b>' + GGCalc.amountText(grams, 'g') + '</b>' +
+      (bud === null ? '' : ', 예산 ' + GGCalc.won(bud) + (cost > bud ? ' <b class="over">(초과)</b>' : ' <b class="okay">(통과)</b>'));
     A.show('screen-submit');
   }
 
@@ -132,9 +133,29 @@
 
   function detailRows(list) {
     return list.map((d) => {
-      const b = BADGE[d.status] || BADGE.good;
-      return '<li><span class="badge ' + b[1] + '">' + b[0] + '</span><span class="t">' + esc(d.text) + '</span></li>';
+      const mark = MARK[d.status] || MARK.good;
+      const t = String(d.text), i = t.indexOf(' (알맞은 범위 ');                // 알맞은 범위는 작은 글씨로 따로
+      const main = i >= 0 ? t.slice(0, i) : t;
+      const sub = i >= 0 ? t.slice(i + 2, t.lastIndexOf(')')) + t.slice(t.lastIndexOf(')') + 1) : '';
+      return '<li><span class="mark ' + mark[0] + '" aria-label="' + mark[1] + '">' + mark[2] + '</span><span class="t">' + esc(main) +
+        (sub ? '<small>' + esc(sub) + '</small>' : '') + '</span></li>';
     }).join('');
+  }
+
+  /* 접시 위에 재료 사진을 둥글게 모아 놓은 그림 (무거운 재료가 가운데, 최대 7가지) */
+  function platePhoto(items) {
+    const plate = document.createElement('div'); plate.className = 'res-plate';
+    const list = items.slice().sort((a, b) => GGCalc.grams(b.ing, b.amount) - GGCalc.grams(a.ing, a.amount)).slice(0, 7);
+    list.forEach((it, i) => {
+      const d = document.createElement('div'); d.className = 'res-plate-item' + (i === 0 ? ' main' : '');
+      if (i > 0) {
+        const a = (i - 1) / Math.max(1, list.length - 1) * Math.PI * 2 - Math.PI / 2;
+        d.style.left = (50 + Math.cos(a) * 27) + '%'; d.style.top = (50 + Math.sin(a) * 27) + '%';
+      }
+      d.appendChild(A.photo(it.ing));
+      plate.appendChild(d);
+    });
+    return plate;
   }
 
   function buildLeft(name, items, typeObj) {
@@ -145,17 +166,17 @@
     $('res-left').innerHTML =
       '<div class="res-dishvisual" id="res-visual"></div>' +
       '<div class="res-dishname">' + esc(name) + '</div>' +
-      '<div class="res-dishtype">' + (R ? R.country + ' · ' : '') + typeObj.name + ' · 재료 ' + items.length + '가지</div>' +
+      '<div class="res-dishtype">' + (R ? R.country + ' 요리, ' : '') + typeObj.name + ', 재료 ' + items.length + '가지</div>' +
       (R ? '<div class="res-intro">' + esc(R.intro) + '</div>' : '') +
       '<div class="res-chips">' + chips + '</div>' +
       '<div class="res-cost">총 원가 <b>' + GGCalc.won(cost) + '</b>' +
-      (bud === null ? '' : ' · 예산 ' + GGCalc.won(bud) + (cost > bud ? ' <b class="over">초과</b>' : ' <b class="okay">통과</b>')) + '</div>';
+      (bud === null ? '' : ', 예산 ' + GGCalc.won(bud) + (cost > bud ? ' <b class="over">초과</b>' : ' <b class="okay">통과</b>')) + '</div>';
     // 재료 사진 칩과 대표 요리 그림 (사진이 없으면 이모지)
     $('res-left').querySelectorAll('.ph').forEach((p) => p.appendChild(A.photo(GG_INGREDIENTS.find((i) => i.id === p.dataset.id))));
     const vis = $('res-visual');
     const img = document.createElement('img');
     img.alt = ''; img.src = R ? 'assets/dishes/' + R.id + '.png' : 'assets/ui/dish-' + typeObj.id + '.png';
-    img.onerror = () => { const e = document.createElement('div'); e.className = 'big-emoji'; e.textContent = typeObj.emoji; img.replaceWith(e); };
+    img.onerror = () => img.replaceWith(platePhoto(items));          // 대표 사진이 없으면 내가 넣은 재료 사진을 접시에 모아 보여줌
     vis.appendChild(img);
   }
 
@@ -176,7 +197,6 @@
       const c = result.chefs[i], last = i === result.chefs.length - 1;
       const running = result.chefs.slice(0, i).reduce((s, x) => s + x.score, 0);        // 앞 셰프들의 점수 합
       right.innerHTML =
-        '<div class="res-step">심사 ' + (i + 1) + ' / ' + result.chefs.length + '</div>' +
         '<div class="res-running">지금까지 합계 <b id="run-num">' + running + '</b> / ' + (25 * (i + 1)) + '점</div>' +
         '<div class="chef-card" style="--chef:' + c.chef.color + '">' +
         '<div class="chef-avatar">' + chefSvg(c.chef) + '</div>' +
@@ -238,14 +258,13 @@
     const rc = result.analysis.recipe, R = A.state.mode === 'real' ? A.state.recipe : null;
     const sim = (rc && R)
       ? '<div class="final-sim"><div class="sim-big">실제 ' + esc(R.name) + josa(R.name) + ' <b>' + rc.pct + '%</b> 비슷해요</div>' +
-        '<div class="sim-parts">필수 재료 ' + rc.reqPresent + '/' + rc.reqTotal + ' · 비율 일치도 ' + rc.parts.ratio + '% · 관계없는 재료 점수 ' + rc.parts.extra + '%</div>' +
+        '<div class="sim-parts">필수 재료 ' + rc.reqPresent + '/' + rc.reqTotal + ', 비율 일치도 ' + rc.parts.ratio + '%, 관계없는 재료 점수 ' + rc.parts.extra + '%</div>' +
         (rc.missing.length ? '<div class="sim-miss">빠진 재료: ' + rc.missing.map(esc).join(', ') + '</div>' : '') + '</div>' +
         '<details class="final-table"><summary>레시피와 비교해 보기 (숫자)</summary><ul class="checks">' + detailRows(rc.rows) + '</ul></details>'
       : '';
     const note = result.chefCount < GG_CHEFS.length
       ? '<div class="res-note">지금은 심사위원 ' + result.chefCount + '명이에요. ' + result.chefCount + '명의 점수를 100점 만점으로 바꿔서 보여줘요.</div>' : '';
     $('res-right').innerHTML =
-      '<div class="res-step">최종 결과</div>' +
       '<div class="final-score"><span class="num" id="final-num">0</span><span class="unit">점</span></div>' +
       '<div class="final-grade">' + esc(result.grade.title) + '</div>' +
       '<div class="final-msg">' + esc(result.grade.msg) + '</div>' + sim +

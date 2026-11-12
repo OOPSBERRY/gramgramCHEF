@@ -35,7 +35,7 @@
       const c = document.createElement('button');
       c.className = 'd-card';
       c.appendChild(dishPhoto(r, 'ph'));
-      c.insertAdjacentHTML('beforeend', '<div class="nm">' + esc(r.name) + '</div><div class="meta">' + esc(r.country) + ' · ' + esc(typeOf(r.type).name) + '</div>');
+      c.insertAdjacentHTML('beforeend', '<div class="nm">' + esc(r.name) + '</div><div class="meta">' + esc(r.country) + ', ' + esc(typeOf(r.type).name) + '</div>');
       c.onclick = () => openIntro(r);
       g.appendChild(c);
     });
@@ -49,8 +49,8 @@
     }).join('');
     const m = $('d-modal');
     m.innerHTML = '<div class="modal-card dish-intro"><div class="di-photo"></div>' +
-      '<div class="di-body"><div class="di-meta">' + esc(r.country) + ' · ' + esc(typeOf(r.type).name) + '</div>' +
-      '<h2>' + esc(r.name) + '</h2><p class="di-story">' + esc(r.intro) + '</p>' +
+      '<div class="di-body">' +
+      '<h2>' + esc(r.name) + '</h2><div class="di-meta">' + esc(r.country) + ' 요리, ' + esc(typeOf(r.type).name) + '</div><p class="di-story">' + esc(r.intro) + '</p>' +
       '<div class="di-label">꼭 들어가는 재료</div><div class="tags">' + must + '</div>' +
       '<div class="di-btns"><button class="m-ghost" id="di-close">닫기</button><button class="m-go" id="di-go">도전하기</button></div></div></div>';
     m.querySelector('.di-photo').appendChild(dishPhoto(r, 'ph'));

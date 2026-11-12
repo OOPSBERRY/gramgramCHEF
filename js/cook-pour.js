@@ -68,7 +68,7 @@
       const p = Math.round(poured), diff = Math.abs(p - target);
       const errPct = diff / target * 100;
       const score = errPct <= P.perfect ? 100 : Math.max(0, 100 * (P.zero - errPct) / (P.zero - P.perfect));
-      const detail = '목표 ' + target + 'mL · 부은 양 ' + p + 'mL' + (diff ? ' (' + diff + 'mL ' + (p > target ? '많아요' : '적어요') + ')' : ' (딱 맞아요!)');
+      const detail = '목표 ' + target + 'mL, 부은 양 ' + p + 'mL' + (diff ? ' (' + diff + 'mL ' + (p > target ? '많아요' : '적어요') + ')' : ' (딱 맞아요!)');
       GGCook.ui.feedback(stage, score, finish, detail);
     };
 

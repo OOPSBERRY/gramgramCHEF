@@ -173,7 +173,7 @@
     function end() {
       playing = false;
       const score = results.reduce((a, b) => a + b, 0) / results.length;
-      GGCook.ui.feedback(stage, score, finish, '기름 온도 ' + results[0] + '점 · 튀김 색 ' + results[1] + '점');
+      GGCook.ui.feedback(stage, score, finish, '기름 온도 ' + results[0] + '점, 튀김 색 ' + results[1] + '점');
     }
     btn.onpointerdown = (e) => { e.preventDefault(); press(); };
     btn.oncontextmenu = (e) => e.preventDefault();

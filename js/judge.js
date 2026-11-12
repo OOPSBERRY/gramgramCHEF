@@ -67,7 +67,7 @@ const GGJudge = (function () {
       const lo = n1(Math.max(0, ref * g.tol[0] - 1)), hi = n1(ref * g.tol[1] + 1.5);
       const sc = rangeScore(v, lo, hi), w = Math.sqrt(ref + 1);
       wSum += w; wScore += w * sc;
-      rowsOut.push({ status: status(v, [lo, hi]), text: used.join('·') + ' ' + fmt(v) + '% (알맞은 범위 ' + lo + '~' + hi + '%)' });
+      rowsOut.push({ status: status(v, [lo, hi]), text: used.join(', ') + ' ' + fmt(v) + '% (알맞은 범위 ' + lo + '~' + hi + '%)' });
     });
 
     const extras = rows.filter((r) => !known.has(r.ing.id) && !NEUTRAL_IDS.includes(r.ing.id));
@@ -187,7 +187,7 @@ const GGJudge = (function () {
         sc = 0.5 * f(errC) + 0.5 * f(errW);
         if (c.helped) sc = Math.min(sc, 0.5);                                               // 계산 도우미(정답 보기)를 썼으면 최대 절반
         st = sc >= 0.9 ? 'good' : 'low';
-        text = '계산 확인: 총 원가 ' + GGCalc.won(c.cost) + ', 총 무게 ' + Math.round(c.grams).toLocaleString('ko-KR') + 'g (' + answer + ')' + (c.helped ? ' · 도움을 받았어요' : '');
+        text = '계산 확인: 총 원가 ' + GGCalc.won(c.cost) + ', 총 무게 ' + Math.round(c.grams).toLocaleString('ko-KR') + 'g (' + answer + ')' + (c.helped ? ', 도움을 받았어요' : '');
       }
       m.accuracy = { label: '계산 정확성', value: sc, score: sc, status: st, text, skipped: !!c.skipped, helped: !!c.helped };
     }

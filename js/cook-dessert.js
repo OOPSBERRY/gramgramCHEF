@@ -166,7 +166,7 @@
       const diff = Math.abs(mins - target), err = diff / target * 100;
       const score = err <= C.perfect ? 100 : Math.max(0, 100 * (C.zero - err) / (C.zero - C.perfect));
       GGCook.ui.buzz(30);
-      const detail = '목표 ' + fmt(target) + ' · 굳힌 시간 ' + fmt(mins) +
+      const detail = '목표 ' + fmt(target) + ', 굳힌 시간 ' + fmt(mins) +
         (err <= C.perfect ? ' (딱 맞아요!)' : mins < target ? ' (덜 굳었어요)' : ' (너무 오래 뒀어요)');
       GGCook.ui.feedback(stage, score, finish, detail);
     }

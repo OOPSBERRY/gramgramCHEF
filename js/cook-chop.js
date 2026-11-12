@@ -11,16 +11,6 @@
     '<rect class="handle" x="8" y="308" width="24" height="170" rx="12"/>' +
     '<rect class="shine" x="13" y="320" width="4" height="140" rx="2"/>' +
     '</svg>';
-  /* 왼손 그림: 손등이 위로, 손가락 끝을 오른쪽으로 오므려 재료를 누르고 있어요 (손가락 끝 = 그림 오른쪽 끝) */
-  const HAND =
-    '<svg viewBox="0 0 200 170" aria-hidden="true">' +
-    '<rect class="skin" x="-40" y="34" width="150" height="104" rx="44"/>' +
-    '<rect class="skin" x="88" y="22" width="78" height="30" rx="15"/>' +
-    '<rect class="skin" x="94" y="52" width="86" height="30" rx="15"/>' +
-    '<rect class="skin" x="94" y="82" width="82" height="30" rx="15"/>' +
-    '<rect class="skin" x="88" y="112" width="68" height="28" rx="14"/>' +
-    '<path class="nail" d="M150 30 q10 6 0 14"/><path class="nail" d="M164 60 q10 6 0 14"/><path class="nail" d="M160 90 q10 6 0 14"/>' +
-    '</svg>';
 
   function cutsFor(it) {
     const g = GGCalc.grams(it.ing, it.amount);
@@ -35,25 +25,22 @@
 
     stage.innerHTML =
       '<div class="chop-hud"><span class="chop-name"></span><span class="chop-left"></span></div>' +
-      '<div class="chop-board"><div class="chop-food"></div><div class="chop-hand">' + HAND + '</div></div>' +
+      '<div class="chop-board"><div class="chop-food"></div></div>' +
       '<div class="chop-queue"></div>' +
       '<div class="chop-knife"><div class="in">' + KNIFE + '</div></div>';
     const board = stage.querySelector('.chop-board');
     const food = stage.querySelector('.chop-food');
     const knife = stage.querySelector('.chop-knife');
-    const hand = stage.querySelector('.chop-hand');
     /* 재료를 (칼질 횟수 + 1) 조각으로 나눠요. 오른쪽부터 한 조각씩 썰어 나가요 */
     const cutAt = (q, j) => 1 - j / (q.need + 1);      // j번째 칼질 자리 (재료 왼쪽 0 ~ 오른쪽 1)
 
-    /* 칼을 다음에 썰 자리로 옮기고, 왼손은 남은 재료의 왼쪽을 눌러요 */
+    /* 칼을 다음에 썰 자리로 옮겨요 */
     function placeTools() {
       const q = queue[idx]; if (!q) return;
       const sr = stage.getBoundingClientRect(), fr = food.getBoundingClientRect(), br = board.getBoundingClientRect();
       const f = cutAt(q, q.done + 1);
       const x = fr.left + fr.width * f - sr.left;
       knife.style.transform = 'translate(' + (x - knife.offsetWidth / 2) + 'px, ' + (br.top - sr.top - knife.offsetHeight * 0.12) + 'px)';
-      const tip = fr.left + fr.width * Math.max(0.12, f * 0.55) - br.left;         // 손가락 끝은 칼보다 왼쪽에
-      hand.style.transform = 'translate(' + (tip - hand.offsetWidth) + 'px, -50%)';
     }
 
     /* 재료 사진을 조각내서 보여줌: 남은 덩어리 + 썰린 조각들(오른쪽으로 조금씩 밀려남) */

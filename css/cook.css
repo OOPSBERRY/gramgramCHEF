@@ -50,7 +50,7 @@
 .chop-hud { position: absolute; top: 64px; left: 0; right: 0; display: flex; justify-content: center; gap: var(--sp-3); font-size: var(--fs-sub); font-weight: 900; }
 .chop-left { color: var(--c-gold); }
 .chop-board { position: relative; width: 80%; height: 50%; margin-top: var(--sp-4); border-radius: var(--r-card); background: var(--c-wood); border: 8px solid var(--c-wood-dark); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.chop-food { position: relative; width: 62%; height: 80%; margin-left: 12%; }
+.chop-food { position: relative; width: 70%; height: 80%; }
 .chop-food.next { animation: m-pop .3s ease-out both; }
 .chop-slice { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transition: transform .15s ease-out; }
 .chop-slice img { max-width: 100%; max-height: 100%; object-fit: contain; pointer-events: none; }
@@ -152,7 +152,7 @@
 .fry-word { position: absolute; top: 40%; left: 0; right: 96px; text-align: center; font-size: var(--fs-title); font-weight: 900; pointer-events: none; animation: m-pop .25s ease-out both; }
 .fry-word.bad { color: var(--c-danger); }
 
-/* 썰기: 칼(위에서 내려다본 모습)과 재료를 누르는 왼손 */
+/* 썰기: 칼(위에서 내려다본 모습) */
 .chop-knife { position: absolute; z-index: 2; height: 74%; aspect-ratio: 40 / 480; left: 0; top: 0; pointer-events: none; transition: transform .18s ease-out; filter: drop-shadow(var(--shadow-float)); }
 .chop-knife .in, .chop-knife svg { width: 100%; height: 100%; display: block; }
 .chop-knife.chop .in { animation: chop-down .16s ease-out; }
@@ -161,10 +161,6 @@
 .chop-knife .spine { fill: var(--c-steel-dark); }
 .chop-knife .handle { fill: var(--c-wood-dark); }
 .chop-knife .shine { fill: var(--c-wood); }
-.chop-hand { position: absolute; z-index: 1; left: 0; top: 50%; width: 34%; aspect-ratio: 200 / 170; pointer-events: none; transition: transform .25s ease-out; }
-.chop-hand svg { width: 100%; height: 100%; display: block; }
-.chop-hand .skin { fill: var(--c-skin); stroke: var(--c-wood-dark); stroke-width: 3; }
-.chop-hand .nail { fill: none; stroke: var(--c-wood-dark); stroke-width: 2; }
 
 /* ---------- 굽기·튀기기·버무리기 공통 ---------- */
 .mx-piece { position: absolute; width: 30%; aspect-ratio: 1; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; }

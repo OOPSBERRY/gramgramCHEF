@@ -35,6 +35,11 @@ const GG_CHOP = { gramsPerCut: 25, minCuts: 3, maxCuts: 10, secPerCut: 0.8, extr
 
 /* 달걀 깨기 */
 const GG_CRACK_IDS = ['egg', 'yolk'];
+/* 달걀 깨기 미니게임 설정
+   gramsEach : 한 개의 무게(g) → 개수 = 양 ÷ 무게 (1~maxCount개)
+   period    : 힘 표시가 한 번 왕복하는 시간(초). 달걀이 하나씩 늘 때마다 speedUp 만큼 빨라짐
+   perfect   : 초록 칸 너비(%),  good : 노란 칸까지 너비(%) */
+const GG_CRACK = { gramsEach: { egg: 50, yolk: 18 }, maxCount: 6, period: 1.6, speedUp: 0.1, perfect: 16, good: 40 };
 
 /* 붓기: 물·육수 분류와 아래 재료. 이 양(mL)보다 적으면 붓기 게임 없이 양념처럼 넣어요 */
 const GG_POUR_IDS = ['milk', 'cream', 'coconut'];

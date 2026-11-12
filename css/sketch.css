@@ -73,3 +73,17 @@ input[type=range]::-webkit-slider-thumb { border-radius: 48% 52% 50% 50% / 52% 4
 /* ---------- 7. 동그라미 표시도 손그림처럼 ---------- */
 .cook-stamp, .rc-stamp { border-radius: 48% 52% 46% 54% / 53% 47% 53% 47%; }
 .res-nametag { border-radius: var(--wob-b); box-shadow: var(--pencil-twice); }
+
+/* ---------- 셰프 표정 변화: 점수를 말한 뒤 짧게 움직여요 ---------- */
+.chef-avatar svg { transform-origin: 50% 80%; }
+.react-joy svg  { animation: face-joy .6s ease-out 2; }
+.react-hmm svg  { animation: face-hmm .8s ease-in-out; }
+.react-rage svg { animation: face-rage .08s linear 8; }
+.react-sad svg  { animation: face-sad .9s ease-out both; }
+@keyframes face-joy  { 0%, 100% { transform: none; } 40% { transform: translateY(-10%) scale(1.06); } }
+@keyframes face-hmm  { 0%, 100% { transform: none; } 50% { transform: rotate(-8deg); } }
+@keyframes face-rage { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px) rotate(2deg); } }
+@keyframes face-sad  { from { transform: none; } to { transform: translateY(4%) rotate(-3deg); } }
+.react-rage .pc-line { stroke: var(--c-main); }
+@media (prefers-reduced-motion: reduce) { .chef-avatar svg { animation: none !important; } }
+.sketch .pc-brow { stroke-width: 2.4; }

@@ -82,17 +82,37 @@
   /* ================= 셰프 얼굴 (직접 그린 오리지널 캐릭터) ================= */
   /* 셰프 얼굴: 연필로 스케치한 느낌 (흔들리는 선 + 겹쳐 그은 선 + 빗금 그림자). 색은 design-rules.css 변수 */
   let sketchId = 0;
-  function chefSvg(chef) {
-    const a = chef.avatar || {}, id = 'pc' + (++sketchId);
+  /* 셰프 표정 (점수를 듣고 바뀌는 얼굴)
+     joy  : 기뻐요 (웃는 눈, 활짝 웃는 입, 반짝)      hmm : 갸웃해요 (일자 눈썹, 삐뚤한 입, 물음표)
+     rage : 버럭해요 (화난 눈썹, 소리치는 입, 김)       sad : 아쉬워해요 (처진 눈썹, 내려간 입, 땀방울) */
+  const MOODS = {
+    joy:  { brow: 'happy', eyes: 'happy', mouth: 'grin', marks: 'M12 22 l5 5 M17 22 l-5 5 M84 18 l5 5 M89 18 l-5 5 M90 34 l3 3 M93 34 l-3 3' },
+    hmm:  { brow: 'flat', mouth: 'wavy', marks: 'M84 20 q0 -6 5 -6 q5 0 5 5 q0 4 -5 5 v4 M89 33 v.1' },
+    rage: { brow: 'angry', mouth: 'shout', marks: 'M10 34 q-5 -6 0 -12 q5 -6 0 -12 M90 34 q5 -6 0 -12 q-5 -6 0 -12 M80 50 l6 -2 M82 54 l6 0 M80 58 l6 2' },
+    sad:  { brow: 'sad', mouth: 'frown', marks: 'M84 46 q5 9 0 12 q-5 -3 0 -12' }
+  };
+  /** 점수대에 맞는 표정 (버럭 셰프는 낮은 점수에 버럭, 해피 셰프는 웬만하면 기뻐함) */
+  function moodOf(chef, tier) {
+    if (tier === 'high') return 'joy';
+    if (tier === 'mid') return chef.id === 'happy' ? 'joy' : 'hmm';
+    return chef.id === 'bureok' ? 'rage' : 'sad';
+  }
+
+  function chefSvg(chef, mood) {
+    const base = chef.avatar || {}, m = MOODS[mood] || {}, id = 'pc' + (++sketchId);
+    const a = { brow: m.brow || base.brow, mouth: m.mouth || base.mouth, extra: base.extra, eyes: m.eyes };
     const brow = {
       angry: 'M27 43 L44 50 M73 43 L56 50',
       flat:  'M29 46 H45 M55 46 H71',
       soft:  'M29 49 Q37 43 45 47 M55 47 Q63 43 71 49',
-      happy: 'M30 47 Q37 40 44 47 M56 47 Q63 40 70 47'
+      happy: 'M30 47 Q37 40 44 47 M56 47 Q63 40 70 47',
+      sad:   'M29 50 Q37 48 45 44 M71 50 Q63 48 55 44'
     }[a.brow] || '';
-    const eyes = a.brow === 'happy' ? 'M31 58 Q37 51 43 58 M57 58 Q63 51 69 58' : '';
-    const dots = a.brow === 'happy' ? '' : '<circle cx="37" cy="58" r="2.8" class="pc-fill"/><circle cx="63" cy="58" r="2.8" class="pc-fill"/>';
-    const mouth = { shout: 'M41 73 Q50 86 59 73 Q50 70 41 73 Z', line: 'M42 77 Q50 78 58 76', smile: 'M40 74 Q50 84 60 74', grin: 'M37 72 Q50 90 63 72 Q50 75 37 72 Z' }[a.mouth] || '';
+    const happyEyes = a.eyes === 'happy' || (!mood && a.brow === 'happy');
+    const eyes = happyEyes ? 'M31 58 Q37 51 43 58 M57 58 Q63 51 69 58' : '';
+    const dots = happyEyes ? '' : '<circle cx="37" cy="58" r="2.8" class="pc-fill"/><circle cx="63" cy="58" r="2.8" class="pc-fill"/>';
+    const mouth = { shout: 'M41 73 Q50 86 59 73 Q50 70 41 73 Z', line: 'M42 77 Q50 78 58 76', smile: 'M40 74 Q50 84 60 74', grin: 'M37 72 Q50 90 63 72 Q50 75 37 72 Z',
+      wavy: 'M41 77 Q45 74 50 77 T59 76', frown: 'M41 80 Q50 72 59 80' }[a.mouth] || '';
     const extra = {
       glasses: 'M28 58 a9 9 0 1 0 18 0 a9 9 0 1 0 -18 0 M54 58 a9 9 0 1 0 18 0 a9 9 0 1 0 -18 0 M46 58 H54',
       mustache: 'M38 69 Q44 63 50 68 Q56 63 62 69 Q56 71 50 69 Q44 71 38 69',
@@ -102,7 +122,7 @@
       ' M22 40 Q14 14 38 18 Q50 4 62 18 Q86 14 78 40 Z' +                                              // 모자
       ' M22 36 H78 V45 H22 Z' +                                                                        // 모자 띠
       ' M44 22 Q46 30 44 36 M58 20 Q56 28 58 36' +                                                     // 모자 주름
-      ' ' + brow + ' ' + eyes + ' ' + mouth + ' ' + extra;
+      ' ' + eyes + ' ' + mouth + ' ' + extra + ' ' + (m.marks || '');
     const hatch = '<path class="pc-hatch" d="M26 50 l8 -6 M28 54 l10 -7 M66 50 l8 -6 M64 54 l10 -7 M36 88 l10 -6 M44 92 l12 -8 M54 92 l10 -7"/>' +
       '<path class="pc-band" d="M26 44 l6 -8 M33 44 l6 -8 M40 44 l6 -8 M47 44 l6 -8 M54 44 l6 -8 M61 44 l6 -8 M68 44 l6 -8 M75 44 l3 -4" style="stroke:' + chef.color + '"/>';
     return '<svg class="sketch" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
@@ -111,7 +131,8 @@
       '<feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G"/></filter></defs>' +
       '<g filter="url(#' + id + ')">' + hatch +
       '<path class="pc-line" d="' + lines + '"/>' +
-      '<path class="pc-line pc-again" d="' + lines + '" transform="translate(.8 -.6) rotate(.6 50 50)"/>' + dots + '</g></svg>';
+      '<path class="pc-line pc-again" d="' + lines + '" transform="translate(.8 -.6) rotate(.6 50 50)"/>' +
+      '<path class="pc-line pc-brow" d="' + brow + '" transform="translate(0 4)"/>' + dots + '</g></svg>';   // 눈썹은 모자 띠에 가리지 않게 조금 아래로
   }
 
 
@@ -188,6 +209,14 @@
     vis.appendChild(img);
   }
 
+  /** 셰프 얼굴을 표정으로 바꾸고 짧게 움직임 (기쁨: 통통, 버럭: 부르르, 아쉬움: 축) */
+  function react(box, chef, mood) {
+    if (!box) return;
+    box.innerHTML = chefSvg(chef, mood);
+    box.className = 'chef-avatar react-' + mood;
+    if (mood === 'rage' && window.GGCook) GGCook.ui.buzz([60, 30, 60]);
+  }
+
   async function startResult(result, name, items) {
     const my = ++run;
     const typeObj = result.analysis.type;
@@ -207,7 +236,7 @@
       right.innerHTML =
         '<div class="res-running">지금까지 합계 <b id="run-num">' + running + '</b> / ' + (25 * (i + 1)) + '점</div>' +
         '<div class="chef-card" style="--chef:' + c.chef.color + '">' +
-        '<div class="chef-avatar">' + chefSvg(c.chef) + '</div>' +
+        '<div class="chef-avatar" id="chef-face">' + chefSvg(c.chef) + '</div>' +
         '<div class="chef-info"><div class="chef-name">' + esc(c.chef.name) + '</div><div class="chef-trait">' + esc(c.chef.trait) + '</div></div>' +
         '<div class="chef-score"><span class="num" id="chef-num">0</span><span class="max"> / 25</span></div></div>' +
         '<div class="bubble"><span id="bubble-text"></span></div>' +
@@ -218,6 +247,7 @@
       if (window.GGSound) GGSound.play('ding');
       await countUp($('chef-num'), c.score, 900);
       if (my !== run) return;
+      react($('chef-face'), c.chef, moodOf(c.chef, c.tier));             // 점수를 말한 뒤 표정이 바뀜
       await countUp($('run-num'), running + c.score, 600, running);       // 합계에 더해지는 연출
       if (my !== run) return;
       $('checks').hidden = false;
@@ -269,7 +299,7 @@
       .map((it) => '<li><span>' + esc(it.ing.name) + '</span><i></i><b>' + GGCalc.amountText(it.amount, it.ing.unit) + '</b></li>').join('');
     const steps = (result.analysis.cookSteps || []).filter((x) => GG_COOK_GAMES[x.game])
       .map((x) => '<li>' + esc(GG_COOK_GAMES[x.game].name) + (typeof x.score === 'number' ? ' <small>' + x.score + '점</small>' : '') + '</li>').join('');
-    const chefs = result.chefs.map((c) => '<li style="--chef:' + c.chef.color + '"><span class="mini">' + chefSvg(c.chef) + '</span>' +
+    const chefs = result.chefs.map((c) => '<li style="--chef:' + c.chef.color + '"><span class="mini">' + chefSvg(c.chef, moodOf(c.chef, c.tier)) + '</span>' +
       '<div><b>' + esc(c.chef.name) + ' ' + c.score + '점</b><p>' + esc(c.line) + '</p></div></li>').join('');
     const sim = (rc && R)
       ? '<div class="rc-sim">실제 ' + esc(R.name) + josa(R.name) + ' <b>' + rc.pct + '%</b> 비슷해요' +

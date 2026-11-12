@@ -41,3 +41,4 @@
 - 조리 점수: judge.js 의 metrics.cook(미니게임 평균), metrics.method(창작 요리만, 힌트 시 80%, 날고기 미조리 감점 0.6). 셰프 focus: 버럭 method·cook, 깐깐 method, 해피 cook. 조리 대사는 data/chefs.js 맨 아래 GG_COOK_LINES (rawFood, methodWrong, hintUsed, cookGreat, cookClumsy).
 - 남은 일: 디저트 완성 사진 9장, 얼음 재료 사진, 창작 요리 대표 접시 5장.
 - 창작 요리 결과 그림: 은빛 뚜껑 덮인 접시(js/result.js 의 CLOCHE SVG, 뚜껑 들림·김 애니메이션) + 학생이 지은 이름표(.res-nametag). 종류별 대표 사진은 학생 요리와 안 맞아서 쓰지 않음. AI 이미지 생성도 비용·부적절한 이름·API 키 노출 문제로 쓰지 않기로 함.
+- 셰프 표정: js/result.js 의 MOODS(joy·hmm·rage·sad)와 moodOf(점수대별, 버럭은 낮은 점수에 rage, 해피는 mid도 joy). 점수 공개 후 react()로 얼굴이 바뀌고 짧게 움직임(css/sketch.css 의 face-*). 최종 레시피 카드의 작은 얼굴도 표정 반영.

@@ -178,18 +178,32 @@ const GGJudge = (function () {
         text: '100g당 원가 ' + per.toLocaleString('ko-KR') + '원 (알맞은 범위 ' + rg[0] + '~' + rg[1].toLocaleString('ko-KR') + '원)' };
     }
     if (extra.calc) {
-      const c = extra.calc, trueW = Math.round(W), answer = '정답: 총 원가 ' + GGCalc.won(cost) + ', 총 무게 ' + trueW.toLocaleString('ko-KR') + 'g';
-      let sc, text, st;
-      if (c.skipped) { sc = 0.3; st = 'low'; text = '계산 확인: 건너뛰었어요 (' + answer + ')'; }
-      else {
+      // 계산 정확성 = 소수 곱셈 문제 50% + 합계(총 원가·총 무게) 50%. 곱셈 문제가 없으면 합계만
+      const c = extra.calc, exactCost = GGCalc.totalCostExact(items.filter((it) => it.amount > 0));
+      const n2 = (v) => GGCalc.round(v, 2).toLocaleString('ko-KR', { maximumFractionDigits: 2 });
+      const answer = '정답: 총 원가 ' + n2(exactCost) + '원, 총 무게 ' + n2(W) + 'g';
+      // 곱셈 문제: 한 번에 맞히면 1, 한 번 틀릴 때마다 0.2씩 줄고(최소 0.4), 못 풀었으면 0
+      const qz = c.quiz || [];
+      const qOne = (q) => (!q.solved ? 0 : Math.max(0.4, 1 - 0.2 * Math.max(0, q.tries - 1)));
+      const quizSc = qz.length ? qz.reduce((s, q) => s + qOne(q), 0) / qz.length : null;
+      const first = qz.filter((q) => q.solved && q.tries === 1).length;
+      const mistakes = [].concat(...qz.map((q) => q.mistakes));
+      const quizText = qz.length ? '곱셈 ' + qz.length + '문제 중 ' + first + '문제를 한 번에 맞혔어요. ' : '';
+      let sc, text;
+      if (c.skipped) {
+        sc = quizSc === null ? 0.3 : 0.5 * quizSc;
+        text = '계산 확인: ' + quizText + '합계는 건너뛰었어요 (' + answer + ')';
+      } else {
         const f = (e) => (e <= 0.02 ? 1 : Math.max(0, 1 - (e - 0.02) / 0.08));           // 오차 2% 이내면 만점, 10%면 0점
-        const errC = cost > 0 ? Math.abs(c.cost - cost) / cost : 0, errW = W > 0 ? Math.abs(c.grams - W) / W : 0;
-        sc = 0.5 * f(errC) + 0.5 * f(errW);
-        if (c.helped) sc = Math.min(sc, 0.5);                                               // 계산 도우미(정답 보기)를 썼으면 최대 절반
-        st = sc >= 0.9 ? 'good' : 'low';
-        text = '계산 확인: 총 원가 ' + GGCalc.won(c.cost) + ', 총 무게 ' + Math.round(c.grams).toLocaleString('ko-KR') + 'g (' + answer + ')' + (c.helped ? ', 도움을 받았어요' : '');
+        const errC = exactCost > 0 ? Math.abs(c.cost - exactCost) / exactCost : 0, errW = W > 0 ? Math.abs(c.grams - W) / W : 0;
+        let totSc = 0.5 * f(errC) + 0.5 * f(errW);
+        if (c.tries) totSc = Math.min(totSc, Math.max(0.4, 1 - 0.2 * (c.tries - 1)));      // 합계도 맞힐 때까지 다시 풀어요: 한 번 틀릴 때마다 0.2씩 줄어듦
+        if (c.helped) totSc = Math.min(totSc, 0.5);                                         // (예전) 계산 도우미를 썼으면 합계 점수는 최대 절반
+        sc = quizSc === null ? totSc : 0.5 * quizSc + 0.5 * totSc;
+        text = '계산 확인: ' + quizText + (c.tries > 1 ? '합계는 ' + c.tries + '번 만에 맞혔어요. ' : '') + '총 원가 ' + n2(c.cost) + '원, 총 무게 ' + n2(c.grams) + 'g (' + answer + ')' + (c.helped ? ', 도움을 받았어요' : '');
       }
-      m.accuracy = { label: '계산 정확성', value: sc, score: sc, status: st, text, skipped: !!c.skipped, helped: !!c.helped };
+      m.accuracy = { label: '계산 정확성', value: sc, score: sc, status: sc >= 0.9 ? 'good' : 'low', text, skipped: !!c.skipped, helped: !!c.helped,
+        quizCount: qz.length, quizFirst: first, decimalSlip: mistakes.some((k) => ['nodot', 'place', 'unit'].includes(k)) };
     }
 
     // ----- 해피 셰프가 보는 것: 창의성, 요리 이름, 도전 정신 -----
@@ -263,6 +277,8 @@ const GGJudge = (function () {
       if (m.accuracy.skipped) s.set('calcSkipped', 0.8);
       else if (m.accuracy.score >= 0.9 && !m.accuracy.helped) s.set('calcExact', 0.25);
       else if (m.accuracy.score < 0.6) s.set('calcOff', 1 - m.accuracy.score);
+      if (m.accuracy.decimalSlip) s.set('decimalSlip', 0.45);                               // 소수점 위치를 헷갈린 적이 있음
+      if (m.accuracy.quizCount && m.accuracy.quizFirst === m.accuracy.quizCount) s.set('decimalPerfect', 0.3);   // 곱셈 문제를 모두 한 번에
     }
     if (m.nameq.score >= 0.85 && !a.recipe) s.set('nameGreat', 0.5);
     if (m.creative.score >= 0.75 && !a.recipe) s.set('boldMix', 0.4);

@@ -177,5 +177,28 @@ const GGCalcQuiz = (function () {
       dp: A.dp + B.dp, aInt: A.int, bInt: B.int, answer: q.answer, PLACE };
   }
 
-  return { build, parse, isRight, num, fix, diagnose, vertical, split };
+  /* ================= 합계(총 원가·총 무게) 확인 ================= */
+  /** 합계가 맞았나: 1 이내(원·g) 또는 0.5% 이내면 맞음 (소수 부분을 반올림해 적어도 인정) */
+  const totalOk = (v, t) => Math.abs(v - t) <= Math.max(1, Math.abs(t) * 0.005);
+
+  /** 합계가 틀렸을 때 실수 짐작.
+      what: 'cost' | 'weight', v: 학생 답(g으로 바꾼 값), t: 정답
+      rows: [{ name, value(표의 값), raw(mL 재료는 mL 숫자 그대로) }], unit: 학생이 고른 단위('g'|'kg') */
+  function diagnoseTotal(what, v, t, rows, unit) {
+    const label = what === 'cost' ? '총 원가' : '총 무게';
+    if (what === 'weight') {
+      if (totalOk(v / 1000, t) && unit === 'kg') return { kind: 'unit', text: '총 무게: 숫자는 맞았어! 그런데 kg 버튼이 눌려 있어. g 단위로 적었다면 g 버튼을 눌러 봐.' };
+      if (totalOk(v * 1000, t) && unit === 'g') return { kind: 'unit', text: '총 무게: 숫자는 맞았어! kg으로 계산했다면 kg 버튼을 눌러 봐.' };
+      const rawSum = rows.reduce((s, r) => s + r.raw, 0);
+      if (!totalOk(rawSum, t) && totalOk(v, rawSum)) return { kind: 'ml', text: '총 무게: mL 재료는 mL 숫자 말고 \'g으로 바꾸면\' 칸의 숫자를 더해야 해.' };
+    }
+    const miss = rows.find((r) => r.value > 0 && totalOk(v + r.value, t));
+    if (miss) return { kind: 'miss', text: label + ': 혹시 \'' + miss.name + '\' 칸을 빼먹었니?' };
+    const twice = rows.find((r) => r.value > 0 && totalOk(v - r.value, t));
+    if (twice) return { kind: 'twice', text: label + ': 혹시 \'' + twice.name + '\' 칸을 두 번 더했니?' };
+    if (t > 0 && Math.abs(v - t) / t < 0.05) return { kind: 'close', text: label + ': 거의 맞았어! 소수 부분과 받아올림을 다시 확인해 봐.' };
+    return { kind: 'unknown', text: label + ': 표의 숫자를 위에서부터 하나씩 다시 더해 봐. ' + (v > t ? '답이 너무 커.' : '답이 너무 작아.') };
+  }
+
+  return { build, parse, isRight, num, fix, diagnose, vertical, split, totalOk, diagnoseTotal };
 })();

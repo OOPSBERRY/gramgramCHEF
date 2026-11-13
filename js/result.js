@@ -50,7 +50,7 @@
   function runQuiz(quiz, items, show) {
     const box = $('calc-q');
     // 합계 적기(총 원가·총 무게)와 제출·정답 보기 버튼은 곱셈 문제를 다 맞힌 뒤에 열림
-    const lock = (on) => { ['calc-totals', 'calc-go', 'calc-help'].forEach((id) => { $(id).hidden = on; }); };
+    const lock = (on) => { ['calc-totals', 'calc-go'].forEach((id) => { $(id).hidden = on; }); };
     box.hidden = !quiz.length;
     lock(quiz.length > 0);
     if (!quiz.length) return;
@@ -153,30 +153,44 @@
     items.forEach((it, i) => {
       const h = hidden.get(it) || {};
       const gCell = h.weight ? '<td class="cq-hole" id="cq-cell-' + i + '-weight">?</td>' : '<td>' + show(GGCalc.grams(it.ing, it.amount)) + 'g</td>';
-      const cCell = h.cost ? '<td class="cq-hole" id="cq-cell-' + i + '-cost">?</td>' : '<td>' + show(it.amount * it.ing.price / 100) + '원</td>';
+      const cCell = h.cost ? '<td class="cq-hole" id="cq-cell-' + i + '-cost">?</td>' : '<td>' + show(GGCalc.costExact(it.ing, it.amount)) + '원</td>';
       rows += '<tr><td>' + esc(it.ing.name) + '</td><td>' + GGCalc.amountText(it.amount, it.ing.unit) + '</td>' + gCell + cCell + '</tr>';
     });
     $('calc-table').innerHTML = '<table><thead><tr><th>재료</th><th>양</th><th>g으로 바꾸면</th><th>원가</th></tr></thead><tbody>' + rows + '</tbody></table>';
     runQuiz(quiz, items, show);
-    const trueCost = GGCalc.totalCost(items), trueG = Math.round(GGCalc.totalGrams(items));
+    // 합계 정답과 표의 값들 (틀렸을 때 '어느 칸을 빼먹었는지' 짐작에 씀)
+    const trueCost = GGCalc.totalCostExact(items), trueG = GGCalcQuiz.fix(GGCalc.totalGrams(items));
+    const costRows = items.map((it) => ({ name: it.ing.name, value: GGCalc.costExact(it.ing, it.amount), raw: 0 }));
+    const gramRows = items.map((it) => ({ name: it.ing.name, value: GGCalc.grams(it.ing, it.amount), raw: it.amount }));
     $('calc-cost').value = ''; $('calc-weight').value = ''; calcUnit = 'g';
-    $('calc-answer').hidden = true; $('calc-msg').textContent = '';
-    let helped = false;
+    $('calc-msg').textContent = ''; $('calc-hint').hidden = true;
+    ['calc-cost', 'calc-weight'].forEach((id) => $(id).classList.remove('ok', 'bad'));
+    let totalTries = 0;
     const syncUnit = () => document.querySelectorAll('#calc-units button').forEach((b) => b.classList.toggle('on', b.dataset.u === calcUnit));
     syncUnit();
     document.querySelectorAll('#calc-units button').forEach((b) => { b.onclick = () => { calcUnit = b.dataset.u; syncUnit(); }; });
-    $('calc-help').onclick = () => {
-      helped = true;
-      $('calc-answer').hidden = false;
-      $('calc-answer').innerHTML = '정답은 총 원가 <b>' + GGCalc.won(trueCost) + '</b>, 총 무게 <b>' + trueG.toLocaleString('ko-KR') + 'g</b> (' + GGCalc.amountText(trueG, 'g') + ')이에요. 도움을 받으면 계산 점수가 줄어들어요.';
-      $('calc-cost').value = trueCost; calcUnit = 'g'; syncUnit(); $('calc-weight').value = trueG;
-    };
-    $('calc-skip').onclick = () => done({ skipped: true });
+    const plus = (rows, unit) => rows.map((r) => GGCalcQuiz.num(GGCalcQuiz.fix(r.value))).join(' + ') + ' = ?' + unit;
+    // 곱셈 문제 기록 (몇 번 만에 맞혔는지, 어떤 실수를 했는지) → 심사에서 계산 점수와 그램 셰프의 말에 씀
+    const record = () => quiz.map((q) => ({ kind: q.kind, type: q.type, tries: q.tries || 0, solved: !!q.solved, mistakes: q.mistakes || [] }));
+    $('calc-skip').onclick = () => done({ skipped: true, quiz: record() });
     $('calc-back').onclick = () => A.show('screen-kitchen');
     $('calc-go').onclick = () => {
       const c = parseFloat($('calc-cost').value), w = parseFloat($('calc-weight').value);
-      if (!isFinite(c) || !isFinite(w) || c < 0 || w < 0) { $('calc-msg').textContent = '총 원가와 총 무게를 모두 적어 주세요. (모르겠으면 건너뛰기를 눌러요)'; return; }
-      done({ cost: c, grams: calcUnit === 'kg' ? w * 1000 : w, helped });
+      if (!isFinite(c) || !isFinite(w) || c < 0 || w < 0) { $('calc-msg').textContent = '총 원가와 총 무게를 모두 적어 주세요.'; return; }
+      const g = calcUnit === 'kg' ? w * 1000 : w;
+      totalTries++;
+      const okC = GGCalcQuiz.totalOk(c, trueCost), okW = GGCalcQuiz.totalOk(g, trueG);
+      $('calc-cost').classList.toggle('ok', okC); $('calc-cost').classList.toggle('bad', !okC);
+      $('calc-weight').classList.toggle('ok', okW); $('calc-weight').classList.toggle('bad', !okW);
+      if (okC && okW) { done({ cost: c, grams: g, tries: totalTries, quiz: record() }); return; }
+      // 틀리면 맞힐 때까지: 실수를 짐작해 힌트, 두 번 틀리면 덧셈식도 보여 줌
+      if (window.GGSound) GGSound.play('error');
+      $('calc-msg').textContent = '앗, ' + (!okC && !okW ? '둘 다' : !okC ? '총 원가가' : '총 무게가') + ' 달라요. 다시 더해 볼까? (' + totalTries + '번 틀렸어요)';
+      const hints = [];
+      if (!okC) hints.push(GGCalcQuiz.diagnoseTotal('cost', c, trueCost, costRows, calcUnit).text + (totalTries >= 2 ? '<br>' + plus(costRows, '원') : ''));
+      if (!okW) hints.push(GGCalcQuiz.diagnoseTotal('weight', g, trueG, gramRows, calcUnit).text + (totalTries >= 2 ? '<br>' + plus(gramRows, 'g') : ''));
+      $('calc-hint').innerHTML = hints.map((h) => '<div>' + h + '</div>').join('');   // 힌트 글은 코드에서 만든 것(재료 이름은 데이터 파일)이라 그대로 넣음
+      $('calc-hint').hidden = false;
     };
     A.show('screen-calc');
   }

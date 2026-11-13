@@ -18,6 +18,7 @@
              similarRecipe(레시피와 비슷함) notSimilar(레시피와 다름)
              lowVariety(재료가 적음) tooMany(재료가 너무 많음) mainOff(주재료가 불분명) typeMismatch(요리 종류와 재료가 안 맞음) wellMade(구성이 좋음)
              overBudget(예산 초과) budgetPerfect(예산을 잘 지킴) pricey(비쌈) calcExact(계산 정확) calcOff(계산이 틀림) calcSkipped(계산 건너뜀)
+             decimalSlip(소수 곱셈에서 소수점 위치를 헷갈림) decimalPerfect(소수 곱셈 문제를 모두 한 번에 맞힘)
              nameGreat(이름이 멋짐) boldMix(창의적인 조합) tryHard(도전 정신)
              rawFood(날고기를 안 익힘) methodWrong(조리 방법이 어색함) hintUsed(힌트를 봄) cookGreat(조리를 아주 잘함) cookClumsy(조리가 서툶)
        ★ 조리하기 대사는 이 파일 맨 아래 GG_COOK_LINES 에 따로 모아 두었어요
@@ -144,7 +145,7 @@ const GG_CHEFS = [
     avatar: { brow: 'soft', mouth: 'smile', extra: 'mustache', skin: '#E9B48A' },
     focus: [{ metric: 'accuracy', weight: 10 }, { metric: 'price', weight: 10 }, { metric: 'amount', weight: 5 }],
     base: 0,
-    priority: ['overBudget', 'calcOff', 'calcSkipped', 'pricey', 'notEnough', 'calcExact', 'budgetPerfect'],
+    priority: ['overBudget', 'calcOff', 'calcSkipped', 'decimalSlip', 'pricey', 'notEnough', 'decimalPerfect', 'calcExact', 'budgetPerfect'],
     lines: {
       high: {
         general: [
@@ -156,6 +157,11 @@ const GG_CHEFS = [
           '총 원가와 총 무게를 정확히 맞혔어요. 이런 정확함이 좋은 요리사의 힘이에요.',
           '{dish}의 숫자를 정확하게 계산했네요. 정말 믿음직해요.'
         ],
+        decimalPerfect: [
+          '소수의 곱셈 문제를 모두 한 번에 맞혔어요. 소수점 자리까지 정확하네요. 훌륭해요.',
+          '0.1g까지 정확한 요리사! {dish}의 숫자는 제가 믿고 맡길게요.'
+        ],
+        decimalSlip: ['계산은 잘 마무리했어요. 다만 소수점 위치에서 한 번 헷갈렸죠? 소수 자리 수 세기만 기억하면 완벽해요.'],
         budgetPerfect: [
           '예산 안에서 알뜰하게 만든 {dish}네요. 아주 현명해요.',
           '{dish}, 정해진 예산을 지키면서도 풍성해요. 멋진 계획이에요.'
@@ -171,6 +177,8 @@ const GG_CHEFS = [
         budgetPerfect: ['예산은 잘 지켰어요. {dish}의 양과 계산을 조금만 더 챙기면 좋겠어요.'],
         calcOff: ['계산이 조금 어긋났어요. 괜찮아요, 천천히 다시 더해 보면 돼요.'],
         calcSkipped: ['계산을 건너뛰었네요. 숫자를 직접 세어 보는 경험도 소중해요. 다음엔 꼭 해 봐요.'],
+        decimalSlip: ['소수점 위치를 헷갈렸군요. 곱하는 두 수의 소수 자리 수를 더한 만큼 소수점을 찍으면 돼요.'],
+        decimalPerfect: ['소수의 곱셈은 한 번에 척척 풀었어요. {dish}의 가격과 양만 조금 더 다듬어 봐요.'],
         overBudget: ['예산을 조금 넘었어요. 비싼 재료의 양을 살짝 줄여 볼까요?'],
         pricey: ['{dish}, 재료비가 꽤 많이 들었네요. 같은 맛이라면 더 알뜰한 방법도 있어요.'],
         notEnough: ['재료가 적어서 {dish}의 숫자를 살펴보기 어려워요. 조금 더 채워 볼까요?']
@@ -183,6 +191,7 @@ const GG_CHEFS = [
         ],
         calcOff: ['계산이 많이 달라요. 재료마다 원가를 적어 두고 하나씩 더해 봐요.'],
         calcSkipped: ['계산을 건너뛰었네요. 숫자를 확인하는 것도 요리의 한 부분이에요.'],
+        decimalSlip: ['소수점 하나가 값을 10배나 바꿔요. 0.15 × 2500 같은 곱셈은 소수점 자리를 꼭 세어 봐요.'],
         overBudget: ['예산을 많이 넘겼어요. 냉정하게 말하면 이대로는 살림이 어려워요. 다시 줄여 봐요.'],
         pricey: ['{dish}는 재료값이 너무 많이 들었어요. 값비싼 재료를 조금만 줄여 볼까요?'],
         notEnough: ['재료가 너무 적어요. {dish}를 만들려면 양을 더 채워야 해요.']

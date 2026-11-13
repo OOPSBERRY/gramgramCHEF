@@ -198,16 +198,15 @@
           <div class="cq-work" id="cq-work" hidden></div>
         </div>
         <div class="calc-totals" id="calc-totals">
-        <div class="calc-field"><span>총 원가</span><input id="calc-cost" type="number" inputmode="numeric" min="0" placeholder="0"><span>원</span></div>
+        <div class="calc-field"><span>총 원가</span><input id="calc-cost" type="number" inputmode="decimal" min="0" step="any" placeholder="0"><span>원</span></div>
         <div class="calc-field"><span>총 무게</span><input id="calc-weight" type="number" inputmode="decimal" min="0" step="any" placeholder="0">
           <div class="unit-toggle" id="calc-units"><button data-u="g">g</button><button data-u="kg">kg</button></div></div>
         </div>
-        <div class="calc-answer" id="calc-answer" hidden></div>
         <div class="calc-msg" id="calc-msg"></div>
+        <div class="cq-hint" id="calc-hint" hidden></div>
         <div class="calc-btns">
           <button class="k-small" id="calc-back">돌아가기</button>
-          <button class="k-small" id="calc-help">계산 도우미 (정답 보기)</button>
-          <button class="k-small" id="calc-skip">건너뛰기</button>
+          <button class="k-small" id="calc-skip">건너뛰기 (점수가 크게 깎여요)</button>
           <button class="calc-go" id="calc-go">확인하고 제출</button>
         </div>
       </div>

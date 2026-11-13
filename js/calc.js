@@ -22,6 +22,10 @@ const GGCalc = (function () {
   /** 재료 하나의 무게(g). mL 재료는 밀도를 곱해서 g으로 바꿈 */
   function grams(ing, amount) { return ing.unit === 'g' ? amount : amount * (ing.density || 1); }
 
+  /** 소수까지 그대로 둔 원가 (계산 확인 화면용: 학생이 소수의 곱셈으로 구하는 값) */
+  function costExact(ing, amount) { return round(amount * ing.price / 100, 3); }
+  function totalCostExact(items) { return round(items.reduce((s, it) => s + costExact(it.ing, it.amount), 0), 3); }
+
   function totalCost(items) { return items.reduce((s, it) => s + cost(it.ing, it.amount), 0); }
   function totalGrams(items) { return items.reduce((s, it) => s + grams(it.ing, it.amount), 0); }
 
@@ -33,5 +37,5 @@ const GGCalc = (function () {
     return round(amount, amount >= 100 ? 0 : 1) + base;
   }
 
-  return { unitPair, factor, round, toDisplay, fromDisplay, cost, grams, totalCost, totalGrams, won, amountText };
+  return { unitPair, factor, round, toDisplay, fromDisplay, cost, costExact, totalCostExact, grams, totalCost, totalGrams, won, amountText };
 })();

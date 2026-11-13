@@ -17,7 +17,6 @@
 .calc-field > span:first-child { width: 110px; }
 .calc-field input { flex: 1; min-width: 0; height: var(--btn-h); padding: 0 var(--sp-2); text-align: right; border-radius: var(--r-card); border: 2px solid var(--c-line); font-size: var(--fs-sub); font-weight: 900; color: var(--c-ink); background: #fff; user-select: text; }
 .calc-field input:focus { outline: none; border-color: var(--c-main); }
-.calc-answer { padding: var(--sp-1) var(--sp-2); border-radius: var(--r-card); background: #fff6d8; border: 1px solid var(--c-gold); font-size: var(--fs-small); line-height: 1.4; }
 .calc-msg { min-height: 24px; font-size: var(--fs-small); color: var(--c-danger); font-weight: 900; }
 .calc-btns { display: flex; flex-wrap: wrap; gap: var(--sp-1); justify-content: flex-end; margin-top: auto; }
 .calc-go { min-height: var(--btn-h); padding: 0 var(--sp-4); border-radius: var(--r-btn); border: none; font-size: var(--fs-body); font-weight: 900; background: var(--c-main); color: #fff; box-shadow: var(--shadow-btn); }
@@ -56,3 +55,6 @@
 .cq-vert tr.strong td { color: var(--c-main); font-weight: 900; }
 .cq-work ol { margin: 0; padding-left: var(--sp-3); font-size: var(--fs-body); line-height: 1.5; }
 .calc-q.done .cq-hint, .calc-q.done .cq-work { display: none; }
+.calc-field input.ok { border-color: var(--c-green); color: var(--c-green); }
+.calc-field input.bad { border-color: var(--c-danger); }
+#calc-hint div + div { margin-top: var(--sp-1); }

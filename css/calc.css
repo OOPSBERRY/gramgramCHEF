@@ -22,3 +22,37 @@
 .calc-btns { display: flex; flex-wrap: wrap; gap: var(--sp-1); justify-content: flex-end; margin-top: auto; }
 .calc-go { min-height: var(--btn-h); padding: 0 var(--sp-4); border-radius: var(--r-btn); border: none; font-size: var(--fs-body); font-weight: 900; background: var(--c-main); color: #fff; box-shadow: var(--shadow-btn); }
 .calc-go:active { transform: translateY(4px); box-shadow: var(--shadow-btn-pressed); }
+
+/* ---------- 그램 셰프의 소수 곱셈 문제 카드 ---------- */
+.calc-q { display: flex; flex-direction: column; gap: var(--sp-1); padding: var(--sp-2); border: 1.5px solid var(--c-ink); border-radius: var(--wob-b); background: var(--c-paper); }
+.cq-head { display: flex; justify-content: space-between; align-items: center; font-size: var(--fs-small); color: var(--c-ink-soft); }
+.cq-kind { padding: 0 var(--sp-1); border: 1.5px solid var(--c-main); border-radius: var(--r-btn); color: var(--c-main); }
+.cq-ask { font-size: var(--fs-body); font-weight: 900; }
+.cq-facts { margin: 0; padding-left: var(--sp-3); font-size: var(--fs-body); line-height: 1.5; }
+.cq-row { display: flex; align-items: center; gap: var(--sp-1); font-size: var(--fs-sub); font-weight: 900; }
+.cq-expr { white-space: nowrap; }
+.cq-row input { flex: 1; min-width: 80px; height: var(--btn-h); padding: 0 var(--sp-2); text-align: right; border-radius: var(--r-card); border: 1.5px solid var(--c-ink); font: inherit; font-size: var(--fs-sub); color: var(--c-ink); background: var(--c-cream); user-select: text; }
+.cq-row input:focus { outline: none; border-color: var(--c-main); }
+.cq-row .cq-check { padding: 0 var(--sp-3); }
+.cq-row .cq-check:disabled { opacity: .5; }
+.cq-msg { min-height: 24px; font-size: var(--fs-body); font-weight: 900; }
+.cq-msg.bad { color: var(--c-danger); }
+.cq-msg.good { color: var(--c-green); }
+.calc-q.done .cq-row, .calc-q.done .cq-facts, .calc-q.done .cq-ask { display: none; }
+
+/* 표에서 문제로 나온 칸: ? 로 가려 두었다가 맞히면 초록 동그라미 */
+.calc-table td.cq-hole { color: var(--c-main); font-weight: 900; background: var(--c-main-tint); }
+.calc-table td.cq-solved { color: var(--c-green); background: transparent; position: relative; }
+.calc-table td.cq-solved::after { content: ''; position: absolute; inset: 2px -2px; border: 2px solid var(--c-green); border-radius: 48% 52% 46% 54% / 53% 47% 53% 47%; pointer-events: none; }
+
+/* 힌트와 세로셈 풀이 */
+.cq-hint { padding: var(--sp-1) var(--sp-2); border-left: 4px solid var(--c-gold); background: var(--c-cream); font-size: var(--fs-body); line-height: 1.45; }
+.cq-work { padding: var(--sp-1) var(--sp-2); border: 1.5px dashed var(--c-ink-soft); border-radius: var(--r-card); background: var(--c-cream); }
+.cq-work-title { font-size: var(--fs-small); color: var(--c-ink-soft); }
+.cq-work-body { display: flex; gap: var(--sp-3); align-items: flex-start; }
+.cq-vert { border-collapse: collapse; font-size: var(--fs-sub); flex: none; }
+.cq-vert td { width: 22px; height: 30px; padding: 0; text-align: center; }
+.cq-vert tr.rule td { height: 4px; border-top: 2px solid var(--c-ink); }
+.cq-vert tr.strong td { color: var(--c-main); font-weight: 900; }
+.cq-work ol { margin: 0; padding-left: var(--sp-3); font-size: var(--fs-body); line-height: 1.5; }
+.calc-q.done .cq-hint, .calc-q.done .cq-work { display: none; }

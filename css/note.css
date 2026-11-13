@@ -219,6 +219,6 @@ input[type=range]::-moz-range-thumb { border: 3px solid var(--c-ink); box-shadow
 /* ---------- 8. 계산 확인 화면: 빈 공간 줄이고 주요 버튼을 크게 ---------- */
 .calc-right { justify-content: center; gap: var(--sp-2); }
 .calc-btns { margin-top: var(--sp-1); justify-content: flex-start; }
-.calc-go { order: -1; flex: 1 1 100%; }
+.calc-btns .calc-go { order: -1; flex: 1 1 100%; }
 .sub-type { min-height: 72px; }
 .pick-btn { min-height: 80px; }

@@ -171,7 +171,7 @@
     row.innerHTML =
       '<div class="row-top"><div class="row-thumb"></div>' +
       '<div class="row-names"><div class="row-name">' + ing.name + '</div><div class="formula"></div></div>' +
-      '<span class="row-cost"></span><button class="del" aria-label="빼기">✕</button></div>' +
+      '<button class="del" aria-label="빼기">✕</button></div>' +
       '<div class="row-mid"><div class="slider-wrap">' +
       '<input type="range" min="0" max="' + ing.max + '" step="' + ing.step + '">' +
       '<div class="range-lbl"><span></span><span></span></div></div>' +
@@ -210,15 +210,12 @@
     const lbl = row.querySelectorAll('.range-lbl span');
     lbl[0].textContent = '0';
     lbl[1].textContent = GGCalc.toDisplay(ing.max, it.unit) + it.unit;
-    const cost = GGCalc.cost(ing, it.amount);
-    row.querySelector('.row-cost').textContent = GGCalc.won(cost);
     updatePileSize(it);
-    // 가격은 항상 100g(또는 100mL) 기준이라, 먼저 "100g의 몇 배인지" 구한 뒤 가격을 곱함 (두 줄로 쉽게 풀어서 보여줌)
-    const amt = GGCalc.round(it.amount, 1), times = GGCalc.round(it.amount / 100, 3), price = ing.price.toLocaleString('ko-KR');
+    // 재료 하나의 원가는 보여 주지 않음: 계산 확인 화면에서 학생이 소수의 곱셈으로 직접 구함. 가격(100g당)만 보여 줌
+    const price = ing.price.toLocaleString('ko-KR');
     row.querySelector('.formula').innerHTML = ing.price === 0
-      ? '<div class="f1">' + ing.name + '은(는) 공짜예요</div><div class="f2">0원</div>'
-      : '<div class="f1">100' + ing.unit + '당 ' + price + '원, ' + amt.toLocaleString('ko-KR') + ' ÷ 100 = ' + times + '배</div>' +
-        '<div class="f2">' + price + '원 × ' + times + ' = ' + GGCalc.won(cost) + '</div>';
+      ? '<div class="f1">' + ing.name + '은(는) 공짜예요</div>'
+      : '<div class="f1">100' + ing.unit + '당 ' + price + '원</div>';
   }
 
   function flashRow(id) {
@@ -232,9 +229,6 @@
   /* ---------- 합계와 예산 ---------- */
   function updateTotals() {
     const cost = GGCalc.totalCost(state.items);
-    const grams = GGCalc.totalGrams(state.items);
-    $('sum-cost').textContent = GGCalc.won(cost);
-    $('sum-weight').textContent = GGCalc.amountText(grams, 'g');
     $('sum-count').textContent = state.items.length + '가지';
     $('btn-submit').disabled = !state.items.some((it) => it.amount > 0);      // 양이 있는 재료가 하나라도 있어야 제출 가능
 
@@ -246,9 +240,10 @@
     fill.style.width = Math.min(ratio, 1) * 100 + '%';
     fill.className = 'k-fill' + (ratio > 1 ? ' over' : ratio > 0.8 ? ' warn' : '');
     text.className = 'k-meter-text' + (ratio > 1 ? ' over' : '');
+    // 남은 금액은 숫자로 보여 주지 않음 (총 원가를 학생이 직접 계산하도록). 예산 안인지만 알려 줌
     text.textContent = ratio > 1
-      ? '예산 초과! ' + GGCalc.won(cost - state.budget) + ' 넘었어요'
-      : '예산 ' + GGCalc.won(state.budget) + ' 중 ' + GGCalc.won(state.budget - cost) + ' 남음';
+      ? '예산 ' + GGCalc.won(state.budget) + '을 넘었어요! 재료를 줄여 봐요'
+      : '예산 ' + GGCalc.won(state.budget) + ' 안이에요';
   }
 
   $('btn-clear').onclick = () => {

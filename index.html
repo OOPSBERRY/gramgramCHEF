@@ -96,10 +96,10 @@
             <div class="k-pile" id="pile"></div>
           </div>
           <div class="k-sum">
-            <div class="k-cost-label">총 원가</div>
-            <div class="k-cost" id="sum-cost">0원</div>
-            <div class="k-sum-row"><span>총 무게</span><strong id="sum-weight">0g</strong></div>
-            <div class="k-sum-row"><span>재료</span><strong id="sum-count">0가지</strong></div>
+            <!-- 총 원가·총 무게는 보여 주지 않음: 제출 뒤 계산 확인 화면에서 학생이 직접 구함 -->
+            <div class="k-cost-label">담은 재료</div>
+            <div class="k-cost" id="sum-count">0가지</div>
+            <div class="k-sum-row"><span>원가·무게는 제출 뒤 직접 계산!</span></div>
             <div class="k-meter" id="budget-meter" hidden>
               <div class="k-bar"><div class="k-fill" id="budget-fill"></div></div>
               <div class="k-meter-text" id="budget-text"></div>
@@ -183,9 +183,25 @@
           <div class="chef-avatar" id="calc-avatar"></div>
           <div class="bubble" id="calc-say"></div>
         </div>
+        <div class="calc-q" id="calc-q" hidden>
+          <div class="cq-head"><span class="cq-no" id="cq-no"></span><span class="cq-kind" id="cq-kind"></span></div>
+          <div class="cq-ask" id="cq-ask"></div>
+          <ul class="cq-facts" id="cq-facts"></ul>
+          <div class="cq-row">
+            <span class="cq-expr" id="cq-expr"></span>
+            <input id="cq-input" type="text" inputmode="decimal" autocomplete="off" placeholder="?">
+            <span class="cq-unit" id="cq-unit"></span>
+            <button class="calc-go cq-check" id="cq-check">확인</button>
+          </div>
+          <div class="cq-msg" id="cq-msg"></div>
+          <div class="cq-hint" id="cq-hint" hidden></div>
+          <div class="cq-work" id="cq-work" hidden></div>
+        </div>
+        <div class="calc-totals" id="calc-totals">
         <div class="calc-field"><span>총 원가</span><input id="calc-cost" type="number" inputmode="numeric" min="0" placeholder="0"><span>원</span></div>
         <div class="calc-field"><span>총 무게</span><input id="calc-weight" type="number" inputmode="decimal" min="0" step="any" placeholder="0">
           <div class="unit-toggle" id="calc-units"><button data-u="g">g</button><button data-u="kg">kg</button></div></div>
+        </div>
         <div class="calc-answer" id="calc-answer" hidden></div>
         <div class="calc-msg" id="calc-msg"></div>
         <div class="calc-btns">
@@ -218,6 +234,7 @@
 <script src="data/recipes.js"></script>
 <script src="data/cooking.js"></script>
 <script src="js/calc.js"></script>
+<script src="js/calc-quiz.js"></script>
 <script src="js/judge.js"></script>
 <script src="js/filter.js"></script>
 <script src="js/qr.js"></script>

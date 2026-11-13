@@ -27,8 +27,8 @@
       box.appendChild(b);
     });
     const items = A.state.items.filter((it) => it.amount > 0);
-    const cost = GGCalc.totalCost(items), grams = GGCalc.totalGrams(items), bud = A.state.budget;
-    $('sub-summary').innerHTML = '재료 <b>' + items.length + '가지</b>, 총 원가 <b>' + GGCalc.won(cost) + '</b>, 총 무게 <b>' + GGCalc.amountText(grams, 'g') + '</b>' +
+    const cost = GGCalc.totalCost(items), bud = A.state.budget;          // 총 원가·총 무게는 계산 확인 화면에서 학생이 구하므로 여기서는 숨김
+    $('sub-summary').innerHTML = '재료 <b>' + items.length + '가지</b>' +
       (bud === null ? '' : ', 예산 ' + GGCalc.won(bud) + (cost > bud ? ' <b class="over">(초과)</b>' : ' <b class="okay">(통과)</b>'));
     A.show('screen-submit');
   }
@@ -45,17 +45,119 @@
 
   /* ================= 계산 확인 (그램 셰프의 질문) ================= */
   let calcUnit = 'g';
+
+  /** 소수 곱셈 문제를 하나씩 보여 주고, 맞히면 표의 ? 칸을 채움. 틀리면 맞힐 때까지 다시 */
+  function runQuiz(quiz, items, show) {
+    const box = $('calc-q');
+    // 합계 적기(총 원가·총 무게)와 제출·정답 보기 버튼은 곱셈 문제를 다 맞힌 뒤에 열림
+    const lock = (on) => { ['calc-totals', 'calc-go', 'calc-help'].forEach((id) => { $(id).hidden = on; }); };
+    box.hidden = !quiz.length;
+    lock(quiz.length > 0);
+    if (!quiz.length) return;
+    const KIND = { cost: '원가 계산', weight: '무게 계산' };
+    let idx = 0;
+    function render() {
+      const q = quiz[idx];
+      q.tries = q.tries || 0;
+      box.classList.remove('done');
+      $('cq-no').textContent = '문제 ' + (idx + 1) + ' / ' + quiz.length;
+      $('cq-kind').textContent = KIND[q.kind];
+      $('cq-ask').textContent = q.ask;
+      $('cq-facts').innerHTML = q.facts.map((f) => '<li>' + esc(f) + '</li>').join('');
+      $('cq-expr').textContent = GGCalcQuiz.num(q.a) + ' × ' + GGCalcQuiz.num(q.b) + ' =';
+      $('cq-unit').textContent = q.unit;
+      $('cq-input').value = ''; $('cq-input').disabled = false; $('cq-check').disabled = false;
+      $('cq-msg').textContent = ''; $('cq-msg').className = 'cq-msg';
+      $('cq-hint').hidden = true; $('cq-work').hidden = true; $('cq-work').innerHTML = '';
+    }
+    /** 세로셈 풀이를 칸 맞춘 표로 (손글씨 글꼴은 글자 폭이 달라서 한 글자씩 칸에 넣음) */
+    function workHtml(q) {
+      const v = GGCalcQuiz.vertical(q), P = v.PLACE, N = GGCalcQuiz.num;
+      const lines = [{ s: String(v.top) }, { s: String(v.bottom), op: '×' }, { rule: true }];
+      v.rows.forEach((r) => lines.push({ s: String(r.value), shift: r.shift }));
+      if (v.rows.length) lines.push({ rule: true });
+      lines.push({ s: String(v.product), strong: true });
+      const W = 1 + Math.max(...lines.filter((l) => l.s).map((l) => l.s.length + (l.shift || 0)));
+      const table = lines.map((l) => {
+        if (l.rule) return '<tr class="rule"><td colspan="' + W + '"></td></tr>';
+        const cells = (l.s + ' '.repeat(l.shift || 0)).padStart(W - 1, ' ').split('');
+        return '<tr' + (l.strong ? ' class="strong"' : '') + '><td>' + (l.op || '') + '</td>' +
+          cells.map((c) => '<td>' + (c === ' ' ? '' : c) + '</td>').join('') + '</tr>';
+      }).join('');
+      let steps = '<li>소수점을 떼고' + (v.zeros ? ', 끝의 0도 잠시 떼고' : '') + ' ' + v.top + ' × ' + v.bottom + ' = ' + v.product + '</li>';
+      if (v.zeros) steps += '<li>떼어 둔 0 ' + v.zeros + '개를 붙이면 ' + v.joined + '</li>';
+      // 소수점 찍기: 3750 → 375.0 (= 375). 앞에 0이 필요하면 채움 (206 → 0.206)
+      const digits = String(v.joined).padStart(v.dp + 1, '0'), dotted = digits.slice(0, digits.length - v.dp) + '.' + digits.slice(digits.length - v.dp);
+      steps += '<li>' + '두 수(' + N(q.a) + ', ' + N(q.b) + ')의 소수 자리 수를 더하면 ' + P[v.dp] + ' 자리 → ' + dotted +
+        (dotted !== N(v.answer) ? ' = <b>' + N(v.answer) + '</b>' : '') + '</li>';
+      return '<div class="cq-work-title">그램 셰프의 풀이</div><div class="cq-work-body"><table class="cq-vert">' + table + '</table><ol>' + steps + '</ol></div>';
+    }
+    function fill(q) {
+      const i = items.indexOf(q.item), cell = $('cq-cell-' + i + '-' + q.kind);
+      if (!cell) return;
+      cell.textContent = q.kind === 'cost' ? show(q.answer) + '원' : show(GGCalc.grams(q.item.ing, q.item.amount)) + 'g';
+      cell.classList.add('cq-solved');
+    }
+    function check() {
+      const q = quiz[idx], text = $('cq-input').value;
+      if (!isFinite(GGCalcQuiz.parse(text))) { $('cq-msg').textContent = '숫자로 답을 적어 주세요.'; $('cq-msg').className = 'cq-msg bad'; return; }
+      q.tries++;
+      if (!GGCalcQuiz.isRight(q, text)) {
+        if (window.GGSound) GGSound.play('error');
+        // 틀린 숫자를 보고 어떤 실수였는지 짐작해 힌트를 줌. 모르는 실수면 어림하기 → 소수점 규칙 순서로
+        q.generic = q.generic || 0;
+        const h = GGCalcQuiz.diagnose(q, text, q.generic);
+        if (h.kind === 'unknown') q.generic++;
+        (q.mistakes = q.mistakes || []).push(h.kind);
+        $('cq-msg').textContent = '앗, 다시 계산해 볼까? (' + q.tries + '번 틀렸어요)';
+        $('cq-msg').className = 'cq-msg bad';
+        $('cq-hint').textContent = h.text; $('cq-hint').hidden = false;
+        if (q.tries >= 3 && $('cq-work').hidden) { $('cq-work').innerHTML = workHtml(q); $('cq-work').hidden = false; }
+        $('cq-input').select();
+        return;
+      }
+      $('cq-hint').hidden = true;
+      q.solved = true;
+      if (window.GGSound) GGSound.play('ding');
+      fill(q);
+      $('cq-msg').textContent = '정답! ' + GGCalcQuiz.num(q.a) + ' × ' + GGCalcQuiz.num(q.b) + ' = ' + GGCalcQuiz.num(q.answer) + q.unit;
+      $('cq-msg').className = 'cq-msg good';
+      $('cq-input').disabled = true; $('cq-check').disabled = true;
+      setTimeout(() => {
+        if (idx < quiz.length - 1) { idx++; render(); $('cq-input').focus(); return; }
+        box.classList.add('done');
+        $('cq-msg').textContent = '문제를 모두 풀었어요! 표의 ? 칸이 모두 채워졌어요.';
+        lock(false);
+        $('calc-cost').focus();
+        $('calc-say').textContent = '다 맞혔어! 이제 표의 숫자를 모두 더해서 총 원가와 총 무게를 적어 봐.';
+      }, 1100);
+    }
+    $('cq-check').onclick = check;
+    $('cq-input').onkeydown = (e) => { if (e.key === 'Enter') check(); };
+    render();
+  }
+
   function askCalc(items, done) {
     const gram = GG_CHEFS.find((c) => c.id === 'gram');
     $('calc-avatar').innerHTML = gram ? chefSvg(gram) : '';
-    $('calc-say').textContent = '제출하기 전에 숫자를 확인해 볼까요? 아래 표의 재료를 모두 더하면 총 원가와 총 무게는 얼마일까요?';
-    // 재료표: 원가와 무게(g). mL 재료는 g으로 바꿔서 보여줌
+    // 그램 셰프의 소수 곱셈 문제 (학생이 넣은 재료 중 2~3개). 문제로 나온 칸은 표에서 ? 로 가려 둠
+    const quiz = GGCalcQuiz.build(items);
+    const hidden = new Map();                                   // 재료 → { cost: 문제, weight: 문제 }
+    quiz.forEach((q) => { const h = hidden.get(q.item) || {}; h[q.kind] = q; hidden.set(q.item, h); });
+    $('calc-say').textContent = quiz.length
+      ? '네가 넣은 재료로 문제를 냈어! 소수의 곱셈으로 표의 ? 칸을 채워 볼까?'
+      : '제출하기 전에 숫자를 확인해 볼까요? 아래 표의 재료를 모두 더하면 총 원가와 총 무게는 얼마일까요?';
+    // 재료표: 원가와 무게(g). mL 재료는 g으로 바꿔서 보여줌 (소수 그대로)
+    const show = (n) => GGCalcQuiz.fix(n).toLocaleString('ko-KR', { maximumFractionDigits: 3 });
     let rows = '';
-    items.forEach((it) => {
-      const g = Math.round(GGCalc.grams(it.ing, it.amount));
-      rows += '<tr><td>' + esc(it.ing.name) + '</td><td>' + GGCalc.amountText(it.amount, it.ing.unit) + '</td><td>' + g.toLocaleString('ko-KR') + 'g</td><td>' + GGCalc.cost(it.ing, it.amount).toLocaleString('ko-KR') + '원</td></tr>';
+    items.forEach((it, i) => {
+      const h = hidden.get(it) || {};
+      const gCell = h.weight ? '<td class="cq-hole" id="cq-cell-' + i + '-weight">?</td>' : '<td>' + show(GGCalc.grams(it.ing, it.amount)) + 'g</td>';
+      const cCell = h.cost ? '<td class="cq-hole" id="cq-cell-' + i + '-cost">?</td>' : '<td>' + show(it.amount * it.ing.price / 100) + '원</td>';
+      rows += '<tr><td>' + esc(it.ing.name) + '</td><td>' + GGCalc.amountText(it.amount, it.ing.unit) + '</td>' + gCell + cCell + '</tr>';
     });
     $('calc-table').innerHTML = '<table><thead><tr><th>재료</th><th>양</th><th>g으로 바꾸면</th><th>원가</th></tr></thead><tbody>' + rows + '</tbody></table>';
+    runQuiz(quiz, items, show);
     const trueCost = GGCalc.totalCost(items), trueG = Math.round(GGCalc.totalGrams(items));
     $('calc-cost').value = ''; $('calc-weight').value = ''; calcUnit = 'g';
     $('calc-answer').hidden = true; $('calc-msg').textContent = '';
